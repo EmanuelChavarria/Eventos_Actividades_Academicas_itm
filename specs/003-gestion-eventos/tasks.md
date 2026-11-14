@@ -18,7 +18,7 @@ description: "Tareas atómicas para implementar E3 — Gestión de eventos"
 ## Fase 1: Pruebas primero para reglas críticas de eventos y propiedad (Rojo)
 
 - [x] T-003-01 [US1] [US2] [US3] [US4] [US5] Crear pruebas iniciales rojo en `tests/test_eventos.py` (creación `201` en `borrador`, `422` sin persistir por cupo/fechas/zona horaria, publicación `borrador → publicado`, `409` en no borrador, `422` en inicio pasado, edición parcial y subida/bajada de cupo respetando `inscripciones_activas`, `409` al bajar debajo de activas o editar `cancelado`/`finalizado`, cancelación con motivo `≥ 5` chars preservando inscripciones y `422` motivo corto, listado `GET /api/v1/organizador/eventos` con cálculo `finalizado` y `GET /api/v1/eventos/{id}`) · Commit: `test(eventos): agrega pruebas rojo de ciclo de vida y reglas` · Terminado cuando: las pruebas existen en `tests/test_eventos.py` y fallan por ausencia de implementación E3
-- [ ] T-003-02 [P] [US1] [US2] [US3] [US4] [US5] Ampliar `tests/test_permisos.py` con pruebas rojo de autorización y propiedad de eventos (`401` sin sesión, `403` para participante/coordinación y `403 SIN_PERMISO` cuando un organizador intenta leer, editar, publicar o cancelar eventos de otro organizador según `RN-10`) · Commit: `test(eventos): agrega pruebas rojo de permisos y propiedad` · Terminado cuando: las pruebas existen y fallan antes de implementar endpoints y servicio
+- [x] T-003-02 [P] [US1] [US2] [US3] [US4] [US5] Ampliar `tests/test_permisos.py` con pruebas rojo de autorización y propiedad de eventos (`401` sin sesión, `403` para participante/coordinación y `403 SIN_PERMISO` cuando un organizador intenta leer, editar, publicar o cancelar eventos de otro organizador según `RN-10`) · Commit: `test(eventos): agrega pruebas rojo de permisos y propiedad` · Terminado cuando: las pruebas existen y fallan antes de implementar endpoints y servicio
 
 ---
 
@@ -58,7 +58,7 @@ description: "Tareas atómicas para implementar E3 — Gestión de eventos"
 | ID | Tarea | Depende de | Archivos clave | Commit sugerido | Terminado cuando | Estado |
 |---|---|---|---|---|---|:-:|
 | T-003-01 | Pruebas rojo ciclo de vida y reglas E3 | — | `tests/test_eventos.py` | `test(eventos): agrega pruebas rojo de ciclo de vida y reglas` | Fallan antes del código E3 | [x] |
-| T-003-02 | Pruebas rojo permisos y propiedad (`RN-10`) | — | `tests/test_permisos.py` | `test(eventos): agrega pruebas rojo de permisos y propiedad` | Fallan antes de endpoints/servicio | [ ] |
+| T-003-02 | Pruebas rojo permisos y propiedad (`RN-10`) | — | `tests/test_permisos.py` | `test(eventos): agrega pruebas rojo de permisos y propiedad` | Fallan antes de endpoints/servicio | [x] |
 | T-003-03 | Schemas y validador fechas en `evento.py` | T-003-01 | `app/schemas/evento.py` | `feat(eventos): agrega schemas de evento con validaciones de entrada` | Validaciones y `EventoSalida` listos | [ ] |
 | T-003-04 | Repositorio `evento_repo.py` | T-003-01 | `app/repositories/evento_repo.py` | `feat(eventos): implementa repositorio de eventos` | SQL encapsulado en repositorio | [ ] |
 | T-003-05 | Servicio `evento_service.py` sin FastAPI | T-003-03, T-003-04 | `app/services/evento_service.py` | `feat(eventos): implementa servicio de gestion y reglas de eventos` | RN-02/03/09/10/12/18/20 listas | [ ] |

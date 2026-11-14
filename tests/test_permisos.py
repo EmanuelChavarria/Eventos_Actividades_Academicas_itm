@@ -15,7 +15,9 @@ from app.api import deps
 from app.core.config import get_settings
 from app.core.database import get_db
 from app.core.errors import CodigosError, registrar_manejadores_errores
-from app.models.enums import Rol
+from app.core.fechas import ZONA_BOGOTA, ahora_utc
+from app.models.enums import EstadoEvento, Rol
+from app.models.evento import Evento
 from app.models.usuario import Usuario
 
 NOMBRE_COOKIE = "pf04_session"
@@ -209,3 +211,135 @@ def test_ruta_web_protegida_redirige_a_login_sin_sesion_y_rechaza_403_por_rol(
     client_permisos.cookies.set(NOMBRE_COOKIE, _emitir_jwt_prueba(usuario_organizador.id))
     permitido = client_permisos.get("/_prueba/web-organizador", follow_redirects=False)
     assert permitido.status_code == 200
+
+
+def _crear_evento_propietario(
+    db_session: Session,
+    organizador: Usuario,
+    *,
+    estado: str = EstadoEvento.BORRADOR.value,
+) -> Evento:
+    """Inserta un evento perteneciente al organizador indicado para pruebas de RN-10."""
+    inicio = ahora_utc() + timedelta(days=5)
+    evento = Evento(
+        titulo="Evento de propiedad exclusiva",
+        descripcion="Descripción de prueba para validar aislamiento entre organizadores.",
+        tipo="conferencia",
+        fecha_inicio=inicio,
+        fecha_fin=inicio + timedelta(hours=2),
+        fecha_limite_inscripcion=inicio - timedelta(days=1),
+        lugar="Auditorio A",
+        modalidad="presencial",
+        publico_objetivo="todos",
+        ponente="Ponente Invitado",
+        requisitos=None,
+        responsable_nombre="Responsable Evento",
+        responsable_correo="responsable@ejemplo.edu",
+        cupo_maximo=25,
+        estado=estado,
+        organizador_id=organizador.id,
+    )
+    db_session.add(evento)
+    db_session.commit()
+    db_session.refresh(evento)
+    return evento
+
+
+def test_endpoints_eventos_rechazan_sin_sesion_y_por_rol_e3(
+    client: TestClient,
+    db_session: Session,
+    usuario_organizador: Usuario,
+    usuario_participante: Usuario,
+    usuario_coordinacion: Usuario,
+) -> None:
+    """RNF-06 / V: sin sesión responde 401; participante o coordinación reciben 403 SIN_PERMISO."""
+    evento = _crear_evento_propietario(db_session, usuario_organizador)
+    origen = {"Origin": "https://testserver"}
+    inicio = (ahora_utc() + timedelta(days=6)).astimezone(ZONA_BOGOTA)
+    payload_crear = {
+        "titulo": "Taller sin permiso",
+        "descripcion": "Descripción válida para probar autorización por rol en E3.",
+        "tipo": "taller",
+        "fecha_inicio": inicio.isoformat(),
+        "fecha_fin": (inicio + timedelta(hours=2)).isoformat(),
+        "fecha_limite_inscripcion": (inicio - timedelta(days=1)).isoformat(),
+        "lugar": "Sala 1",
+        "modalidad": "virtual",
+        "publico_objetivo": "todos",
+        "responsable_nombre": "Coord",
+        "responsable_correo": "coord@ejemplo.edu",
+        "cupo_maximo": 10,
+    }
+
+    rutas = [
+        ("GET", "/api/v1/organizador/eventos", None),
+        ("POST", "/api/v1/eventos", payload_crear),
+        ("GET", f"/api/v1/eventos/{evento.id}", None),
+        ("PATCH", f"/api/v1/eventos/{evento.id}", {"titulo": "Intento"}),
+        ("POST", f"/api/v1/eventos/{evento.id}/publicar", None),
+        ("POST", f"/api/v1/eventos/{evento.id}/cancelar", {"motivo": "Intento sin permiso"}),
+    ]
+
+    for metodo, url, body in rutas:
+        kwargs = {"json": body} if body is not None else {}
+        resp = client.request(metodo, url, **kwargs)
+        assert resp.status_code == 401
+        assert resp.json()["error"]["codigo"] == CodigosError.CREDENCIALES_INVALIDAS
+
+    for usuario_sin_rol in (usuario_participante, usuario_coordinacion):
+        client.cookies.set(NOMBRE_COOKIE, _emitir_jwt_prueba(usuario_sin_rol.id))
+        for metodo, url, body in rutas:
+            kwargs = {"json": body, "headers": origen} if metodo != "GET" else {}
+            resp = client.request(metodo, url, **kwargs)
+            assert resp.status_code == 403
+            assert resp.json()["error"]["codigo"] == CodigosError.SIN_PERMISO
+
+
+def test_organizador_ajeno_recibe_403_en_eventos_de_otro_propietario(
+    client: TestClient,
+    db_session: Session,
+    crear_usuario_factory,
+    usuario_organizador: Usuario,
+) -> None:
+    """PF-09 / RN-10: otro organizador recibe 403 al leer, editar, publicar o cancelar."""
+    otro_org = crear_usuario_factory(
+        numero_documento="9005556661",
+        rol=Rol.ORGANIZADOR,
+        nombre="Organizador Ajeno",
+    )
+    ev_borrador = _crear_evento_propietario(
+        db_session,
+        usuario_organizador,
+        estado=EstadoEvento.BORRADOR.value,
+    )
+    ev_publicado = _crear_evento_propietario(
+        db_session,
+        usuario_organizador,
+        estado=EstadoEvento.PUBLICADO.value,
+    )
+
+    origen = {"Origin": "https://testserver"}
+    client.cookies.set(NOMBRE_COOKIE, _emitir_jwt_prueba(otro_org.id))
+
+    for resp in (
+        client.get(f"/api/v1/eventos/{ev_borrador.id}"),
+        client.patch(
+            f"/api/v1/eventos/{ev_borrador.id}",
+            json={"titulo": "Alterado"},
+            headers=origen,
+        ),
+        client.post(f"/api/v1/eventos/{ev_borrador.id}/publicar", headers=origen),
+        client.post(
+            f"/api/v1/eventos/{ev_publicado.id}/cancelar",
+            json={"motivo": "Motivo no autorizado"},
+            headers=origen,
+        ),
+    ):
+        assert resp.status_code == 403
+        assert resp.json()["error"]["codigo"] == CodigosError.SIN_PERMISO
+
+    db_session.refresh(ev_borrador)
+    db_session.refresh(ev_publicado)
+    assert ev_borrador.titulo == "Evento de propiedad exclusiva"
+    assert ev_borrador.estado == EstadoEvento.BORRADOR.value
+    assert ev_publicado.estado == EstadoEvento.PUBLICADO.value
