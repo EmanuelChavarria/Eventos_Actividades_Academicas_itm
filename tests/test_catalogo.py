@@ -340,3 +340,48 @@ def test_detalle_catalogo_retorna_404_si_inexistente_o_no_publicado(
     _autenticar(client, usuario_organizador)
     assert client.get(f"/api/v1/catalogo/eventos/{ev_borrador.id}").status_code == 404
     assert client.get(f"/api/v1/catalogo/eventos/{ev_cancelado.id}").status_code == 404
+
+
+def test_vistas_web_catalogo_detalle_y_404_amigable(
+    client: TestClient,
+    db_session: Session,
+    usuario_organizador: Usuario,
+    usuario_participante: Usuario,
+) -> None:
+    """HU-E4-01 / HU-E4-03 / RNF-12: vistas web de catálogo, detalle, 404 HTML y JS seguro."""
+    ev_publicado = _crear_evento(
+        db_session,
+        usuario_organizador,
+        titulo="Evento Visible Web",
+        estado=EstadoEvento.PUBLICADO.value,
+    )
+    ev_borrador = _crear_evento(
+        db_session,
+        usuario_organizador,
+        titulo="Borrador Web Oculto",
+        estado=EstadoEvento.BORRADOR.value,
+    )
+
+    portada = client.get("/")
+    assert portada.status_code == 200
+    assert "/static/js/catalogo.js" in portada.text
+    assert "form-filtros-catalogo" in portada.text
+
+    detalle = client.get(f"/eventos/{ev_publicado.id}")
+    assert detalle.status_code == 200
+    assert "/static/js/catalogo.js" in detalle.text
+    assert "zona-inscripcion" in detalle.text
+
+    _autenticar(client, usuario_participante)
+    detalle_part = client.get(f"/eventos/{ev_publicado.id}")
+    assert detalle_part.status_code == 200
+    assert "btn-inscribirse" in detalle_part.text
+
+    for ruta_404 in ("/eventos/999999", f"/eventos/{ev_borrador.id}"):
+        no_disp = client.get(ruta_404)
+        assert no_disp.status_code == 404
+        assert "Actividad no disponible" in no_disp.text
+
+    js_resp = client.get("/static/js/catalogo.js")
+    assert js_resp.status_code == 200
+    assert "innerHTML" not in js_resp.text

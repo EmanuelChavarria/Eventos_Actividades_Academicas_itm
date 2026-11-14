@@ -1,25 +1,84 @@
 {% extends "base.html" %}
 
-{% block titulo %}Inicio{% endblock %}
+{% block titulo %}Catálogo de eventos{% endblock %}
 
 {% block contenido %}
   <section class="tarjeta-hero">
     <h1>Eventos y Actividades Académicas</h1>
     <p>
-      Plataforma institucional para consultar el catálogo de eventos, gestionar inscripciones
-      con control de cupo y registrar asistencia académica.
+      Explora las actividades académicas publicadas, consulta su disponibilidad de cupos en
+      tiempo real e inscríbete en las sesiones abiertas.
     </p>
-    <div class="acciones-hero">
-      <a href="/docs" class="btn-primario">Documentación API (/docs)</a>
-      <a href="/health" class="btn-secundario">Estado del servicio (/health)</a>
-    </div>
   </section>
 
-  <section class="tarjeta" aria-labelledby="titulo-catalogo-estado">
-    <h2 id="titulo-catalogo-estado">Catálogo público</h2>
-    <p id="mensaje-catalogo-base">
-      El esqueleto web está activo y conectado con <code>/api/v1</code>. El catálogo interactivo
-      se habilitará en la épica E4.
-    </p>
+  <section class="tarjeta" aria-labelledby="titulo-catalogo">
+    <h2 id="titulo-catalogo">Catálogo público</h2>
+
+    <form id="form-filtros-catalogo" novalidate>
+      <div class="fila-campos">
+        <div class="campo-formulario">
+          <label for="filtro-texto">Buscar</label>
+          <input
+            id="filtro-texto"
+            name="texto"
+            type="search"
+            maxlength="120"
+            placeholder="Título, tema, lugar o ponente"
+          />
+        </div>
+
+        <div class="campo-formulario">
+          <label for="filtro-tipo">Tipo</label>
+          <select id="filtro-tipo" name="tipo">
+            <option value="">Todos</option>
+            <option value="conferencia">Conferencia</option>
+            <option value="taller">Taller</option>
+            <option value="seminario">Seminario</option>
+            <option value="capacitacion">Capacitación</option>
+          </select>
+        </div>
+
+        <div class="campo-formulario">
+          <label for="filtro-modalidad">Modalidad</label>
+          <select id="filtro-modalidad" name="modalidad">
+            <option value="">Todas</option>
+            <option value="presencial">Presencial</option>
+            <option value="virtual">Virtual</option>
+            <option value="hibrida">Híbrida</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="fila-campos">
+        <div class="campo-formulario">
+          <label for="filtro-fecha-desde">Desde</label>
+          <input id="filtro-fecha-desde" name="fecha_desde" type="date" />
+        </div>
+
+        <div class="campo-formulario">
+          <label for="filtro-fecha-hasta">Hasta</label>
+          <input id="filtro-fecha-hasta" name="fecha_hasta" type="date" />
+        </div>
+
+        <div class="campo-formulario fila-filtro-check">
+          <label for="filtro-finalizados">
+            <input id="filtro-finalizados" name="incluir_finalizados" type="checkbox" />
+            Incluir finalizados
+          </label>
+        </div>
+      </div>
+
+      <div class="acciones-hero">
+        <button id="btn-buscar-catalogo" type="submit" class="btn-primario">Filtrar</button>
+        <button id="btn-limpiar-catalogo" type="button" class="btn-secundario">Limpiar</button>
+      </div>
+    </form>
+
+    <div id="lista-catalogo" class="lista-eventos" aria-live="polite"></div>
+    <nav id="paginacion-catalogo" class="paginacion-catalogo" aria-label="Paginación"></nav>
   </section>
+{% endblock %}
+
+{% block scripts %}
+  <script type="module" src="/static/js/catalogo.js"></script>
 {% endblock %}

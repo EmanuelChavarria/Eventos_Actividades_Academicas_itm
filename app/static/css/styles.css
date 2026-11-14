@@ -239,3 +239,33 @@ body {
   color: #ffffff;
   cursor: pointer;
 }
+
+.fila-filtro-check {
+  display: flex;
+  align-items: flex-end;
+}
+
+.fila-filtro-check label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+}
+
+.fila-filtro-check input[type="checkbox"] {
+  width: auto;
+}
+
+.paginacion-catalogo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+}
+
+.insignia-finalizado {
+  color: var(--color-texto-suave);
+  background-color: #e2e8f0;
+}
