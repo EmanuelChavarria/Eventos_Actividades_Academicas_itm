@@ -18,7 +18,7 @@ description: "Tareas atómicas para implementar E2 — Autenticación, roles y a
 ## Fase 1: Pruebas primero para reglas críticas (Rojo)
 
 - [x] T-002-01 [US1] [US2] Crear pruebas iniciales rojo en `tests/test_auth.py` (registro válido + normalización de documento, 409 `DOCUMENTO_DUPLICADO`, mismo número con distinto tipo, correo repetido permitido, 422 sin `input` y rechazo de campos extra como `rol`, login con cookie `HttpOnly`/`SameSite=lax`/`Secure`/`Max-Age=3600`, 401 uniforme en documento inexistente/clave inválida/inactivo, bloqueo 429 tras 10 fallos y reinicio en login exitoso, `GET /api/v1/auth/yo`, `POST /api/v1/auth/logout` 204) · Commit: `test(auth): agrega pruebas rojo de registro, login, logout y rate limit` · Terminado cuando: las pruebas existen y fallan por falta de implementación en E2
-- [ ] T-002-02 [P] [US3] Crear pruebas iniciales rojo en `tests/test_permisos.py` (`get_current_user_optional`, `get_current_user` 401 sin cookie / cookie expirada / alterada / usuario inactivo, `require_roles` 403 con rol insuficiente y 200 con rol autorizado, defensa CSRF `Origin`/`Referer` 403 ante origen inválido o ausente con cookie y redirección `303` hacia `/login` en dependencias web protegidas) · Commit: `test(auth): agrega pruebas rojo de sesion, roles y proteccion csrf` · Terminado cuando: las pruebas existen y fallan por ausencia de implementación en `deps.py` y `security.py`
+- [x] T-002-02 [P] [US3] Crear pruebas iniciales rojo en `tests/test_permisos.py` (`get_current_user_optional`, `get_current_user` 401 sin cookie / cookie expirada / alterada / usuario inactivo, `require_roles` 403 con rol insuficiente y 200 con rol autorizado, defensa CSRF `Origin`/`Referer` 403 ante origen inválido o ausente con cookie y redirección `303` hacia `/login` en dependencias web protegidas) · Commit: `test(auth): agrega pruebas rojo de sesion, roles y proteccion csrf` · Terminado cuando: las pruebas existen y fallan por ausencia de implementación en `deps.py` y `security.py`
 
 ---
 
@@ -61,7 +61,7 @@ description: "Tareas atómicas para implementar E2 — Autenticación, roles y a
 | ID | Tarea | Depende de | Archivos clave | Commit sugerido | Terminado cuando | Estado |
 |---|---|---|---|---|---|:-:|
 | T-002-01 | Pruebas rojo auth (`registro`, `login`, `logout`, `yo`, `429`) | — | `tests/test_auth.py` | `test(auth): agrega pruebas rojo de registro, login, logout y rate limit` | Pruebas fallan antes del código | [x] |
-| T-002-02 | Pruebas rojo permisos (`401`, `403`, `activo`, CSRF, web) | — | `tests/test_permisos.py` | `test(auth): agrega pruebas rojo de sesion, roles y proteccion csrf` | Pruebas fallan antes del código | [ ] |
+| T-002-02 | Pruebas rojo permisos (`401`, `403`, `activo`, CSRF, web) | — | `tests/test_permisos.py` | `test(auth): agrega pruebas rojo de sesion, roles y proteccion csrf` | Pruebas fallan antes del código | [x] |
 | T-002-03 | `security.py` + reúso documento en `crear_usuario.py` | T-002-01, T-002-02 | `app/core/security.py`, `scripts/crear_usuario.py` | `feat(auth): agrega utilidades argon2id, jwt, rate limit y documento` | Hashing, JWT, rate limit y doc listos | [ ] |
 | T-002-04 | Schemas `RegistroEntrada`, `LoginEntrada`, `UsuarioSalida` | T-002-03 | `app/schemas/auth.py` | `feat(auth): agrega schemas de registro, login y usuario publico` | `extra="forbid"` y sin `hash_password` | [ ] |
 | T-002-05 | Repositorio `usuario_repo.py` | T-002-01 | `app/repositories/usuario_repo.py` | `feat(auth): implementa repositorio de usuarios` | Consultas SQLite encapsuladas | [ ] |
