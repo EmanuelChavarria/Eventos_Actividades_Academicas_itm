@@ -18,7 +18,7 @@ description: "Tareas atómicas para implementar E1 — Fundación y plataforma"
 ## Fase 1: Preparación (Setup)
 
 - [x] T-001-01 Crear estructura de carpetas en capas (`app/core`, `app/models`, `app/schemas`, `app/repositories`, `app/services`, `app/api/v1`, `app/web`, `app/templates`, `app/static`, `migrations`, `scripts`, `tests`) con `app = FastAPI(...)` mínimo en `app/main.py` y stubs por épica · Commit: `chore(repo): crea estructura de capas y archivos base por epica` · Terminado cuando: todos los paquetes y `app.main:app` existen e importan sin errores de sintaxis
-- [ ] T-001-02 [P] Verificar exclusiones de `.gitignore` (`.env`, `*.db`, `.venv/`, `certs/`, `*.pem`, `*.key`, `*.crt`) y crear `.gitattributes` con finales de línea LF/CRLF explícitos · Commit: `chore(repo): verifica .gitignore y agrega .gitattributes` · Terminado cuando: `git status --ignored` confirma secretos/certificados ignorados
+- [x] T-001-02 [P] Verificar exclusiones de `.gitignore` (`.env`, `*.db`, `.venv/`, `certs/`, `*.pem`, `*.key`, `*.crt`) y crear `.gitattributes` con finales de línea LF/CRLF explícitos · Commit: `chore(repo): verifica .gitignore y agrega .gitattributes` · Terminado cuando: `git status --ignored` confirma secretos/certificados ignorados
 - [ ] T-001-03 [P] Fijar dependencias de producción en `requirements.txt` (`fastapi`, `uvicorn[standard]`, `sqlalchemy`, `alembic`, `pydantic`, `pydantic-settings`, `email-validator`, `jinja2`, `python-multipart`, `argon2-cffi`, `PyJWT`, `tzdata`) · Commit: `chore(deps): fija dependencias base de FastAPI, SQLAlchemy y Jinja2` · Terminado cuando: `pip install -r requirements.txt` instala sin conflictos en entorno virtual limpio
 - [ ] T-001-04 [P] Fijar dependencias de desarrollo en `requirements-dev.txt` (`pytest`, `httpx`, `ruff`, `pre-commit`) · Commit: `chore(deps): agrega requirements-dev.txt con pytest, httpx y ruff` · Terminado cuando: `pip install -r requirements-dev.txt` instala todas las herramientas de prueba y lint
 - [ ] T-001-05 [P] Configurar `ruff.toml` (reglas `E, F, I, B, UP`, `target-version = "py311"`, longitud de línea consistente) · Commit: `chore(lint): configura ruff para lint y formato` · Terminado cuando: `ruff check .` se ejecuta sin errores de configuración
@@ -78,7 +78,7 @@ description: "Tareas atómicas para implementar E1 — Fundación y plataforma"
 | ID | Tarea | Depende de | Archivos clave | Commit sugerido | Terminado cuando | Estado |
 |---|---|---|---|---|---|:-:|
 | T-001-01 | Estructura y stubs por épica | — | `app/**`, `migrations/`, `scripts/`, `tests/` | `chore(repo): crea estructura de capas y archivos base por epica` | Paquetes y stubs importables | [x] |
-| T-001-02 | Verificar `.gitignore` y `.gitattributes` | — | `.gitignore`, `.gitattributes` | `chore(repo): verifica .gitignore y agrega .gitattributes` | Secretos/certs ignorados | [ ] |
+| T-001-02 | Verificar `.gitignore` y `.gitattributes` | — | `.gitignore`, `.gitattributes` | `chore(repo): verifica .gitignore y agrega .gitattributes` | Secretos/certs ignorados | [x] |
 | T-001-03 | Fijar `requirements.txt` | — | `requirements.txt` | `chore(deps): fija dependencias base de FastAPI, SQLAlchemy y Jinja2` | Instalación limpia OK | [ ] |
 | T-001-04 | Crear `requirements-dev.txt` | T-001-03 | `requirements-dev.txt` | `chore(deps): agrega requirements-dev.txt con pytest, httpx y ruff` | Herramientas dev OK | [ ] |
 | T-001-05 | Configurar `ruff.toml` | — | `ruff.toml` | `chore(lint): configura ruff para lint y formato` | `ruff check .` operativo | [ ] |
