@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block titulo %}Detalle de evento{% endblock %}
+
+{% block contenido %}
+  <section
+    id="panel-detalle-evento"
+    class="tarjeta"
+    data-evento-id="{{ evento_id }}"
+    aria-live="polite"
+  >
+    <div id="contenido-detalle-evento">
+      <p>Cargando detalle de la actividad...</p>
+    </div>
+
+    <div
+      id="zona-inscripcion"
+      class="acciones-hero"
+      data-evento-id="{{ evento_id }}"
+      data-usuario-rol="{{ usuario.rol if usuario else '' }}"
+    >
+      {% if not usuario %}
+        <a href="/login" class="btn-primario">Inicia sesión para inscribirte</a>
+      {% elif usuario.rol == "participante" %}
+        <button
+          id="btn-inscribirse"
+          type="button"
+          class="btn-primario"
+          data-evento-id="{{ evento_id }}"
+          disabled
+        >
+          Inscribirse (disponible al activar E5)
+        </button>
+      {% endif %}
+      <a href="/" class="btn-secundario">Volver al catálogo</a>
+    </div>
+  </section>
+{% endblock %}
+
+{% block scripts %}
+  <script type="module" src="/static/js/catalogo.js"></script>
+{% endblock %}

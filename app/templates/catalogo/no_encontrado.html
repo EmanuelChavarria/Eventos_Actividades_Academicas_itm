@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block titulo %}Evento no encontrado{% endblock %}
+
+{% block contenido %}
+  <section class="tarjeta" aria-labelledby="titulo-evento-404">
+    <h1 id="titulo-evento-404">Actividad no disponible</h1>
+    <p>
+      El evento solicitado (#{{ evento_id }}) no existe o no se encuentra publicado en el catálogo
+      público.
+    </p>
+    <div class="acciones-hero">
+      <a href="/" class="btn-primario">Volver al catálogo</a>
+    </div>
+  </section>
+{% endblock %}
