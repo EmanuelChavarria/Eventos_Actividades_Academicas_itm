@@ -28,7 +28,7 @@ description: "Tareas atómicas para implementar E1 — Fundación y plataforma"
 
 ## Fase 2: Pruebas primero para reglas críticas de fundación
 
-- [ ] T-001-07 [US1] [US2] Crear `tests/conftest.py` (BD temporal en archivo por prueba, `TestClient(base_url="https://testserver")`, fábricas por rol) y pruebas iniciales rojo en `tests/test_seguridad_fechas_bd.py` para configuración fail-fast (`SECRET_KEY`, `COOKIE_SECURE`), fechas UTC/422/48 h, errores sin `input` y restricciones SQLite · Commit: `test(core): agrega conftest HTTPS y pruebas rojo de reglas base` · Terminado cuando: `pytest` falla por ausencia/incompleto de la implementación esperada (rojo verificado)
+- [x] T-001-07 [US1] [US2] Crear `tests/conftest.py` (BD temporal en archivo por prueba, `TestClient(base_url="https://testserver")`, fábricas por rol) y pruebas iniciales rojo en `tests/test_seguridad_fechas_bd.py` para configuración fail-fast (`SECRET_KEY`, `COOKIE_SECURE`), fechas UTC/422/48 h, errores sin `input` y restricciones SQLite · Commit: `test(core): agrega conftest HTTPS y pruebas rojo de reglas base` · Terminado cuando: `pytest` falla por ausencia/incompleto de la implementación esperada (rojo verificado)
 
 ---
 
@@ -83,7 +83,7 @@ description: "Tareas atómicas para implementar E1 — Fundación y plataforma"
 | T-001-04 | Crear `requirements-dev.txt` | T-001-03 | `requirements-dev.txt` | `chore(deps): agrega requirements-dev.txt con pytest, httpx y ruff` | Herramientas dev OK | [x] |
 | T-001-05 | Configurar `ruff.toml` | — | `ruff.toml` | `chore(lint): configura ruff para lint y formato` | `ruff check .` operativo | [x] |
 | T-001-06 | Scripts certificados TLS locales | T-001-02 | `scripts/generar_certificados.ps1`, `.sh` | `chore(repo): agrega scripts de certificados locales HTTPS con mkcert` | Genera `certs/` ignorado | [x] |
-| T-001-07 | `conftest.py` y pruebas rojo base | T-001-01, T-001-04 | `tests/conftest.py`, `tests/test_seguridad_fechas_bd.py` | `test(core): agrega conftest HTTPS y pruebas rojo de reglas base` | Pruebas fallan antes de código | [ ] |
+| T-001-07 | `conftest.py` y pruebas rojo base | T-001-01, T-001-04 | `tests/conftest.py`, `tests/test_seguridad_fechas_bd.py` | `test(core): agrega conftest HTTPS y pruebas rojo de reglas base` | Pruebas fallan antes de código | [x] |
 | T-001-08 | `config.py` y `.env.example` | T-001-07 | `app/core/config.py`, `.env.example` | `feat(core): agrega configuracion segura por entorno y .env.example` | Validación arranque en verde | [ ] |
 | T-001-09 | `fechas.py` UTC y ventana 48 h | T-001-07 | `app/core/fechas.py` | `feat(core): agrega utilidades de fechas UTC y ventana de asistencia` | Pruebas fechas en verde | [ ] |
 | T-001-10 | `database.py` SQLite + PRAGMAs | T-001-08 | `app/core/database.py` | `feat(bd): configura SQLite con claves foraneas y sesion por solicitud` | `foreign_keys=1` y `busy_timeout=5000` | [ ] |
