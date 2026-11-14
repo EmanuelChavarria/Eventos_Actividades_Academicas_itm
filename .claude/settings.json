@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "permissions": {
+    "deny": [
+      "Bash(git push --force:*)",
+      "Bash(git push --force-with-lease origin main:*)",
+      "Bash(git push -f:*)",
+      "Bash(git push origin main:*)",
+      "Bash(git push origin master:*)",
+      "Bash(git push origin HEAD:main:*)",
+      "Bash(git push origin +main:*)",
+      "Bash(git push origin * main:*)",
+      "Bash(git push origin *:main*)",
+      "Bash(git push)",
+      "Bash(git commit --no-verify:*)",
+      "Bash(git commit -n:*)",
+      "Bash(git add .)",
+      "Bash(git add -A:*)",
+      "Read(.env)",
+      "Read(.env.*)",
+      "Read(**/.env)",
+      "Read(**/.env.*)",
+      "Edit(.env)",
+      "Edit(.env.*)",
+      "Edit(**/.env)",
+      "Edit(**/.env.*)",
+      "Write(.env)",
+      "Write(.env.*)",
+      "Write(**/.env)",
+      "Write(**/.env.*)",
+      "Read(*.db)",
+      "Read(**/*.db)",
+      "Read(*.sqlite3)",
+      "Read(**/*.sqlite3)",
+      "Bash(cat *.env*)",
+      "Bash(type *.env*)",
+      "Bash(more *.env*)",
+      "Bash(head *.env*)",
+      "Bash(tail *.env*)",
+      "Bash(sed *.env*)",
+      "Bash(awk *.env*)",
+      "Bash(Get-Content *.env*)",
+      "Bash(gc *.env*)",
+      "Bash(python * .env*)",
+      "Bash(python -c *)"
+    ],
+    "allow": [
+      "Read(.env.example)",
+      "Edit(.env.example)",
+      "Write(.env.example)"
+    ]
+  }
+}

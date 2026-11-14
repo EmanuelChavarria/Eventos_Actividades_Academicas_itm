@@ -1,0 +1,219 @@
+ya tengo las aclaraciones del cliente. "Pueden inscribirse estudiantes y docentes. Inicialmente, nombre y correo son suficientes. Ustedes deben definir cómo identificar a cada participante y evitar registros duplicados.
+Cada evento debe tener nombre, descripción, tipo de actividad, fecha y hora de inicio y finalización, lugar o modalidad, organizador, responsable, cupo máximo, fecha límite de inscripción y estado. Pueden incluir información del ponente y requisitos de participación.
+La organización necesita crear, publicar, modificar y cancelar eventos. Ustedes deben proponer los estados, permisos, condiciones de aprobación y restricciones, justificándolos como reglas de negocio.
+Se debe controlar la disponibilidad y evitar que las inscripciones superen la capacidad del evento. Ustedes definen si habrá lista de espera y bajo qué condiciones podrán modificarse los cupos.
+Una persona no debe ocupar dos cupos del mismo evento. Ustedes deben definir cómo identificar inscripciones duplicadas y qué sucede cuando alguien desea inscribirse nuevamente después de cancelar.
+Deben establecer las condiciones para aceptar una inscripción, considerando fechas, disponibilidad, estado del evento y requisitos de participación.
+Sí, los participantes deben poder cancelar sus inscripciones. Ustedes definen hasta qué momento pueden hacerlo y cómo se actualizan los cupos, conservando el historial.
+Se necesita registrar la asistencia a los eventos. Ustedes deben definir quién realiza el registro, cuándo se hace, qué estados se manejan y cómo se permiten las correcciones.
+Los organizadores y coordinación deben contar con acceso al sistema. Ustedes definen cómo se crean las cuentas, el método de autenticación y los permisos de cada usuario.
+Coordinación necesita consultar eventos, participantes inscritos, cupos disponibles y asistencia. Ustedes deben proponer los indicadores y filtros necesarios. La exportación de información es opcional.
+La aplicación estará orientada a usuarios en Colombia, con interfaz en español y zona horaria de Colombia (UTC-5). Ustedes deciden cómo almacenar y presentar las fechas de manera consistente.
+Es una aplicación académica de escala pequeña. Pueden utilizar SQLite siempre que cumpla con los requisitos del proyecto y permita mantener la integridad de los datos.
+Sí, los visitantes podrán consultar los eventos publicados sin iniciar sesión. Ustedes deben definir las condiciones para realizar una inscripción.
+Pueden utilizar Jinja2 para generar las vistas, pero recuerden que es un motor de plantillas y no un framework frontend. Si eligen esta alternativa, deben justificarla y demostrar el consumo de la API REST desde la interfaz mediante JavaScript.
+Recuerden que parte del trabajo consiste en analizar las necesidades, definir las reglas de negocio y justificar las decisiones de diseño. No se espera que el cliente les entregue todas las funcionalidades definidas." las partes que se dejaron a criterio propio decide tu cual es la mejor. antes de efectuar todo necesito que me digas como configurar correctamente el sdd para que funcion con todo lo necesario de las reglas y skills necesarias y obligatorias
+
+Voy a consultar la documentación vigente de Spec Kit y de Claude y Gemini, porque la configuración exacta cambia entre versiones.
+
+Con Spec Kit ya instalado, el SDD ya lo implementa esa herramienta, así que lo correcto es que mis archivos se adapten a ella en vez de duplicarla. Eso cambia la configuración que te recomendé antes.
+
+La configuración se arma en capas. Para que ambos agentes sigan las mismas reglas, la fuente de verdad es una sola y cada agente la lee desde su archivo.
+
+Capa	Qué contiene	Dónde	Obligatoria
+1. Spec Kit	Constitución, plantillas, scripts y comandos /speckit.*	.specify/ y los comandos de cada agente	Sí
+2. Reglas comunes	SDD, Git, arquitectura, CI y reglas de conducta	AGENTS.md	Sí
+3. Entrada por agente	Importa AGENTS.md	CLAUDE.md y GEMINI.md	Sí
+4. Reglas por ruta	Convenciones que cargan solo al editar ciertos archivos	.claude/rules/*.md	Sí (mínimas)
+5. Skills	Flujos repetibles que Claude invoca solo	.claude/skills/<nombre>/SKILL.md	Sí (las marcadas)
+6. Barandas automáticas	Permisos denegados, pre-commit, protección de main	.claude/settings.json, .pre-commit-config.yaml, GitHub	Sí
+7. Personal	Quién eres (A o B), sin subir a Git	CLAUDE.local.md	Sí
+
+Pasos en tu entorno (Windows, VS Code)
+
+Herramientas. Necesitas Git, Python 3.11+, uv, Claude Code y Gemini CLI. Instala Spec Kit con uv tool install specify-cli --from git+https://github.com/github/spec-kit.git, preferiblemente fijando una versión. Después puedes verificar lo instalado con specify check. 
+github
+Inicializar una sola vez. Lo hace una sola persona y sube el resultado al repo. En Windows usa scripts de PowerShell. La opción --script acepta sh o ps. Con --integration claude se generan .claude/commands/, y con --integration gemini se genera .gemini/commands/. Las versiones viejas usan --ai en vez de --integration, así que revisa specify init --help. Haz commit antes de la segunda inicialización y revisa git diff, porque --force mezcla archivos en una carpeta no vacía. 
+github
+readthedocs
+Compañero. Solo clona el repo. Los comandos viajan en los archivos subidos; el CLI solo lo necesita para actualizar.
+Constitución. Ejecuta /speckit.constitution pasándole los 12 principios que ya definí. Esto crea .specify/memory/constitution.md, el documento que gobierna todas las acciones posteriores. 
+beehiiv
+Reglas, skills y permisos. Se crean los archivos de las capas 2 a 7, que genero yo.
+.gitignore. Se versionan .claude/settings.json, rules/, commands/, skills/ y agents/, y se ignoran CLAUDE.local.md y .claude/settings.local.json. 
+computingforgeeks
+Prueba de humo. Corre /speckit.specify con una épica pequeña antes de generar el resto.
+
+Comandos SDD obligatorios
+
+El ciclo completo es /speckit.constitution → specify → clarify → plan → tasks → analyze → implement. Los seis primeros comandos cubren principios, requisitos, preguntas, plan, tareas y ejecución. analyze valida la consistencia entre spec, plan y tareas, y checklist es opcional. Nuestras puertas G1 a G5 se apoyan en ese ciclo: no se ejecuta implement sin spec aprobada, clarify es obligatorio antes de plan y analyze va antes de implement. 
+dev
+
+Reglas obligatorias para AGENTS.md
+
+Sin spec aprobada no hay código, y la spec se cambia antes que el código.
+Una tarea de tasks.md equivale a un commit en Conventional Commits en español.
+Nunca se trabaja en main: una rama por épica y PR revisado por el compañero.
+Las reglas de negocio van solo en services/, con cupo atómico y mínimo privilegio.
+Ante cualquier duda se pregunta al humano.
+Se ejecutan ruff, pytest y el chequeo del contrato OpenAPI antes de cada PR, y el CI debe estar verde.
+No se suben .env ni *.db, y se usan solo datos ficticios.
+
+Reglas por ruta. Cada archivo en .claude/rules/ se carga junto con CLAUDE.md. Propongo cuatro: python-fastapi.md para el código de app/, tests.md, migraciones.md y specs.md con el formato de las specs. 
+Substack
+
+Skills de Claude
+
+Skill	Para qué	Obligatoria
+spec-gate	Verifica que exista spec aprobada y sin [PENDIENTE] antes de programar	Sí
+commits-convencionales	Formato, alcances, commit atómico y pie Refs/Spec	Sí
+pr-workflow	PR en borrador, plantilla, checks y revisión	Sí
+capas-fastapi	Dónde va cada cosa (routers, services, repositories)	Sí
+reglas-negocio-eventos	Estados, RN, códigos de error y cupo atómico	Sí
+pytest-reglas-criticas	Cómo escribir las pruebas de cupo, duplicados y permisos	Sí
+pf-evidencias	Documentar PF-01 a PF-12 con evidencia	Recomendada
+openapi-contrato	Regenerar y verificar el contrato	Recomendada
+
+Gemini no usa SKILL.md de la misma forma, y no pude confirmar si tu versión de Gemini CLI soporta skills. Para él pondría las mismas reglas en GEMINI.md, que importa AGENTS.md, y revisaríamos qué más admite.
+
+Barandas que no dependen del agente
+
+Los agentes pueden olvidar una regla, así que lo crítico se bloquea con cosas automáticas. Los hooks se configuran en settings.json y se ejecutan siempre. Propongo denegar git push --force y los push a main, y bloquear la lectura de .env. El hook de pre-commit valida el mensaje de commit con cualquier agente, y GitHub protege main con el CI obligatorio. Los hooks de formateo automático son opcionales. 
+Substack
+
+Qué cambiaría en los archivos que ya te entregué
+
+E0: deja de crear plantillas propias. Pasa a ser configurar Spec Kit, la constitución y las capas de agentes.
+Plantillas: se personalizan las de .specify/templates/ para exigir RF/RN/CA trazables, errores esperados y verificación PF/pytest.
+Estructura: la carpeta specs/EXX-slug/ se reemplaza por el formato de Spec Kit, con la tabla épica ↔ número de feature en el README de specs.
+Archivos del agente: pasan a ser AGENTS.md común más una ficha corta por persona, A y B. Eso evita mantener dos copias de todo.
+
+Ten en cuenta que el script de Spec Kit crea una rama por feature con nombre numerado, por ejemplo 001-feature-name. Eso choca con nuestro esquema feat/E3-..., y la decisión está en la primera pregunta de abajo. 
+skillsmp
+
+Cuando respondas, aplico esto y las decisiones del cliente que dejaron a nuestro criterio, y regenero los archivos.
+
+P: Spec Kit crea ramas numeradas por feature. ¿Cómo manejamos los nombres de rama?
+R: Adoptar el esquema de Spec Kit (NNN-slug, por ejemplo 003-gestion-eventos) y mantener los commits convencionales
+
+P: ¿Procedo a aplicar todo ahora?
+R: Sí, pero primero muéstrame solo las decisiones que tomaste por el cliente
+
+Estas son las decisiones que tomé donde el cliente dijo “ustedes definen”. En cada una está la regla y por qué la elegí, para que puedas justificarla en la entrega.
+
+Participantes y cuentas
+
+Tema	Decisión	Justificación
+Identificación	El participante se identifica con correo único, normalizado en minúsculas y sin espacios. Se registra con nombre, correo, tipo (estudiante o docente) y contraseña	El cliente pidió nombre y correo. La contraseña hace falta para que solo el titular pueda cancelar su inscripción
+Duplicados de personas	UNIQUE(correo) en la BD	La unicidad no depende solo de la validación de la aplicación
+Cuentas del personal	El registro público solo crea participantes. Organizadores y coordinación se crean con un script de administración (crear_usuario.py) y el seed	Evita que cualquiera se auto-asigne un rol con privilegios
+Autenticación	Correo y contraseña (mínimo 8 caracteres, hash con argon2), JWT en cookie HttpOnly de 60 minutos. Sin recuperación de contraseña	Es suficiente para el alcance académico y es seguro
+Permisos	Organizador: solo sus eventos. Coordinación: solo lectura global. Participante: solo lo propio	Mínimo privilegio
+
+Eventos
+
+Tema	Decisión	Justificación
+Campos	Los que pidió el cliente, más ponente y requisitos opcionales, publico_objetivo (todos, estudiantes o docentes) y responsable_nombre y responsable_correo. El organizador es el usuario creador	El responsable puede ser una persona distinta del organizador. publico_objetivo hace los requisitos verificables
+Estados guardados	borrador, publicado, cancelado	Mínimos y suficientes
+Estado finalizado	Se calcula cuando pasa fecha_fin, no se guarda. Lo mismo con “inscripciones cerradas”	No exige un proceso programado y no se desincroniza
+Aprobación	Sin flujo de aprobación. El organizador publica directo si cumple las condiciones de publicación	La guía dice que el personal autorizado crea y publica. Un flujo de aprobación aumenta el alcance sin sumar a los criterios
+Condiciones de publicación	Datos completos, fecha_fin > fecha_inicio, fecha_limite_inscripcion ≤ fecha_inicio, inicio futuro y cupo ≥ 1	Interpreto las “condiciones de aprobación” del cliente como estas validaciones
+Cupo	Se puede subir siempre. Se puede bajar solo hasta el número de inscritos activos. No se edita en eventos cancelados ni finalizados	Evita dejar inscritos sin cupo
+Lista de espera	No habrá	Agrega estados, reglas de promoción y concurrencia. No es obligatoria y el alcance es pequeño
+Cancelar evento	Pasa a cancelado, conserva sus inscripciones y bloquea inscripciones y asistencia nuevas	Conserva el historial
+
+Inscripciones
+
+Tema	Decisión	Justificación
+Condiciones para aceptar	Participante autenticado, evento publicado, antes de la fecha límite, cupo disponible, sin inscripción activa y cumple el público objetivo	Cubre fechas, disponibilidad, estado y requisitos, como pidió el cliente
+Duplicados	Misma pareja evento y participante con inscripción activa se rechaza con 409	Un participante no puede ocupar dos cupos
+Cancelación	El participante puede cancelar hasta el inicio del evento. El cupo se libera y solo se puede reutilizar si las inscripciones siguen abiertas	Después del inicio alteraría la lista de asistencia
+Reinscripción	Permitida si cumple todas las condiciones. Crea un registro nuevo y el anterior queda como cancelada	Conserva el historial completo (pedido del cliente). El índice único parcial solo bloquea dos inscripciones activas
+
+Asistencia
+
+Tema	Decisión	Justificación
+Quién	El organizador del evento. Coordinación solo consulta	Es quien está presente
+Cuándo	Desde fecha_inicio hasta 48 horas después de fecha_fin	Permite corregir sin dejarlo abierto para siempre
+Estados	presente y ausente. Sin registro significa pendiente	Simple y suficiente para el % de asistencia
+Correcciones	El organizador puede cambiar el estado dentro de la ventana. Se guarda quién y cuándo	Auditoría mínima
+Alcance	Solo inscripciones activas, sin asistentes sin inscripción	La guía exige la relación actividad–participante–asistencia
+
+Consolidado de coordinación
+
+Indicadores por evento: cupo, inscritos activos, disponibles, ocupación %, cancelaciones, presentes, ausentes, sin registrar y % de asistencia (presentes ÷ inscritos activos).
+Totales globales: suman exactamente el detalle mostrado.
+Filtros: rango de fechas, tipo, estado, organizador, modalidad y texto.
+Vistas: consolidado por evento y detalle de participantes con su asistencia.
+Exportación: CSV como extra al final, porque el cliente la marcó opcional.
+
+Fechas y zona horaria
+
+Almacenamiento: en UTC.
+API: recibe y devuelve ISO-8601 con zona (-05:00).
+Presentación: en America/Bogota. Colombia no usa horario de verano, así que la conversión es estable.
+Comparaciones: las reglas de fechas (límite, inicio, ventana) se comparan siempre en UTC.
+
+Frontend con Jinja2
+
+Rol de Jinja2: solo arma el esqueleto (layout y navegación).
+Datos: todos llegan con fetch a /api/v1 desde módulos JS (un api.js común y un módulo por página). Así se demuestra el consumo de la API, que el cliente exige.
+Justificación: un solo proyecto desplegable, sin bundler, menos piezas para dos personas en paralelo y sin necesidad de SEO.
+Evidencia: en PF-12, capturas de la pestaña Red del navegador con las llamadas.
+Alpine.js o HTMX: ya no hacen falta salvo que el docente lo pida.
+
+Lo que cambia respecto a mis supuestos anteriores
+
+Confirmados por el cliente: visitantes sin sesión (S-02), zona UTC-5 (S-11) y español (S-14).
+Cambia la fecha de cierre de inscripciones (S-07): ahora es fecha_limite_inscripcion, no el inicio del evento.
+Modelo de datos: eventos suma responsable_*, ponente, requisitos, publico_objetivo y fecha_limite_inscripcion. usuarios suma tipo_participante. asistencias guarda presente o ausente.
+
+Las cuatro decisiones con más impacto
+
+Si quieres cambiar alguna, es el momento:
+
+Sin flujo de aprobación de eventos.
+Sin lista de espera.
+Cancelación de inscripción hasta el inicio del evento.
+Ventana de corrección de asistencia de 48 horas.
+
+Con tu confirmación regenero los tres archivos en formato Spec Kit y creo AGENTS.md, CLAUDE.md, GEMINI.md, las reglas y las skills.
+
+P: ¿Apruebas estas decisiones para aplicarlas?
+R: Quiero cambiar alguna decisión (te digo cuál en el chat)
+
+Dime cuáles quieres cambiar y cómo prefieres que queden. Puedes referirte a ellas por el nombre del tema, por ejemplo “cancelación de inscripción”, “ventana de asistencia”, “aprobación de eventos”, “lista de espera” o “cuentas del personal”.
+
+Si cambias alguna, te aviso qué otras reglas se ven afectadas antes de regenerar los archivos. Por ejemplo, cambiar el momento límite de cancelación toca la regla de reutilización del cupo y la lista de asistencia.
+
+todo lo que es identificación no quiero que lo tomes con el correo único ya que me parece mas difícil de rastrear en nuestro entorno de desarrollo usa la identificación convencional
+
+Entendido: la identidad de cada persona pasa a ser su documento de identidad (la cédula en el caso típico) y el correo queda solo como dato de contacto. Así queda en las reglas.
+
+Tema	Decisión nueva	Justificación
+Identificador	tipo_documento (CC, CE, TI o PAS) más numero_documento, con UNIQUE(tipo_documento, numero_documento)	Una persona tiene una sola cuenta. Es fácil de rastrear en desarrollo y en el seed
+Formato	El número se guarda como texto, sin espacios ni puntos. CC, CE y TI llevan solo dígitos (5 a 12). El pasaporte es alfanumérico en mayúsculas (5 a 15)	Evita duplicados disfrazados como 1.000.001 y 1000001
+Correo	Obligatorio y con formato válido, pero no único y no sirve para identificar ni para iniciar sesión	Es solo dato de contacto, como pidió el cliente
+Inicio de sesión	Documento + contraseña	Es coherente con que el documento sea la identidad
+Cuentas del personal	Organizadores y coordinación también tienen documento, y el script crear_usuario.py lo pide	Todos los usuarios se identifican igual
+Duplicados	La unicidad de personas queda en la BD. La inscripción activa única sigue siendo por evento y usuario	Con una cuenta por persona, un participante no ocupa dos cupos
+Privacidad	El organizador ve el documento completo de los inscritos de su evento, porque lo necesita para verificar asistencia. Coordinación lo ve enmascarado (••••1234). El documento no se escribe en logs ni en errores	Mínimo privilegio. El seed usa solo números ficticios obviamente falsos
+
+Reglas que se ven afectadas
+
+Registro e inicio de sesión: el cuerpo cambia a tipo_documento, numero_documento, nombre, correo, tipo de participante y contraseña.
+Error de dominio: DOCUMENTO_DUPLICADO (409) reemplaza a CORREO_DUPLICADO.
+Modelo usuarios: suma las dos columnas nuevas y el índice único. El correo deja de ser único.
+Pruebas: las pruebas de registro, login y duplicados usan documento.
+Listados: los listados de inscritos y asistencia muestran el documento según el rol.
+Supuestos: S-03, S-13 y la pregunta P1 quedan resueltas con este criterio.
+
+Necesito dos confirmaciones antes de regenerar los archivos.
+
+P: ¿Por "identificación convencional" te refieres al documento de identidad?
+R: Sí, documento de identidad (CC, CE, TI o pasaporte)
+
+P: ¿Quieres cambiar alguna otra decisión antes de regenerar?
+R: No, aprueba todo lo demás y regenera los archivos ya
+
+Voy a regenerar todo: las reglas de negocio con tus decisiones, el formato Spec Kit, los agentes y la configuración de Claude y Gemini.
