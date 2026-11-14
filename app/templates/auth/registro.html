@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block titulo %}Registro de participante{% endblock %}
+
+{% block contenido %}
+  <section class="tarjeta" aria-labelledby="titulo-registro">
+    <h1 id="titulo-registro">Registro de participante</h1>
+    <p>Crea una cuenta como estudiante o docente para inscribirte en actividades académicas.</p>
+
+    <form id="form-registro" novalidate>
+      <div class="campo-formulario">
+        <label for="reg-tipo-doc">Tipo de documento</label>
+        <select id="reg-tipo-doc" name="tipo_documento" required>
+          <option value="CC">Cédula de ciudadanía (CC)</option>
+          <option value="TI">Tarjeta de identidad (TI)</option>
+          <option value="CE">Cédula de extranjería (CE)</option>
+          <option value="PAS">Pasaporte (PAS)</option>
+        </select>
+      </div>
+
+      <div class="campo-formulario">
+        <label for="reg-numero-doc">Número de documento</label>
+        <input
+          id="reg-numero-doc"
+          name="numero_documento"
+          type="text"
+          minlength="5"
+          maxlength="30"
+          placeholder="CC/CE/TI: 5–12 dígitos · PAS: 5–15 alfanuméricos"
+          required
+        />
+      </div>
+
+      <div class="campo-formulario">
+        <label for="reg-nombre">Nombre completo</label>
+        <input
+          id="reg-nombre"
+          name="nombre"
+          type="text"
+          autocomplete="name"
+          minlength="2"
+          maxlength="120"
+          required
+        />
+      </div>
+
+      <div class="campo-formulario">
+        <label for="reg-correo">Correo de contacto</label>
+        <input
+          id="reg-correo"
+          name="correo"
+          type="email"
+          autocomplete="email"
+          maxlength="150"
+          required
+        />
+      </div>
+
+      <div class="campo-formulario">
+        <label for="reg-tipo-participante">Tipo de participante</label>
+        <select id="reg-tipo-participante" name="tipo_participante" required>
+          <option value="estudiante">Estudiante</option>
+          <option value="docente">Docente</option>
+        </select>
+      </div>
+
+      <div class="campo-formulario">
+        <label for="reg-password">Contraseña (mínimo 8 caracteres)</label>
+        <input
+          id="reg-password"
+          name="password"
+          type="password"
+          autocomplete="new-password"
+          minlength="8"
+          maxlength="128"
+          required
+        />
+      </div>
+
+      <div class="acciones-hero">
+        <button id="btn-registro-enviar" type="submit" class="btn-primario">Registrarme</button>
+        <a href="/login" class="btn-secundario">Ya tengo cuenta</a>
+      </div>
+    </form>
+  </section>
+{% endblock %}
+
+{% block scripts %}
+  <script type="module" src="/static/js/auth.js"></script>
+{% endblock %}

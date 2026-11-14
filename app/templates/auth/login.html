@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block titulo %}Iniciar sesión{% endblock %}
+
+{% block contenido %}
+  <section class="tarjeta" aria-labelledby="titulo-login">
+    <h1 id="titulo-login">Iniciar sesión</h1>
+    <p>Ingresa con tu tipo y número de documento institucional o personal.</p>
+
+    <form id="form-login" novalidate>
+      <div class="campo-formulario">
+        <label for="login-tipo-doc">Tipo de documento</label>
+        <select id="login-tipo-doc" name="tipo_documento" required>
+          <option value="CC">Cédula de ciudadanía (CC)</option>
+          <option value="TI">Tarjeta de identidad (TI)</option>
+          <option value="CE">Cédula de extranjería (CE)</option>
+          <option value="PAS">Pasaporte (PAS)</option>
+        </select>
+      </div>
+
+      <div class="campo-formulario">
+        <label for="login-numero-doc">Número de documento</label>
+        <input
+          id="login-numero-doc"
+          name="numero_documento"
+          type="text"
+          autocomplete="username"
+          minlength="5"
+          maxlength="30"
+          placeholder="Sin puntos ni espacios"
+          required
+        />
+      </div>
+
+      <div class="campo-formulario">
+        <label for="login-password">Contraseña</label>
+        <input
+          id="login-password"
+          name="password"
+          type="password"
+          autocomplete="current-password"
+          required
+        />
+      </div>
+
+      <div class="acciones-hero">
+        <button id="btn-login-enviar" type="submit" class="btn-primario">Ingresar</button>
+        <a href="/registro" class="btn-secundario">Crear cuenta de participante</a>
+      </div>
+    </form>
+  </section>
+{% endblock %}
+
+{% block scripts %}
+  <script type="module" src="/static/js/auth.js"></script>
+{% endblock %}
