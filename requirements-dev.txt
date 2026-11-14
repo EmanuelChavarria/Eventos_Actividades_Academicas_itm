@@ -1,0 +1,7 @@
+# Dependencias de desarrollo y verificación fijadas (PF-04)
+-r requirements.txt
+
+httpx==0.28.1
+pre-commit==4.7.0
+pytest==9.2.0
+ruff==0.17.5
