@@ -496,3 +496,39 @@ def test_listar_eventos_organizador_y_obtener_detalle_propio(
     inexistente = client.get("/api/v1/eventos/999999")
     assert inexistente.status_code == 404
     assert inexistente.json()["error"]["codigo"] == CodigosError.EVENTO_NO_ENCONTRADO
+
+
+def test_vistas_web_organizador_autorizacion_y_modulo_seguro(
+    client: TestClient,
+    db_session: Session,
+    usuario_organizador: Usuario,
+    usuario_participante: Usuario,
+    usuario_coordinacion: Usuario,
+) -> None:
+    """HU-E3-05 / RNF-06 / RNF-12: rutas web organizador (303/403/200) y JS sin innerHTML."""
+    evento = _crear_evento_bd(db_session, usuario_organizador)
+    rutas = [
+        "/organizador/eventos",
+        "/organizador/eventos/nuevo",
+        f"/organizador/eventos/{evento.id}/editar",
+    ]
+
+    for ruta in rutas:
+        anonimo = client.get(ruta, follow_redirects=False)
+        assert anonimo.status_code == 303
+        assert anonimo.headers["location"] == "/login"
+
+    for sin_permiso in (usuario_participante, usuario_coordinacion):
+        _autenticar_usuario(client, sin_permiso)
+        for ruta in rutas:
+            assert client.get(ruta, follow_redirects=False).status_code == 403
+
+    _autenticar_usuario(client, usuario_organizador)
+    for ruta in rutas:
+        ok = client.get(ruta, follow_redirects=False)
+        assert ok.status_code == 200
+        assert "/static/js/eventos.js" in ok.text
+
+    js_resp = client.get("/static/js/eventos.js")
+    assert js_resp.status_code == 200
+    assert "innerHTML" not in js_resp.text
