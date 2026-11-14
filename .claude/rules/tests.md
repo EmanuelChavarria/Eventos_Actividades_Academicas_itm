@@ -6,7 +6,7 @@ paths:
 # Reglas para `tests/` (pytest)
 
 - **Primero la prueba:** para cupo, duplicados, permisos y seguridad escribe la prueba que falla y luego la implementación (rojo → verde).
-- **Aislamiento:** BD SQLite en **archivo temporal** (`tmp_path`, no `:memory:` para soportar hilos reales), creada desde los modelos con `PRAGMA foreign_keys=ON`, `get_db` sobrescrito y `TestClient`; nunca la BD de desarrollo ni datos reales. Fábricas por rol (participante, organizador, coordinación) en `tests/conftest.py` (dueño: A).
+- **Aislamiento:** BD SQLite en **archivo temporal** (`tmp_path`, no `:memory:` para soportar hilos reales), creada desde los modelos con `PRAGMA foreign_keys=ON`, `get_db` sobrescrito y `TestClient(base_url="https://testserver")` (la cookie `Secure` solo viaja por HTTPS); nunca la BD de desarrollo ni datos reales. Fábricas por rol (participante, organizador, coordinación) en `tests/conftest.py` (dueño: A).
 - **Datos ficticios:** documentos obviamente falsos; nada de contraseñas reales.
 - **Qué debe existir (mínimo):**
   - `test_permisos.py` (A): 401 sin sesión o usuario inactivo, 403 por rol, propietario ajeno, rechazo CSRF por `Origin` externo en mutación con cookie, 422 sin `input` sensible.

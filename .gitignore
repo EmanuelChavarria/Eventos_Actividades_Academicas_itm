@@ -3,6 +3,12 @@
 .env.*
 !.env.example
 
+# Certificados y llaves TLS locales (mkcert/openssl)
+certs/
+*.pem
+*.key
+*.crt
+
 # Bases de datos locales
 *.db
 *.db-journal

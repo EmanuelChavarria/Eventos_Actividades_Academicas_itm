@@ -48,7 +48,7 @@
 ### Reglas finales de dominio (no negociables sin acuerdo del cliente)
 
 - **Identificación única:** `tipo_documento` (`CC`, `CE`, `TI`, `PAS`) + `numero_documento`, `UNIQUE` en BD; duplicado → **409 `DOCUMENTO_DUPLICADO`**. Texto sin espacios ni puntos: CC/CE/TI solo dígitos (5–12), PAS alfanumérico en mayúsculas (5–15).
-- **Autenticación segura:** login con documento + contraseña (hash **argon2id**, mín. 8 caracteres; verificación en tiempo constante con hash ficticio si el documento no existe; **límite de 10 intentos fallidos** → 429 `DEMASIADOS_INTENTOS`). JWT `HS256` con `sub = usuario.id` (nunca documento ni correo), validando `SECRET_KEY` al arrancar (fallar si está vacía, es corta o igual al valor de `.env.example`). Cookie `HttpOnly`, `SameSite=Lax`, `Path=/`, `Max-Age=3600`, `Secure` según `COOKIE_SECURE`. Verificación de `Origin`/`Referer` del mismo origen en mutaciones con cookie (CSRF).
+- **Autenticación segura:** login con documento + contraseña (hash **argon2id**, mín. 8 caracteres; verificación en tiempo constante con hash ficticio si el documento no existe; **límite de 10 intentos fallidos** → 429 `DEMASIADOS_INTENTOS`). JWT `HS256` con `sub = usuario.id` (nunca documento ni correo), validando `SECRET_KEY` al arrancar (fallar si está vacía, es corta o igual al valor de `.env.example`). Cookie `HttpOnly`, `SameSite=Lax`, `Path=/`, `Max-Age=3600`, `Secure` obligatorio (HTTPS en todos los entornos; la app falla al arrancar si `COOKIE_SECURE` no es `true`). **HTTPS en todos los entornos** (local con certificados `mkcert` en `certs/`, Docker y CI con certificado autofirmado). Verificación de `Origin`/`Referer` del mismo origen en mutaciones con cookie (CSRF).
 - **Correo:** obligatorio, formato válido, **no único**, solo contacto.
 - **Cuentas:** el registro público solo crea participantes; organizadores y coordinación con `scripts/crear_usuario.py` y seed.
 - **Frontend seguro:** Jinja2 solo como esqueleto con autoescape activo; los datos llegan por `fetch` a `/api/v1` desde módulos JS (`api.js` común + uno por página). Usar siempre `textContent` / DOM seguro (prohibido `innerHTML` con datos de usuario o API). Sin bundler ni SPA.
@@ -75,8 +75,9 @@ python scripts/export_openapi.py --check   # obligatorio desde que E10 esté en 
 
 - Nunca subas `.env`, `*.db`, secretos ni datos reales; solo `.env.example` y datos **ficticios** (documentos del seed obviamente falsos).
 - No leas ni imprimas `.env` ni `*.db`. No escribas contraseñas, tokens, cabeceras `Cookie`/`Authorization` ni documentos en logs.
-- Cookies `HttpOnly` + `SameSite=Lax`; operaciones que modifican datos solo con POST/PUT/PATCH y validación `Origin`/`Referer`.
+- Cookies `HttpOnly` + `SameSite=Lax` + `Secure`; operaciones que modifican datos solo con POST/PUT/PATCH y validación `Origin`/`Referer`.
+- **HTTPS siempre:** sirve la app con `uvicorn ... --ssl-keyfile certs/localhost-key.pem --ssl-certfile certs/localhost.pem` (certificados generados con `mkcert`, alternativa `openssl`). Nunca subas `certs/`, `*.pem`, `*.key` ni `*.crt`, ni leas llaves privadas. Las pruebas usan `base_url="https://testserver"`.
 
 ## 7. Estado de la configuración
 
-Existen: constitución (v2.0.1), documentos en `docs/`, estos archivos de reglas, `.specify/templates/` personalizadas, las reglas por ruta (`.claude/rules/`), las skills (`.claude/skills/`) y `.claude/settings.json`. **Aún no existe** código de la app: se crea feature por feature con el ciclo SDD (§2).
+Existen: constitución (v2.0.2), documentos en `docs/`, estos archivos de reglas, `.specify/templates/` personalizadas, las reglas por ruta (`.claude/rules/`), las skills (`.claude/skills/`) y `.claude/settings.json`. **Aún no existe** código de la app: se crea feature por feature con el ciclo SDD (§2).

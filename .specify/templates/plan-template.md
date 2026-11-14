@@ -61,7 +61,7 @@ specs/[NNN-slug]/
 - **Endpoints:** [Método, ruta, rol, éxito, errores HTTP + código de dominio]
 - **Schemas:** [Entrada y salida separados; nunca exponer `hash_password`]
 - **Cambios en BD / SQLite:** [Tablas, restricciones, índices, manejo de fechas UTC y `BEGIN IMMEDIATE` si aplica]
-- **Seguridad y privacidad:** [argon2id / JWT `sub=id` / cookie / `Origin` CSRF / rate limit login / XSS `textContent` / enmascarado de documento / logs sin datos sensibles]
+- **Seguridad y privacidad:** [argon2id / JWT `sub=id` / cookie `Secure` + HTTPS en todos los entornos / `Origin` CSRF / rate limit login / XSS `textContent` / enmascarado de documento / logs sin datos sensibles]
 
 ## 6. Riesgos y mitigación
 

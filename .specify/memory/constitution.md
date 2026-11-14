@@ -1,6 +1,7 @@
 <!--
 Informe de impacto de sincronización:
-- Cambio de versión: 2.0.0 → 2.0.1 (PARCHE: ajustes de seguridad sobre las reglas establecidas sin agregar normas ajenas)
+- Cambio de versión: 2.0.1 → 2.0.2 (PARCHE: HTTPS obligatorio en todos los entornos, con certificados locales mkcert y cookie Secure obligatoria)
+- Versión anterior 2.0.0 → 2.0.1: ajustes de seguridad sobre las reglas establecidas
 - Principios ajustados: III (SQLite PRAGMA/UTC), IV (BEGIN IMMEDIATE), V (activo==True), VI (422 sin input y logs sin datos sensibles), VIII (-Number N en Spec Kit), IX (OpenAPI/CI tras E10)
 - Reglas y pila ajustadas: argon2id, hash ficticio en login, rate limit de 10 intentos en login, JWT HS256 con sub=id y SECRET_KEY validado, cookie con Path/Secure/Max-Age, CSRF Origin/Referer, XSS textContent, CSV seguro, LIKE escapado
 - Plantillas actualizadas: .specify/templates/{spec,plan,tasks,checklist}-template.md
@@ -38,7 +39,7 @@ Conventional Commits en español (≤ 72 caracteres), un commit por tarea de `ta
 `ruff` y `pytest` deben pasar antes de cada PR; `export_openapi.py --check` y el CI completo aplican desde la integración de E10 en `main`. Ningún check se desactiva, ignora ni se omite (`--no-verify`) para «pasar».
 
 ### X. Reproducible con y sin Docker
-El README documenta ambas vías con las mismas dependencias fijadas (`tzdata` incluido), migraciones Alembic y seed idempotente. La guía no exige Docker, por lo que la ejecución local debe funcionar sola.
+El README documenta ambas vías con las mismas dependencias fijadas (`tzdata` incluido), migraciones Alembic, seed idempotente y la generación de certificados locales con `mkcert` (alternativa `openssl`). La guía no exige Docker, por lo que la ejecución local debe funcionar sola.
 
 ### XI. Contrato compartido
 Modelos, errores, dependencias, enums y `specs/contrato/openapi.json` solo se cambian con acuerdo de ambos integrantes. El contrato OpenAPI se regenera con el script, nunca a mano.
@@ -62,9 +63,10 @@ Estas decisiones, confirmadas por el cliente o aprobadas por el equipo por deleg
 10. **Asistencia:** la registra el organizador del evento, desde `fecha_inicio` hasta **48 horas** después de `fecha_fin`; estados `presente` y `ausente` (sin registro = pendiente); las correcciones dentro de la ventana guardan quién y cuándo; solo para inscripciones activas.
 11. **Privacidad y exportación:** el organizador ve el documento completo de los inscritos de su evento; coordinación lo ve enmascarado (`••••1234`); el documento no se escribe en logs ni en errores (ni en el registro por solicitud). Si se exporta CSV (opcional), el documento va enmascarado y se neutralizan celdas que inicien con `=`, `+`, `-` o `@`.
 12. **Cupo:** puede subir siempre; solo baja hasta el número de inscritos activos; no se edita en eventos cancelados ni finalizados.
+13. **HTTPS en todos los entornos:** la aplicación se sirve siempre por HTTPS (local, Docker, CI y entrega). En local se usan certificados de `mkcert` en `certs/` (ignorada por Git; nunca se commitean `*.pem`, `*.key` ni `*.crt`); en el CI, un certificado autofirmado con `openssl`. No se agregan por ahora redirección HTTP→HTTPS, HSTS ni cookie con prefijo `__Host-`.
 
 ## Pila tecnológica y seguridad
-Python 3.11+ · FastAPI · SQLite (SQLAlchemy 2.x + Alembic) · Jinja2 · `tzdata` · pytest · ruff · GitHub Actions · Docker (complemento). Contraseñas con hash **argon2id** (mínimo 8 caracteres); en `POST /auth/login` verificación en tiempo constante (hash ficticio cuando el documento no existe) y **límite de 10 intentos fallidos** (HTTP 429 `DEMASIADOS_INTENTOS`). JWT firmado con `HS256` conteniendo únicamente `sub = usuario.id` (nunca documento ni correo), entregado en cookie `HttpOnly` + `SameSite=Lax` + `Path=/` + `Max-Age=3600` + `Secure` según `COOKIE_SECURE`, sin recuperación de contraseña. Las operaciones que modifican datos usan POST/PUT/PATCH y validan cabecera `Origin`/`Referer` del mismo origen cuando la sesión usa cookie (defensa CSRF).
+Python 3.11+ · FastAPI · SQLite (SQLAlchemy 2.x + Alembic) · Jinja2 · `tzdata` · pytest · ruff · GitHub Actions · Docker (complemento). Contraseñas con hash **argon2id** (mínimo 8 caracteres); en `POST /auth/login` verificación en tiempo constante (hash ficticio cuando el documento no existe) y **límite de 10 intentos fallidos** (HTTP 429 `DEMASIADOS_INTENTOS`). JWT firmado con `HS256` conteniendo únicamente `sub = usuario.id` (nunca documento ni correo), entregado en cookie `HttpOnly` + `SameSite=Lax` + `Path=/` + `Max-Age=3600` + `Secure` siempre activa (`COOKIE_SECURE=true` obligatorio; la app falla al arrancar si no lo está), sin recuperación de contraseña. La aplicación se sirve solo por HTTPS en todos los entornos. Las operaciones que modifican datos usan POST/PUT/PATCH y validan cabecera `Origin`/`Referer` del mismo origen cuando la sesión usa cookie (defensa CSRF).
 
 ## Flujo de desarrollo y puertas de calidad
 Puertas G1 (spec aprobada por el humano), G2 (plan y tareas aprobados y `analyze` sin críticos; PR en borrador), G3 (cada tarea cumple su criterio), G4 (CI verde) y G5 (aprobación del compañero). Las pruebas de cupo, duplicados, permisos y seguridad se escriben primero (rojo → verde). Las 12 pruebas funcionales PF-01…PF-12 siguen siendo obligatorias y se documentan con evidencia.
@@ -72,4 +74,4 @@ Puertas G1 (spec aprobada por el humano), G2 (plan y tareas aprobados y `analyze
 ## Gobernanza
 Esta constitución prevalece sobre cualquier otra práctica del proyecto. Las enmiendas requieren justificación documentada, acuerdo de ambos integrantes y actualización de las specs afectadas. El cumplimiento se verifica en cada revisión de PR y en la sección de verificación de cada `plan.md`. Los documentos base viven en `docs/`.
 
-**Versión**: 2.0.1 | **Ratificada**: 2026-11-13 | **Última enmienda**: 2026-11-14
+**Versión**: 2.0.2 | **Ratificada**: 2026-11-13 | **Última enmienda**: 2026-11-14
