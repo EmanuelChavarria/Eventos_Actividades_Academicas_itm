@@ -297,3 +297,61 @@ def test_login_bloquea_tras_10_intentos_fallidos_y_reinicia_al_exito(
             json={"tipo_documento": "CC", "numero_documento": "1006667772", "password": "mala"},
         )
         assert r2.status_code == 401
+
+
+def test_vistas_login_registro_y_navegacion_por_rol(
+    client: TestClient,
+    crear_usuario_factory,
+) -> None:
+    """RF-03 / RF-27 / RNF-12: vistas auth, redirección si autenticado, menú por rol y JS seguro."""
+    login_html = client.get("/login")
+    assert login_html.status_code == 200
+    assert 'id="form-login"' in login_html.text
+    assert "/static/js/auth.js" in login_html.text
+
+    registro_html = client.get("/registro")
+    assert registro_html.status_code == 200
+    assert 'id="form-registro"' in registro_html.text
+    assert "/static/js/auth.js" in registro_html.text
+
+    auth_js = client.get("/static/js/auth.js")
+    assert auth_js.status_code == 200
+    assert "innerHTML" not in auth_js.text
+
+    api_js = client.get("/static/js/api.js")
+    assert api_js.status_code == 200
+    assert "innerHTML" not in api_js.text
+    assert "/auth/logout" in api_js.text
+
+    # Visitante anónimo ve enlaces de login/registro y no opciones autenticadas.
+    inicio_anon = client.get("/")
+    assert inicio_anon.status_code == 200
+    assert 'href="/login"' in inicio_anon.text
+    assert 'href="/registro"' in inicio_anon.text
+    assert "btn-cerrar-sesion" not in inicio_anon.text
+
+    casos_rol = [
+        (Rol.PARTICIPANTE, "1008889991", "/mis-inscripciones", "/organizador/eventos"),
+        (Rol.ORGANIZADOR, "1008889992", "/organizador/eventos", "/coordinacion/consolidado"),
+        (Rol.COORDINACION, "1008889993", "/coordinacion/consolidado", "/mis-inscripciones"),
+    ]
+    for rol, doc, enlace_esperado, enlace_ajeno in casos_rol:
+        crear_usuario_factory(rol=rol, numero_documento=doc, password="ClaveSegura123!")
+        login_resp = client.post(
+            "/api/v1/auth/login",
+            json={"tipo_documento": "CC", "numero_documento": doc, "password": "ClaveSegura123!"},
+        )
+        assert login_resp.status_code == 200
+
+        # Con sesión activa, /login y /registro redirigen 303 a /
+        assert client.get("/login", follow_redirects=False).status_code == 303
+        assert client.get("/registro", follow_redirects=False).status_code == 303
+
+        inicio_auth = client.get("/")
+        assert inicio_auth.status_code == 200
+        assert enlace_esperado in inicio_auth.text
+        assert enlace_ajeno not in inicio_auth.text
+        assert "btn-cerrar-sesion" in inicio_auth.text
+
+        logout = client.post("/api/v1/auth/logout", headers={"Origin": "https://testserver"})
+        assert logout.status_code == 204
