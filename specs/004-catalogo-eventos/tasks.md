@@ -26,7 +26,7 @@ description: "Tareas atómicas para implementar E4 — Catálogo y consulta de e
 **Objetivo:** Implementar validación de filtros, consultas SQL filtradas/paginadas seguras y servicio `catalogo_service.py` sin importar FastAPI ni incurrir en N+1.
 **Prueba independiente:** Al conectar el router en Fase 3, toda la suite de API en `tests/test_catalogo.py` pasa en verde.
 
-- [ ] T-004-02 [US1] [US2] Implementar `CatalogoFiltros`, `CatalogoEventoResumen`, `CatalogoEventoDetalle` y `CatalogoPaginadoSalida` en `app/schemas/catalogo.py` · Commit: `feat(catalogo): agrega schemas de catalogo, filtros y paginacion` · Terminado cuando: validan rangos de fechas con zona, `pagina >= 1`, `1 <= tamano <= 50` y salidas sin campos internos
+- [x] T-004-02 [US1] [US2] Implementar `CatalogoFiltros`, `CatalogoEventoResumen`, `CatalogoEventoDetalle` y `CatalogoPaginadoSalida` en `app/schemas/catalogo.py` · Commit: `feat(catalogo): agrega schemas de catalogo, filtros y paginacion` · Terminado cuando: validan rangos de fechas con zona, `pagina >= 1`, `1 <= tamano <= 50` y salidas sin campos internos
 - [ ] T-004-03 [US1] [US2] Ampliar `app/repositories/evento_repo.py` con `obtener_publicado_por_id` y `buscar_publicados_paginado` (filtros combinables, escape de `%`/`_`/`\`, orden por `fecha_inicio ASC, id ASC`) · Commit: `feat(catalogo): agrega consulta paginada y filtrada de publicados` · Terminado cuando: toda consulta SQL del catálogo está encapsulada en `evento_repo.py`
 - [ ] T-004-04 [US1] [US2] [US3] Implementar `app/services/catalogo_service.py` (`listar_catalogo`, `obtener_detalle_catalogo`, `existe_evento_publicado`) reutilizando `calcular_estado_efectivo` e `inscripcion_repo` sin N+1 y sin importar FastAPI · Commit: `feat(catalogo): implementa servicio de catalogo y calculo de cupos` · Terminado cuando: `cupos_disponibles`, `inscripciones_abiertas` y `404 EVENTO_NO_ENCONTRADO` se calculan en el servicio
 
@@ -57,7 +57,7 @@ description: "Tareas atómicas para implementar E4 — Catálogo y consulta de e
 | ID | Tarea | Depende de | Archivos clave | Commit sugerido | Terminado cuando | Estado |
 |---|---|---|---|---|---|:-:|
 | T-004-01 | Pruebas rojo catálogo, filtros y 404 | — | `tests/test_catalogo.py` | `test(catalogo): agrega pruebas rojo de catalogo, filtros y 404` | Fallan antes del código E4 | [x] |
-| T-004-02 | Schemas del catálogo y filtros | T-004-01 | `app/schemas/catalogo.py` | `feat(catalogo): agrega schemas de catalogo, filtros y paginacion` | Schemas y filtros validados | [ ] |
+| T-004-02 | Schemas del catálogo y filtros | T-004-01 | `app/schemas/catalogo.py` | `feat(catalogo): agrega schemas de catalogo, filtros y paginacion` | Schemas y filtros validados | [x] |
 | T-004-03 | Consulta paginada en `evento_repo.py` | T-004-01 | `app/repositories/evento_repo.py` | `feat(catalogo): agrega consulta paginada y filtrada de publicados` | SQL filtrado con escape `LIKE` | [ ] |
 | T-004-04 | Servicio `catalogo_service.py` sin FastAPI | T-004-02, T-004-03 | `app/services/catalogo_service.py` | `feat(catalogo): implementa servicio de catalogo y calculo de cupos` | Cupos calculados sin N+1 | [ ] |
 | T-004-05 | Router `/catalogo/eventos` y `{id}` | T-004-04 | `app/api/v1/catalogo.py`, `tests/test_scripts_web.py` | `feat(catalogo): expone endpoints rest del catalogo publico` | `test_catalogo.py` y `test_scripts_web.py` OK | [ ] |
