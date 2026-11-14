@@ -15,6 +15,7 @@ from app.api.v1 import (
 api_router = APIRouter(prefix="/api/v1", dependencies=[Depends(verificar_csrf)])
 api_router.include_router(auth.router)
 api_router.include_router(eventos.router)
+api_router.include_router(eventos.organizador_router)
 api_router.include_router(catalogo.router)
 api_router.include_router(inscripciones.router)
 api_router.include_router(asistencia.router)

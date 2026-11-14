@@ -38,7 +38,7 @@ description: "Tareas atómicas para implementar E3 — Gestión de eventos"
 **Objetivo:** Exponer `/api/v1/eventos/*` y `/api/v1/organizador/eventos` con control de rol/CSRF y poner en verde `test_eventos.py` y `test_permisos.py`.
 **Prueba independiente:** `pytest -q` 100 % en verde con todos los casos de API de E3 y permisos.
 
-- [ ] T-003-06 [US1] [US2] [US3] [US4] [US5] Implementar en `app/api/v1/eventos.py` los routers `router` (`/eventos`: `POST /`, `GET /{evento_id}`, `PATCH /{evento_id}`, `POST /{evento_id}/publicar`, `POST /{evento_id}/cancelar`) y `organizador_router` (`/organizador/eventos`), registrar `organizador_router` en `app/api/router.py` y actualizar la lista de stubs `501` en `tests/test_scripts_web.py` · Commit: `feat(eventos): expone endpoints rest de gestion de eventos` · Terminado cuando: toda la suite de API en `tests/test_eventos.py`, `tests/test_permisos.py` y `tests/test_scripts_web.py` pasa en verde
+- [x] T-003-06 [US1] [US2] [US3] [US4] [US5] Implementar en `app/api/v1/eventos.py` los routers `router` (`/eventos`: `POST /`, `GET /{evento_id}`, `PATCH /{evento_id}`, `POST /{evento_id}/publicar`, `POST /{evento_id}/cancelar`) y `organizador_router` (`/organizador/eventos`), registrar `organizador_router` en `app/api/router.py` y actualizar la lista de stubs `501` en `tests/test_scripts_web.py` · Commit: `feat(eventos): expone endpoints rest de gestion de eventos` · Terminado cuando: toda la suite de API en `tests/test_eventos.py`, `tests/test_permisos.py` y `tests/test_scripts_web.py` pasa en verde
 
 ---
 
@@ -62,7 +62,7 @@ description: "Tareas atómicas para implementar E3 — Gestión de eventos"
 | T-003-03 | Schemas y validador fechas en `evento.py` | T-003-01 | `app/schemas/evento.py` | `feat(eventos): agrega schemas de evento con validaciones de entrada` | Validaciones y `EventoSalida` listos | [x] |
 | T-003-04 | Repositorio `evento_repo.py` | T-003-01 | `app/repositories/evento_repo.py` | `feat(eventos): implementa repositorio de eventos` | SQL encapsulado en repositorio | [x] |
 | T-003-05 | Servicio `evento_service.py` sin FastAPI | T-003-03, T-003-04 | `app/services/evento_service.py` | `feat(eventos): implementa servicio de gestion y reglas de eventos` | RN-02/03/09/10/12/18/20 listas | [x] |
-| T-003-06 | Router `/eventos` y `/organizador/eventos` | T-003-05 | `app/api/v1/eventos.py`, `app/api/router.py`, `tests/test_scripts_web.py` | `feat(eventos): expone endpoints rest de gestion de eventos` | `test_eventos.py` y `test_permisos.py` OK | [ ] |
+| T-003-06 | Router `/eventos` y `/organizador/eventos` | T-003-05 | `app/api/v1/eventos.py`, `app/api/router.py`, `tests/test_scripts_web.py` | `feat(eventos): expone endpoints rest de gestion de eventos` | `test_eventos.py` y `test_permisos.py` OK | [x] |
 | T-003-07 | Vistas web, templates y `eventos.js` | T-003-06 | `app/web/eventos.py`, `app/templates/eventos/*`, `app/static/js/eventos.js` | `feat(web): agrega vistas de gestion de eventos del organizador` | HTML `200`/`303`/`403` sin `innerHTML` | [ ] |
 | T-003-08 | Docs `PF-01`, `PF-02` y `PF-09` | T-003-06 | `docs/pruebas/PF-01.md`, `PF-02.md`, `PF-09.md` | `docs(pruebas): documenta casos PF-01, PF-02 y ampliacion de PF-09` | Casos y trazabilidad documentados | [ ] |
 | T-003-09 | Verificación final `ruff`, `pytest`, HTTPS | T-003-07, T-003-08 | `specs/003-gestion-eventos/tasks.md` | `docs(specs): marca tareas verificadas de E3 tras pruebas en verde` | `ruff` y `pytest -q` 100 % verdes | [ ] |
