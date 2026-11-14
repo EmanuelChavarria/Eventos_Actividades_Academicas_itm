@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block titulo %}Eventos Académicos{% endblock %} · PF-04</title>
+    <link rel="stylesheet" href="/static/css/styles.css" />
+  </head>
+  <body>
+    <header class="barra-superior">
+      <div class="contenedor barra-contenido">
+        <a class="marca" href="/">Eventos Académicos</a>
+        <nav aria-label="Navegación principal" class="menu-principal">
+          <a href="/">Catálogo</a>
+          {% if usuario %}
+            {% if usuario.rol == "participante" %}
+              <a href="/mis-inscripciones">Mis inscripciones</a>
+            {% elif usuario.rol == "organizador" %}
+              <a href="/organizador/eventos">Mis eventos</a>
+            {% elif usuario.rol == "coordinacion" %}
+              <a href="/coordinacion/consolidado">Consolidado</a>
+            {% endif %}
+            <span class="usuario-sesion">{{ usuario.nombre }} ({{ usuario.rol }})</span>
+            <button id="btn-cerrar-sesion" type="button" class="btn-secundario">
+              Cerrar sesión
+            </button>
+          {% else %}
+            <a href="/login">Iniciar sesión</a>
+            <a href="/registro" class="btn-primario">Registrarse</a>
+          {% endif %}
+        </nav>
+      </div>
+    </header>
+
+    <main class="contenedor contenido-principal">
+      <div id="alerta-global" class="alerta oculto" role="alert" aria-live="polite"></div>
+      {% block contenido %}{% endblock %}
+    </main>
+
+    <footer class="pie-pagina">
+      <div class="contenedor">
+        <small>Plataforma de Eventos y Actividades Académicas · Horario oficial America/Bogota (UTC-5)</small>
+      </div>
+    </footer>
+
+    <script type="module" src="/static/js/api.js"></script>
+    {% block scripts %}{% endblock %}
+  </body>
+</html>

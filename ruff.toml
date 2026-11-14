@@ -1,0 +1,12 @@
+target-version = "py311"
+line-length = 100
+exclude = [".venv", ".git", ".ruff_cache", "__pycache__"]
+
+[lint]
+select = ["E", "F", "I", "B", "UP"]
+ignore = ["B008"]
+
+[format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "lf"
