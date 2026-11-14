@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from datetime import UTC, datetime, timedelta, timezone
+from pathlib import Path
 
 import pytest
 from fastapi import FastAPI, status
@@ -88,18 +89,25 @@ def test_fechas_ventana_asistencia_48h() -> None:
     )
 
 
-def test_sqlite_pragmas_foreign_keys_y_busy_timeout(db_session: Session) -> None:
+def test_sqlite_pragmas_foreign_keys_y_busy_timeout(db_session: Session, tmp_path: Path) -> None:
     """RNF-03: get_db y motor SQLite activan foreign_keys=ON y busy_timeout=5000."""
-    from app.core.database import SessionLocal
+    from sqlalchemy.orm import sessionmaker
+
+    from app.core.database import crear_motor
 
     fk = db_session.execute(text("PRAGMA foreign_keys;")).scalar_one()
     busy = db_session.execute(text("PRAGMA busy_timeout;")).scalar_one()
     assert fk == 1
     assert busy == 5000
 
-    with SessionLocal() as sesion_app:
-        assert sesion_app.execute(text("PRAGMA foreign_keys;")).scalar_one() == 1
-        assert sesion_app.execute(text("PRAGMA busy_timeout;")).scalar_one() == 5000
+    motor_tmp = crear_motor(f"sqlite:///{tmp_path / 'motor_pragmas.db'}")
+    sesion_factory = sessionmaker(autocommit=False, autoflush=False, bind=motor_tmp)
+    try:
+        with sesion_factory() as sesion_app:
+            assert sesion_app.execute(text("PRAGMA foreign_keys;")).scalar_one() == 1
+            assert sesion_app.execute(text("PRAGMA busy_timeout;")).scalar_one() == 5000
+    finally:
+        motor_tmp.dispose()
 
 
 def test_bd_documento_unico_y_correo_repetido(db_session: Session, crear_usuario_factory) -> None:
