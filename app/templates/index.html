@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block titulo %}Inicio{% endblock %}
+
+{% block contenido %}
+  <section class="tarjeta-hero">
+    <h1>Eventos y Actividades Académicas</h1>
+    <p>
+      Plataforma institucional para consultar el catálogo de eventos, gestionar inscripciones
+      con control de cupo y registrar asistencia académica.
+    </p>
+    <div class="acciones-hero">
+      <a href="/docs" class="btn-primario">Documentación API (/docs)</a>
+      <a href="/health" class="btn-secundario">Estado del servicio (/health)</a>
+    </div>
+  </section>
+
+  <section class="tarjeta" aria-labelledby="titulo-catalogo-estado">
+    <h2 id="titulo-catalogo-estado">Catálogo público</h2>
+    <p id="mensaje-catalogo-base">
+      El esqueleto web está activo y conectado con <code>/api/v1</code>. El catálogo interactivo
+      se habilitará en la épica E4.
+    </p>
+  </section>
+{% endblock %}

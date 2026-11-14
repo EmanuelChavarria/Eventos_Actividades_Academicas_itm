@@ -56,7 +56,7 @@ description: "Tareas atómicas para implementar E1 — Fundación y plataforma"
 
 - [x] T-001-17 [US1] Implementar `app/api/router.py`, stubs `/api/v1/{auth,eventos,catalogo,inscripciones,asistencia,reportes}.py` (`501 NO_IMPLEMENTADO`), rutas web stub en `app/web/` y ensamblar `app/main.py` con manejadores globales y `/docs` · Commit: `feat(api): crea app FastAPI, router v1 y stubs por epica` · Terminado cuando: `GET /docs` y `GET /openapi.json` responden `200`
 - [x] T-001-18 [US1] Implementar logging seguro por solicitud (`app/core/logging.py`, sin cuerpos, `Cookie`, `Authorization` ni documentos) y endpoint `GET /health` (`SELECT 1` + `PRAGMA foreign_keys`) · Commit: `feat(core): agrega endpoint GET /health y logging seguro por solicitud` · Terminado cuando: `GET /health` responde `200 {"status": "ok", "database": "ok"}` y el log omite datos sensibles
-- [ ] T-001-19 [US4] Crear `app/templates/base.html` (Jinja2 con autoescape y navegación por rol), `app/templates/index.html`, `app/static/css/styles.css` y `app/static/js/api.js` (`fetch` a `/api/v1`, errores y fechas `America/Bogota` con `textContent`) · Commit: `feat(web): agrega esqueleto Jinja2, navegacion y cliente fetch comun` · Terminado cuando: `GET /` responde HTML `200` y `api.js` no contiene `innerHTML`
+- [x] T-001-19 [US4] Crear `app/templates/base.html` (Jinja2 con autoescape y navegación por rol), `app/templates/index.html`, `app/static/css/styles.css` y `app/static/js/api.js` (`fetch` a `/api/v1`, errores y fechas `America/Bogota` con `textContent`) · Commit: `feat(web): agrega esqueleto Jinja2, navegacion y cliente fetch comun` · Terminado cuando: `GET /` responde HTML `200` y `api.js` no contiene `innerHTML`
 
 ---
 
@@ -95,7 +95,7 @@ description: "Tareas atómicas para implementar E1 — Fundación y plataforma"
 | T-001-16 | Conteo activas en `inscripcion_repo.py` | T-001-12 | `app/repositories/inscripcion_repo.py` | `feat(bd): agrega conteo de inscripciones activas por evento` | Conteos filtran `activa` | [x] |
 | T-001-17 | `main.py`, `router.py` y stubs | T-001-14, T-001-15 | `app/main.py`, `app/api/**`, `app/web/**` | `feat(api): crea app FastAPI, router v1 y stubs por epica` | `/docs` `200` y stubs `501` | [x] |
 | T-001-18 | `GET /health` y logging seguro | T-001-10, T-001-17 | `app/core/logging.py`, `app/main.py` | `feat(core): agrega endpoint GET /health y logging seguro por solicitud` | `/health` `200`, logs limpios | [x] |
-| T-001-19 | `base.html`, `index.html`, CSS y `api.js` | T-001-17 | `app/templates/**`, `app/static/**` | `feat(web): agrega esqueleto Jinja2, navegacion y cliente fetch comun` | `GET /` `200`, sin `innerHTML` | [ ] |
+| T-001-19 | `base.html`, `index.html`, CSS y `api.js` | T-001-17 | `app/templates/**`, `app/static/**` | `feat(web): agrega esqueleto Jinja2, navegacion y cliente fetch comun` | `GET /` `200`, sin `innerHTML` | [x] |
 | T-001-20 | `seed.py` y `crear_usuario.py` | T-001-13 | `scripts/seed.py`, `scripts/crear_usuario.py` | `feat(bd): agrega scripts seed idempotente y crear_usuario` | Seed idempotente + CLI doc | [ ] |
 | T-001-21 | `README.md` inicial + guía venv/HTTPS | T-001-06, T-001-20 | `README.md` | `docs(repo): agrega README inicial con entorno virtual y arranque HTTPS` | Pasos reproducibles claros | [ ] |
 | T-001-22 | `docs/diseno.md` Contrato compartido | T-001-16, T-001-18 | `docs/diseno.md` | `docs(diseno): documenta contrato compartido inicial entre integrantes` | Contrato alineado con código | [ ] |
