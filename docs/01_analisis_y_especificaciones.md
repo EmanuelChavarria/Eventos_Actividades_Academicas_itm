@@ -276,7 +276,7 @@ Los criterios de aceptación de cada historia se verifican con las pruebas PF-01
 | 13 | `base.html` (esqueleto Jinja2), navegación por rol, CSS y `static/js/api.js` común (`fetch` a `/api/v1`, errores y fechas en `America/Bogota`) | `feat(web): agrega esqueleto Jinja2, navegación y cliente fetch común` |
 | 14 | Seed idempotente y `crear_usuario.py` con documentos ficticios | `feat(bd): agrega scripts seed y crear_usuario con datos ficticios` |
 | 15 | `ruff.toml` y formato | `chore(lint): configura ruff para lint y formato` |
-| 16 | README inicial con instalación y ejecución | `docs(repo): agrega README inicial con instalación y ejecución` |
+| 16 | README inicial con guía detallada de entorno virtual (creación con venv/uv y activación en Windows/Linux/macOS), variables de entorno, instalación de dependencias, migración, seed y ejecución | `docs(repo): agrega README inicial con instalacion, entorno virtual y ejecucion` |
 | 17 | `GET /health` y logging por solicitud | `feat(core): agrega endpoint GET /health y logging por solicitud` |
 | 18 | `requirements-dev.txt` con pytest, httpx, ruff y pre-commit | `chore(deps): agrega requirements-dev.txt con pytest, httpx y ruff` |
 | 19 | `tests/conftest.py` con BD temporal, cliente y fábricas por rol | `test(core): agrega conftest con base de datos temporal y fábricas de datos` |
