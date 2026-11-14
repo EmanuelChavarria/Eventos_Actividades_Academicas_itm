@@ -17,7 +17,7 @@ description: "Tareas atómicas para implementar E4 — Catálogo y consulta de e
 
 ## Fase 1: Pruebas primero del catálogo, filtros y 404 (Rojo)
 
-- [ ] T-004-01 [US1] [US2] [US3] Crear pruebas iniciales rojo en `tests/test_catalogo.py` (listado público solo `publicado`, ocultación por defecto de finalizados y opción `incluir_finalizados=true`, orden estable por `fecha_inicio`, paginación, filtros `tipo`/`modalidad`/fechas/`texto` con `%` y `_`, validaciones `422`, detalle con cálculo real `cupos_disponibles` tras inscripción activa y cancelada, y `404 EVENTO_NO_ENCONTRADO` ante inexistente, `borrador` o `cancelado`) · Commit: `test(catalogo): agrega pruebas rojo de catalogo, filtros y 404` · Terminado cuando: las pruebas existen en `tests/test_catalogo.py` y fallan antes de implementar E4
+- [x] T-004-01 [US1] [US2] [US3] Crear pruebas iniciales rojo en `tests/test_catalogo.py` (listado público solo `publicado`, ocultación por defecto de finalizados y opción `incluir_finalizados=true`, orden estable por `fecha_inicio`, paginación, filtros `tipo`/`modalidad`/fechas/`texto` con `%` y `_`, validaciones `422`, detalle con cálculo real `cupos_disponibles` tras inscripción activa y cancelada, y `404 EVENTO_NO_ENCONTRADO` ante inexistente, `borrador` o `cancelado`) · Commit: `test(catalogo): agrega pruebas rojo de catalogo, filtros y 404` · Terminado cuando: las pruebas existen en `tests/test_catalogo.py` y fallan antes de implementar E4
 
 ---
 
@@ -56,7 +56,7 @@ description: "Tareas atómicas para implementar E4 — Catálogo y consulta de e
 
 | ID | Tarea | Depende de | Archivos clave | Commit sugerido | Terminado cuando | Estado |
 |---|---|---|---|---|---|:-:|
-| T-004-01 | Pruebas rojo catálogo, filtros y 404 | — | `tests/test_catalogo.py` | `test(catalogo): agrega pruebas rojo de catalogo, filtros y 404` | Fallan antes del código E4 | [ ] |
+| T-004-01 | Pruebas rojo catálogo, filtros y 404 | — | `tests/test_catalogo.py` | `test(catalogo): agrega pruebas rojo de catalogo, filtros y 404` | Fallan antes del código E4 | [x] |
 | T-004-02 | Schemas del catálogo y filtros | T-004-01 | `app/schemas/catalogo.py` | `feat(catalogo): agrega schemas de catalogo, filtros y paginacion` | Schemas y filtros validados | [ ] |
 | T-004-03 | Consulta paginada en `evento_repo.py` | T-004-01 | `app/repositories/evento_repo.py` | `feat(catalogo): agrega consulta paginada y filtrada de publicados` | SQL filtrado con escape `LIKE` | [ ] |
 | T-004-04 | Servicio `catalogo_service.py` sin FastAPI | T-004-02, T-004-03 | `app/services/catalogo_service.py` | `feat(catalogo): implementa servicio de catalogo y calculo de cupos` | Cupos calculados sin N+1 | [ ] |
