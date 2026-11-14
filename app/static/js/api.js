@@ -134,3 +134,15 @@ export function crearNodo(etiqueta, { texto = "", clase = "" } = {}) {
   }
   return nodo;
 }
+
+const botonCerrarSesion = document.getElementById("btn-cerrar-sesion");
+if (botonCerrarSesion) {
+  botonCerrarSesion.addEventListener("click", async () => {
+    botonCerrarSesion.disabled = true;
+    try {
+      await requestApi("/auth/logout", { method: "POST", redireccion401: false });
+    } finally {
+      window.location.assign("/login");
+    }
+  });
+}

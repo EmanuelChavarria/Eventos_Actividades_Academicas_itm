@@ -63,9 +63,11 @@ Formato JSON uniforme garantizado por `registrar_manejadores_errores(app)`:
   - `429`: `DEMASIADOS_INTENTOS`
 
 ### 2.5 Dependencias de autenticación (`app/api/deps.py`)
-- `get_current_user_optional(request, db) -> Usuario | None`: en E1 retorna `None`; en E2 decodifica la cookie JWT verificando `usuario.activo`.
+- `get_current_user_optional(request, db) -> Usuario | None`: decodifica la cookie JWT `pf04_session` verificando firma, expiración y `usuario.activo`.
 - `get_current_user(usuario) -> Usuario`: exige usuario autenticado y activo (`401 CREDENCIALES_INVALIDAS`).
 - `require_roles(*roles: Rol) -> Callable[[Usuario], Usuario]`: exige rol autorizado (`403 SIN_PERMISO`).
+- `require_web_user` / `require_web_roles(*roles: Rol)`: equivalentes para vistas web; sin sesión redirigen `303` a `/login`, y con rol insuficiente responden `403 SIN_PERMISO`.
+- `verificar_csrf(request)`: registrada globalmente en `api_router`; exige `Origin` válido (o `Referer` como respaldo) frente a `ALLOWED_ORIGINS` y origen efectivo en toda mutación (`POST`/`PUT`/`PATCH`/`DELETE`) que envíe cookie de sesión (`403 SIN_PERMISO` si falta o no coincide; en `pytest` enviar `Origin: https://testserver`).
 
 ### 2.6 Conteo compartido de inscripciones (`app/repositories/inscripcion_repo.py`)
 - `contar_activas(db: Session, evento_id: int) -> int`

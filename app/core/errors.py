@@ -7,7 +7,7 @@ from typing import Any
 
 from fastapi import FastAPI, Request, status
 from fastapi.exceptions import RequestValidationError
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, RedirectResponse
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
 logger = logging.getLogger("pf04.errores")
@@ -138,6 +138,10 @@ def _construir_cuerpo(
     }
 
 
+class RequiereLoginWeb(Exception):
+    """Excepción interna para redirigir vistas web protegidas sin sesión a /login."""
+
+
 def _sanitizar_validacion(errores: tuple[Any, ...] | list[Any]) -> list[dict[str, Any]]:
     """Extrae ubicación y mensaje omitiendo explícitamente el valor enviado (`input`)."""
     detalles: list[dict[str, Any]] = []
@@ -168,6 +172,13 @@ _CODIGOS_HTTP = {
 
 def registrar_manejadores_errores(app: FastAPI) -> None:
     """Registra los manejadores globales de errores sobre la instancia FastAPI."""
+
+    @app.exception_handler(RequiereLoginWeb)
+    async def _handler_login_web(
+        _request: Request,
+        _exc: RequiereLoginWeb,
+    ) -> RedirectResponse:
+        return RedirectResponse(url="/login", status_code=status.HTTP_303_SEE_OTHER)
 
     @app.exception_handler(ErrorDominio)
     async def _handler_error_dominio(_request: Request, exc: ErrorDominio) -> JSONResponse:
