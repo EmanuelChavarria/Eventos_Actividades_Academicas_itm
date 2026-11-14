@@ -153,7 +153,7 @@ Las 15 aclaraciones del cliente delegaron varias definiciones al equipo («usted
 | Identificación única | `tipo_documento` (`CC`, `CE`, `TI`, `PAS`) + `numero_documento`, con `UNIQUE(tipo_documento, numero_documento)`. Duplicado → **409 `DOCUMENTO_DUPLICADO`** | Equipo (aprobada) |
 | Formato del documento | Texto sin espacios ni puntos. CC, CE y TI: solo dígitos (5 a 12). PAS: alfanumérico en mayúsculas (5 a 15) | Equipo |
 | Correo | Obligatorio, formato válido, **no único**, solo dato de contacto; no identifica ni sirve para iniciar sesión | Equipo |
-| Autenticación | Documento + contraseña (mínimo 8 caracteres, hash **argon2id**, verificación en tiempo constante y límite de 10 intentos fallidos → 429 `DEMASIADOS_INTENTOS`), JWT `HS256` (`sub=usuario.id`) en cookie `HttpOnly` + `SameSite=Lax` + `Path=/` + `Max-Age=3600` + `Secure` según `COOKIE_SECURE`; validación `Origin`/`Referer` en mutaciones con cookie; sin recuperación de contraseña | Equipo |
+| Autenticación | Documento + contraseña (mínimo 8 caracteres, hash **argon2id**, verificación en tiempo constante y límite de 10 intentos fallidos → 429 `DEMASIADOS_INTENTOS`), JWT `HS256` (`sub=usuario.id`) en cookie `HttpOnly` + `SameSite=Lax` + `Path=/` + `Max-Age=3600` + `Secure` siempre activa; **HTTPS en todos los entornos** (certificados `mkcert` en local, autofirmado en CI); validación `Origin`/`Referer` en mutaciones con cookie; sin recuperación de contraseña | Equipo |
 | Cuentas del personal | El registro público solo crea participantes. Organizadores y coordinación se crean con `scripts/crear_usuario.py` (pide documento) y el seed | Equipo |
 | Permisos | Organizador: solo sus eventos. Coordinación: solo lectura global. Participante: solo lo propio | Equipo |
 | Campos del evento | Nombre (`titulo`), descripción, tipo de actividad, inicio y fin, lugar o modalidad, organizador (usuario creador), responsable (`responsable_nombre`, `responsable_correo`), cupo máximo, `fecha_limite_inscripcion`, estado; opcionales: ponente, requisitos y `publico_objetivo` (`todos`, `estudiantes`, `docentes`) | Cliente + equipo |
@@ -222,7 +222,7 @@ Prioridad: **M** = obligatorio (cubre un CA), **S** = recomendado, **C** = opcio
 | RNF-02 | Validación en el servidor con Pydantic v2 (tipos, rangos, longitudes) además de restricciones en BD | Pruebas PF-02, PF-06 |
 | RNF-03 | Integridad: PK, FK (`PRAGMA foreign_keys=ON`, `PRAGMA busy_timeout=5000` por conexión), `UNIQUE(tipo_documento, numero_documento)`, `CHECK`, índice único parcial de inscripción activa y escape de comodines en `LIKE` | Migración inicial + revisión |
 | RNF-04 | Concurrencia: dos inscripciones simultáneas nunca superan el cupo (transacción `BEGIN IMMEDIATE` + sentencia condicional + índice único parcial) | PF-07 + pytest con archivo temporal |
-| RNF-05 | Seguridad: hash **argon2id**, verificación en tiempo constante, límite de 10 intentos fallidos en login (429), JWT `HS256` (`sub=id`) con `SECRET_KEY` validada al arranque, cookie `HttpOnly` + `SameSite=Lax` + `Path=/` + `Max-Age=3600` + `Secure`, defensa CSRF por `Origin`/`Referer` y secretos solo en `.env` | Revisión + `.gitignore` + pytest |
+| RNF-05 | Seguridad: hash **argon2id**, verificación en tiempo constante, límite de 10 intentos fallidos en login (429), JWT `HS256` (`sub=id`) con `SECRET_KEY` validada al arranque, cookie `HttpOnly` + `SameSite=Lax` + `Path=/` + `Max-Age=3600` + `Secure` obligatoria (la app falla al arrancar si `COOKIE_SECURE` no es `true`), HTTPS en todos los entornos (certificados `mkcert` en `certs/`, nunca en Git), defensa CSRF por `Origin`/`Referer` y secretos solo en `.env` | Revisión + `.gitignore` + pytest |
 | RNF-06 | Autorización de mínimo privilegio por rol y por propietario; prevenir acceso a recursos ajenos (IDOR) | PF-09 |
 | RNF-07 | Errores uniformes `{"error": {"codigo", "mensaje", "detalles"}}` (incluidos `RequestValidationError` sin campo `input` y `HTTPException`); sin trazas ni datos sensibles en respuestas ni logs | Revisión + pruebas |
 | RNF-08 | Códigos HTTP correctos: 200, 201, 204, 400/422, 401, 403, 404, 409, 429 | Tabla de endpoints |
@@ -369,7 +369,7 @@ Reglas finales aprobadas (también en la constitución): identificación única 
 **Requisitos:** RF-04, RF-27 (base), RF-28, RF-29; RNF-01, 03, 05 (config), 07, 10, 11, 15, 17.
 
 **Historias de usuario**
-- **HU-E1-01** Como desarrollador quiero clonar el repo y ejecutar la app con pocos comandos. *Criterio:* siguiendo el README en un equipo limpio, `uvicorn app.main:app --reload` abre `/docs` y la página `/`.
+- **HU-E1-01** Como desarrollador quiero clonar el repo y ejecutar la app con pocos comandos. *Criterio:* siguiendo el README en un equipo limpio (entorno virtual, `mkcert` y `scripts/generar_certificados`), `uvicorn app.main:app --reload --ssl-keyfile certs/localhost-key.pem --ssl-certfile certs/localhost.pem` abre `https://localhost:8000/docs` y la página `/`.
 - **HU-E1-02** Como equipo queremos un esquema de BD versionado. *Criterio:* `alembic upgrade head` crea las 4 tablas con todas las restricciones del modelo; `PRAGMA foreign_keys` está activo.
 - **HU-E1-03** Como equipo queremos datos de prueba ficticios. *Criterio:* `python scripts/seed.py` crea 1 coordinación, 2 organizadores, ≥ 6 participantes y ≥ 5 eventos en distintos estados, y puede ejecutarse varias veces sin duplicar; todos los usuarios llevan documentos ficticios obviamente falsos y `scripts/crear_usuario.py` crea organizadores y coordinación pidiendo tipo y número de documento.
 
@@ -394,7 +394,8 @@ Reglas finales aprobadas (también en la constitución): identificación única 
 | 16 | README inicial con guía detallada de entorno virtual (creación con venv/uv y activación en Windows/Linux/macOS), variables de entorno, instalación de dependencias, migración, seed y ejecución | `docs(repo): agrega README inicial con instalacion, entorno virtual y ejecucion` |
 | 17 | `GET /health` y logging por solicitud | `feat(core): agrega endpoint GET /health y logging por solicitud` |
 | 18 | `requirements-dev.txt` con pytest, httpx, ruff y pre-commit | `chore(deps): agrega requirements-dev.txt con pytest, httpx y ruff` |
-| 19 | `tests/conftest.py` con BD temporal, cliente y fábricas por rol | `test(core): agrega conftest con base de datos temporal y fábricas de datos` |
+| 19 | `tests/conftest.py` con BD temporal, cliente HTTPS (`base_url="https://testserver"`) y fábricas por rol | `test(core): agrega conftest con base de datos temporal y fábricas de datos` |
+| 20 | `scripts/generar_certificados.ps1` y `.sh` (mkcert; alternativa openssl), carpeta `certs/` ignorada por Git y arranque HTTPS en el README | `chore(repo): agrega script de certificados locales y arranque por HTTPS` |
 
 **Definido como terminado:** PR a `main` aprobado; la app arranca; migración y seed funcionan en limpio; contrato compartido documentado en `docs/diseno.md`.
 
@@ -635,13 +636,13 @@ Entregables: `docs/requisitos.md` (método de levantamiento, **registro de la en
 |--:|---|---|
 | 0 | Spec, plan y tareas (SDD) en `specs/010-devops-ci-docker/` y PR en borrador | `docs(specs): agrega spec, plan y tareas de E10` |
 | 1 | `Dockerfile`, `.dockerignore`, `scripts/entrypoint.sh`, `.gitattributes` | `build(docker): agrega imagen de la aplicación con entrypoint de migración` |
-| 2 | `docker-compose.yml` con volumen nombrado | `build(docker): agrega docker-compose con volumen persistente para SQLite` |
+| 2 | `docker-compose.yml` con volumen nombrado y montaje de `./certs` (solo lectura) para HTTPS | `build(docker): agrega docker-compose con volumen persistente para SQLite` |
 | 3 | `scripts/check_commits.py` | `ci(commits): agrega validador de Conventional Commits` |
 | 4 | `scripts/export_openapi.py` y primer `specs/contrato/openapi.json` | `ci(specs): agrega exportación y verificación del contrato OpenAPI` |
 | 5 | `.pre-commit-config.yaml` | `chore(ci): agrega hooks de pre-commit y validación del mensaje de commit` |
 | 6 | Workflow job `calidad` | `ci: agrega job de lint, formato y mensajes de commit` |
 | 7 | Workflow job `pruebas` | `ci: agrega job de migraciones, seed, contrato OpenAPI y pytest` |
-| 8 | Workflow job `docker` | `ci: agrega job de build y verificación de /health en Docker` |
+| 8 | Workflow job `docker` (certificado autofirmado con `openssl` y verificación de `/health` por HTTPS) | `ci: agrega job de build y verificación de /health en Docker` |
 | 9 | `.github/pull_request_template.md` y `.github/CODEOWNERS` (preguntar los usuarios de GitHub) | `chore(repo): agrega plantilla de PR y CODEOWNERS` |
 | 10 | `docs/devops.md` con Docker, CI y protección de `main` | `docs(devops): documenta ejecución con Docker, CI y protección de main` |
 | 11 | Protección de `main` (la hace el humano) y captura en `evidencias/devops/` | `docs(devops): agrega evidencia de la protección de main` |
@@ -700,7 +701,7 @@ COPY --chown=appuser:appuser . .
 USER appuser
 EXPOSE 8000
 HEALTHCHECK --interval=30s --timeout=5s --retries=3 \
-  CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')" || exit 1
+  CMD python -c "import ssl, urllib.request; urllib.request.urlopen('https://localhost:8000/health', context=ssl._create_unverified_context())" || exit 1
 ENTRYPOINT ["sh", "scripts/entrypoint.sh"]
 ```
 
@@ -710,7 +711,8 @@ ENTRYPOINT ["sh", "scripts/entrypoint.sh"]
 #!/bin/sh
 set -e
 alembic upgrade head
-exec uvicorn app.main:app --host 0.0.0.0 --port 8000
+exec uvicorn app.main:app --host 0.0.0.0 --port 8000 \
+  --ssl-keyfile /app/certs/localhost-key.pem --ssl-certfile /app/certs/localhost.pem
 ```
 
 `docker-compose.yml` (volumen **nombrado**, no bind mount: SQLite con WAL da problemas sobre carpetas montadas en Windows):
@@ -726,23 +728,25 @@ services:
       DATABASE_URL: sqlite:///./data/eventos.db
     volumes:
       - eventos_data:/app/data
+      - ./certs:/app/certs:ro      # certificados locales (mkcert), nunca en Git
 volumes:
   eventos_data:
 ```
 
-`.gitattributes`: `*.sh text eol=lf` (evita que Windows rompa el entrypoint). `.dockerignore`: `.git`, `.venv`, `__pycache__`, `*.db`, `.env`, `evidencias/`, `docs/`.
+`.gitattributes`: `*.sh text eol=lf` (evita que Windows rompa el entrypoint). `.dockerignore`: `.git`, `.venv`, `__pycache__`, `*.db`, `.env`, `certs/`, `evidencias/`, `docs/` (los certificados se montan por volumen, no se copian a la imagen).
 
 Comandos:
 
 ```bash
 cp .env.example .env                                # una sola vez
-docker compose up --build                           # app en http://localhost:8000 (docs en /docs)
+pwsh scripts/generar_certificados.ps1               # (o sh scripts/generar_certificados.sh) una sola vez, crea certs/
+docker compose up --build                           # app en https://localhost:8000 (docs en /docs)
 docker compose run --rm web python scripts/seed.py  # datos ficticios
 docker compose exec web pytest -q                   # pruebas dentro del contenedor
 docker compose down -v                              # detener y borrar la BD de desarrollo
 ```
 
-Sin Docker: `python -m venv .venv`, instalar `requirements-dev.txt`, `alembic upgrade head`, `python scripts/seed.py`, `uvicorn app.main:app --reload`.
+Sin Docker: `python -m venv .venv`, instalar `requirements-dev.txt`, `mkcert -install` y `scripts/generar_certificados` (crea `certs/`), `alembic upgrade head`, `python scripts/seed.py`, `uvicorn app.main:app --reload --ssl-keyfile certs/localhost-key.pem --ssl-certfile certs/localhost.pem` (sirve en `https://localhost:8000`). Sin `mkcert`, alternativa con `openssl` documentada en el README.
 
 ### Variables de entorno (`.env.example`, sin secretos reales)
 
@@ -752,7 +756,7 @@ Sin Docker: `python -m venv .venv`, instalar `requirements-dev.txt`, `alembic up
 | `DATABASE_URL` | `sqlite:///./data/eventos.db` | Conexión a SQLite |
 | `SECRET_KEY` | `cambia-esto-en-tu-.env-local` | Firma de JWT (valor real solo en tu `.env`) |
 | `ACCESS_TOKEN_MINUTES` | `60` | Vigencia de la sesión |
-| `COOKIE_SECURE` | `false` | `true` si se sirve por HTTPS |
+| `COOKIE_SECURE` | `true` | **Obligatorio `true`** (HTTPS en todos los entornos); la app falla al arrancar si es `false` |
 | `LOG_LEVEL` | `INFO` | Nivel de logs |
 | `APP_TIMEZONE` | `America/Bogota` | Zona de presentación (el almacenamiento es UTC; requiere `tzdata` en `requirements.txt`) |
 
@@ -803,11 +807,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: cp .env.example .env
+      - name: Certificado autofirmado para HTTPS
+        run: |
+          mkdir -p certs
+          openssl req -x509 -newkey rsa:2048 -nodes -days 1 -subj "/CN=localhost" \
+            -keyout certs/localhost-key.pem -out certs/localhost.pem
       - run: docker compose up -d --build
       - name: Esperar /health
         run: |
           for i in $(seq 1 20); do
-            curl -fs http://localhost:8000/health && exit 0
+            curl -fsk https://localhost:8000/health && exit 0
             sleep 3
           done
           docker compose logs web
@@ -885,6 +894,7 @@ flowchart LR
 proyecto-eventos/
 ├── README.md                    # Informe final (E9)
 ├── .gitignore  .gitattributes  .env.example  .dockerignore  ruff.toml  alembic.ini
+├── certs/                       # certificados TLS locales (mkcert); ignorada por Git
 ├── requirements.txt  requirements-dev.txt  .pre-commit-config.yaml
 ├── Dockerfile  docker-compose.yml
 ├── .github/                     # workflows/ci.yml, pull_request_template.md, CODEOWNERS
@@ -894,7 +904,7 @@ proyecto-eventos/
 │   ├── contrato/openapi.json    # generado y verificado en CI
 │   └── 001-fundacion/ ... 010-devops-ci-docker/   # spec.md, plan.md, tasks.md
 ├── migrations/                  # Alembic
-├── scripts/  seed.py  crear_usuario.py  entrypoint.sh  check_commits.py  export_openapi.py
+├── scripts/  seed.py  crear_usuario.py  generar_certificados.ps1/.sh  entrypoint.sh  check_commits.py  export_openapi.py
 ├── docs/
 │   ├── requisitos.md  diseno.md  trazabilidad.md  devops.md
 │   ├── pruebas.md               # Índice de pruebas
@@ -1002,7 +1012,7 @@ Lo crea E1 (Integrante A) en el primer PR y el resto lo consume sin modificarlo 
 - **Configuración por entorno** con `pydantic-settings`; ningún secreto en el código.
 - **Migraciones versionadas** (Alembic) y **seed idempotente**.
 - **Paginación y orden estable** en listados; **índices** en FK y filtros.
-- **Cookies y CSRF**: `HttpOnly`, `SameSite=Lax`, `Path=/`, `Max-Age=3600`, `Secure` según `COOKIE_SECURE`; operaciones mutables solo POST/PUT/PATCH validando `Origin`/`Referer`; `POST /auth/login` con hash `argon2id`, verificación en tiempo constante y límite de 10 intentos fallidos.
+- **Cookies y CSRF**: `HttpOnly`, `SameSite=Lax`, `Path=/`, `Max-Age=3600`, `Secure` obligatoria (HTTPS en todos los entornos); operaciones mutables solo POST/PUT/PATCH validando `Origin`/`Referer`; `POST /auth/login` con hash `argon2id`, verificación en tiempo constante y límite de 10 intentos fallidos.
 - **Logging** con nivel configurable, sin contraseñas ni tokens.
 - **Calidad**: `ruff` (lint + format), type hints, funciones pequeñas, nombres claros.
 - **Fechas**: UTC en BD y API con zona; conversión a `America/Bogota` solo en la presentación.

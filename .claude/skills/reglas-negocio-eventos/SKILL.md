@@ -16,7 +16,7 @@ description: Referencia de estados, reglas de negocio (RN), códigos de error, s
 - **Cancelar inscripción:** hasta el inicio; libera cupo; conserva historial. Reinscripción = registro nuevo si cumple todo.
 - **Cancelar evento:** conserva inscripciones; bloquea inscripciones y asistencia nuevas.
 - **Asistencia:** la registra el organizador del evento, solo inscripciones activas, desde `fecha_inicio` hasta `fecha_fin + 48 h`; correcciones guardan quién y cuándo.
-- **Identidad y seguridad:** `UNIQUE(tipo_documento, numero_documento)`; el correo no es único. Hash **argon2id**, verificación en tiempo constante y límite de **10 intentos fallidos** en login. JWT `HS256` con `sub = usuario.id`; validar `Origin`/`Referer` en mutaciones con cookie. Documento completo para el organizador de su evento, enmascarado (`••••1234`) para coordinación, nunca en logs ni errores (tampoco `input` en 422).
+- **Identidad y seguridad:** `UNIQUE(tipo_documento, numero_documento)`; el correo no es único. Hash **argon2id**, verificación en tiempo constante y límite de **10 intentos fallidos** en login. JWT `HS256` con `sub = usuario.id` en cookie `Secure` (HTTPS en todos los entornos); validar `Origin`/`Referer` en mutaciones con cookie. Documento completo para el organizador de su evento, enmascarado (`••••1234`) para coordinación, nunca en logs ni errores (tampoco `input` en 422).
 - **Fechas:** UTC en BD y comparaciones; API rechaza fechas sin zona (422) y usa ISO-8601 con zona; presentación con `Intl` en `America/Bogota`.
 
 ## Códigos de error (HTTP → código)
