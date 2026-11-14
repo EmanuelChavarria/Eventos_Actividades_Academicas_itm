@@ -7,7 +7,7 @@ from fastapi.responses import HTMLResponse
 
 from app.api.deps import get_current_user_optional
 from app.models.usuario import Usuario
-from app.web import templates
+from app.web.plantillas import templates
 
 router = APIRouter(include_in_schema=False)
 

@@ -1,12 +1,6 @@
-"""Configuración común de Jinja2 y registro de rutas web."""
-
-from __future__ import annotations
-
-from pathlib import Path
+"""Registro de rutas web y reexportación del motor de plantillas Jinja2."""
 
 from fastapi import APIRouter
-from fastapi.templating import Jinja2Templates
-from jinja2 import Environment, FileSystemLoader, select_autoescape
 
 from app.web import (
     asistencia,
@@ -16,14 +10,7 @@ from app.web import (
     inscripciones,
     reportes,
 )
-
-DIRECTORIO_TEMPLATES = Path(__file__).resolve().parent.parent / "templates"
-
-_jinja_env = Environment(
-    loader=FileSystemLoader(str(DIRECTORIO_TEMPLATES)),
-    autoescape=select_autoescape(["html", "xml"]),
-)
-templates = Jinja2Templates(env=_jinja_env)
+from app.web.plantillas import templates
 
 web_router = APIRouter(include_in_schema=False)
 web_router.include_router(catalogo.router)
@@ -32,3 +19,5 @@ web_router.include_router(eventos.router)
 web_router.include_router(inscripciones.router)
 web_router.include_router(asistencia.router)
 web_router.include_router(reportes.router)
+
+__all__ = ["templates", "web_router"]
