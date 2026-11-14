@@ -1,0 +1,142 @@
+{% extends "base.html" %}
+
+{% block titulo %}{{ "Editar evento" if modo == "editar" else "Nuevo evento" }}{% endblock %}
+
+{% block contenido %}
+  <section
+    id="contenedor-form-evento"
+    class="tarjeta"
+    data-modo="{{ modo }}"
+    data-evento-id="{{ evento_id if evento_id is not none else '' }}"
+    aria-labelledby="titulo-form-evento"
+  >
+    <h1 id="titulo-form-evento">
+      {{ "Editar evento" if modo == "editar" else "Crear evento en borrador" }}
+    </h1>
+    <p>Todas las fechas se muestran y envían en horario oficial de Colombia (America/Bogota).</p>
+
+    <form id="form-evento" novalidate>
+      <div class="campo-formulario">
+        <label for="ev-titulo">Título</label>
+        <input id="ev-titulo" name="titulo" type="text" minlength="3" maxlength="200" required />
+      </div>
+
+      <div class="campo-formulario">
+        <label for="ev-descripcion">Descripción</label>
+        <textarea
+          id="ev-descripcion"
+          name="descripcion"
+          rows="4"
+          minlength="10"
+          maxlength="4000"
+          required
+        ></textarea>
+      </div>
+
+      <div class="fila-campos">
+        <div class="campo-formulario">
+          <label for="ev-tipo">Tipo de actividad</label>
+          <select id="ev-tipo" name="tipo" required>
+            <option value="conferencia">Conferencia</option>
+            <option value="taller">Taller</option>
+            <option value="seminario">Seminario</option>
+            <option value="capacitacion">Capacitación</option>
+          </select>
+        </div>
+
+        <div class="campo-formulario">
+          <label for="ev-modalidad">Modalidad</label>
+          <select id="ev-modalidad" name="modalidad" required>
+            <option value="presencial">Presencial</option>
+            <option value="virtual">Virtual</option>
+            <option value="hibrida">Híbrida</option>
+          </select>
+        </div>
+
+        <div class="campo-formulario">
+          <label for="ev-publico">Público objetivo</label>
+          <select id="ev-publico" name="publico_objetivo" required>
+            <option value="todos">Todos</option>
+            <option value="estudiantes">Estudiantes</option>
+            <option value="docentes">Docentes</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="fila-campos">
+        <div class="campo-formulario">
+          <label for="ev-inicio">Fecha y hora de inicio</label>
+          <input id="ev-inicio" name="fecha_inicio" type="datetime-local" required />
+        </div>
+
+        <div class="campo-formulario">
+          <label for="ev-fin">Fecha y hora de fin</label>
+          <input id="ev-fin" name="fecha_fin" type="datetime-local" required />
+        </div>
+
+        <div class="campo-formulario">
+          <label for="ev-limite">Límite de inscripción</label>
+          <input id="ev-limite" name="fecha_limite_inscripcion" type="datetime-local" required />
+        </div>
+      </div>
+
+      <div class="fila-campos">
+        <div class="campo-formulario">
+          <label for="ev-lugar">Lugar o enlace</label>
+          <input id="ev-lugar" name="lugar" type="text" minlength="2" maxlength="200" required />
+        </div>
+
+        <div class="campo-formulario">
+          <label for="ev-cupo">Cupo máximo</label>
+          <input id="ev-cupo" name="cupo_maximo" type="number" min="1" step="1" required />
+        </div>
+      </div>
+
+      <div class="fila-campos">
+        <div class="campo-formulario">
+          <label for="ev-ponente">Ponente (opcional)</label>
+          <input id="ev-ponente" name="ponente" type="text" maxlength="150" />
+        </div>
+
+        <div class="campo-formulario">
+          <label for="ev-resp-nombre">Nombre del responsable</label>
+          <input
+            id="ev-resp-nombre"
+            name="responsable_nombre"
+            type="text"
+            minlength="2"
+            maxlength="120"
+            required
+          />
+        </div>
+
+        <div class="campo-formulario">
+          <label for="ev-resp-correo">Correo del responsable</label>
+          <input
+            id="ev-resp-correo"
+            name="responsable_correo"
+            type="email"
+            maxlength="150"
+            required
+          />
+        </div>
+      </div>
+
+      <div class="campo-formulario">
+        <label for="ev-requisitos">Requisitos previos (opcional)</label>
+        <textarea id="ev-requisitos" name="requisitos" rows="2" maxlength="2000"></textarea>
+      </div>
+
+      <div class="acciones-hero">
+        <button id="btn-guardar-evento" type="submit" class="btn-primario">
+          {{ "Guardar cambios" if modo == "editar" else "Guardar borrador" }}
+        </button>
+        <a href="/organizador/eventos" class="btn-secundario">Volver a mis eventos</a>
+      </div>
+    </form>
+  </section>
+{% endblock %}
+
+{% block scripts %}
+  <script type="module" src="/static/js/eventos.js"></script>
+{% endblock %}

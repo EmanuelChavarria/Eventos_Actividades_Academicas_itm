@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block titulo %}Mis eventos{% endblock %}
+
+{% block contenido %}
+  <section class="tarjeta" aria-labelledby="titulo-mis-eventos">
+    <div class="encabezado-seccion">
+      <div>
+        <h1 id="titulo-mis-eventos">Mis eventos</h1>
+        <p>Administra borradores, eventos publicados, cancelados y finalizados.</p>
+      </div>
+      <a class="btn-primario" href="/organizador/eventos/nuevo">Nuevo evento</a>
+    </div>
+
+    <div id="panel-mis-eventos" class="lista-eventos" aria-live="polite"></div>
+  </section>
+
+  <section id="panel-cancelar" class="tarjeta oculto" aria-labelledby="titulo-cancelar">
+    <h2 id="titulo-cancelar">Cancelar evento</h2>
+    <p id="texto-evento-cancelar"></p>
+    <form id="form-cancelar-evento" novalidate>
+      <div class="campo-formulario">
+        <label for="cancelar-motivo">Motivo de cancelación (mínimo 5 caracteres)</label>
+        <textarea
+          id="cancelar-motivo"
+          name="motivo"
+          rows="3"
+          minlength="5"
+          maxlength="1000"
+          required
+        ></textarea>
+      </div>
+      <div class="acciones-hero">
+        <button id="btn-confirmar-cancelar" type="submit" class="btn-peligro">
+          Confirmar cancelación
+        </button>
+        <button id="btn-cerrar-cancelar" type="button" class="btn-secundario">
+          Volver
+        </button>
+      </div>
+    </form>
+  </section>
+{% endblock %}
+
+{% block scripts %}
+  <script type="module" src="/static/js/eventos.js"></script>
+{% endblock %}

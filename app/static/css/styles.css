@@ -176,3 +176,66 @@ body {
   padding-block: 1rem;
   text-align: center;
 }
+
+.encabezado-seccion,
+.encabezado-tarjeta-evento {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.fila-campos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.75rem;
+}
+
+.lista-eventos {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.tarjeta-evento {
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio);
+  padding: 1rem;
+  background-color: #f8fafc;
+}
+
+.lista-datos-evento {
+  padding-left: 1.25rem;
+  margin: 0.5rem 0 0.75rem;
+}
+
+.insignia {
+  display: inline-block;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border: 1px solid var(--color-borde);
+}
+
+.insignia-publicado {
+  color: var(--color-exito);
+  background-color: var(--color-exito-fondo);
+}
+
+.insignia-cancelado {
+  color: var(--color-error);
+  background-color: var(--color-error-fondo);
+}
+
+.btn-peligro {
+  display: inline-block;
+  padding: 0.6rem 1.1rem;
+  border-radius: var(--radio);
+  font-weight: 600;
+  border: 1px solid var(--color-error);
+  background-color: var(--color-error);
+  color: #ffffff;
+  cursor: pointer;
+}
