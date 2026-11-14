@@ -2,12 +2,12 @@
 
 from __future__ import annotations
 
+import os
 from collections.abc import Generator
 
+from dotenv import dotenv_values
 from sqlalchemy import Engine, create_engine, event
 from sqlalchemy.orm import DeclarativeBase, Session, sessionmaker
-
-from app.core.config import get_settings
 
 
 class Base(DeclarativeBase):
@@ -37,8 +37,18 @@ def crear_motor(database_url: str) -> Engine:
     return motor
 
 
-_settings = get_settings()
-engine = crear_motor(_settings.DATABASE_URL)
+def _obtener_database_url() -> str:
+    """Obtiene DATABASE_URL desde entorno o .env sin exigir secretos web en migraciones."""
+    url_env = os.getenv("DATABASE_URL")
+    if url_env:
+        return url_env
+    valores_dotenv = dotenv_values(".env")
+    if valores_dotenv.get("DATABASE_URL"):
+        return str(valores_dotenv["DATABASE_URL"])
+    return "sqlite:///./eventos.db"
+
+
+engine = crear_motor(_obtener_database_url())
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
