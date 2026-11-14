@@ -4,11 +4,9 @@ from __future__ import annotations
 
 import argparse
 import getpass
-import re
 import sys
 from pathlib import Path
 
-from argon2 import PasswordHasher
 from email_validator import EmailNotValidError, validate_email
 from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
@@ -21,12 +19,16 @@ if __name__ == "__main__":
 
 from app.core.database import SessionLocal
 from app.core.errors import CodigosError, Conflicto, ReglaNegocio
+from app.core.security import (
+    hashear_password,
+)
+from app.core.security import (
+    normalizar_y_validar_documento as _normalizar_documento_core,
+)
 from app.models.enums import Rol, TipoDocumento
 from app.models.usuario import Usuario
 
 _ROLES_PERSONAL = {Rol.ORGANIZADOR, Rol.COORDINACION}
-_PATRON_DIGITOS = re.compile(r"^\d{5,12}$")
-_PATRON_PAS = re.compile(r"^[A-Z0-9]{5,15}$")
 
 
 def normalizar_y_validar_documento(
@@ -34,20 +36,10 @@ def normalizar_y_validar_documento(
     numero_documento: str,
 ) -> str:
     """Normaliza sin espacios ni puntos y valida el formato según tipo de documento."""
-    limpio = numero_documento.strip().replace(" ", "").replace(".", "")
-    if tipo_documento == TipoDocumento.PAS:
-        limpio = limpio.upper()
-        if not _PATRON_PAS.match(limpio):
-            raise ReglaNegocio(
-                mensaje="El pasaporte debe tener entre 5 y 15 caracteres alfanuméricos.",
-            )
-        return limpio
-
-    if not _PATRON_DIGITOS.match(limpio):
-        raise ReglaNegocio(
-            mensaje="El documento CC/CE/TI debe contener solo entre 5 y 12 dígitos.",
-        )
-    return limpio
+    try:
+        return _normalizar_documento_core(tipo_documento, numero_documento)
+    except ValueError as exc:
+        raise ReglaNegocio(mensaje=str(exc)) from exc
 
 
 def crear_personal(
@@ -95,7 +87,7 @@ def crear_personal(
         nombre=nombre_limpio,
         correo=correo_validado,
         tipo_participante=None,
-        hash_password=PasswordHasher().hash(password),
+        hash_password=hashear_password(password),
         rol=rol.value,
         activo=True,
     )
