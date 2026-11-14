@@ -37,7 +37,7 @@ description: "Tareas atómicas para implementar E4 — Catálogo y consulta de e
 **Objetivo:** Exponer `/api/v1/catalogo/eventos` y `/api/v1/catalogo/eventos/{evento_id}` y poner en verde `tests/test_catalogo.py` y `tests/test_scripts_web.py`.
 **Prueba independiente:** `pytest -q` 100 % en verde con todos los casos de API de E4.
 
-- [ ] T-004-05 [US1] [US2] [US3] Implementar en `app/api/v1/catalogo.py` los endpoints `GET /catalogo/eventos` y `GET /catalogo/eventos/{evento_id}` y retirar el stub `501` de `/api/v1/catalogo/eventos` en `tests/test_scripts_web.py` · Commit: `feat(catalogo): expone endpoints rest del catalogo publico` · Terminado cuando: `tests/test_catalogo.py` y `tests/test_scripts_web.py` pasan en verde
+- [x] T-004-05 [US1] [US2] [US3] Implementar en `app/api/v1/catalogo.py` los endpoints `GET /catalogo/eventos` y `GET /catalogo/eventos/{evento_id}` y retirar el stub `501` de `/api/v1/catalogo/eventos` en `tests/test_scripts_web.py` · Commit: `feat(catalogo): expone endpoints rest del catalogo publico` · Terminado cuando: `tests/test_catalogo.py` y `tests/test_scripts_web.py` pasan en verde
 
 ---
 
@@ -60,7 +60,7 @@ description: "Tareas atómicas para implementar E4 — Catálogo y consulta de e
 | T-004-02 | Schemas del catálogo y filtros | T-004-01 | `app/schemas/catalogo.py` | `feat(catalogo): agrega schemas de catalogo, filtros y paginacion` | Schemas y filtros validados | [x] |
 | T-004-03 | Consulta paginada en `evento_repo.py` | T-004-01 | `app/repositories/evento_repo.py` | `feat(catalogo): agrega consulta paginada y filtrada de publicados` | SQL filtrado con escape `LIKE` | [x] |
 | T-004-04 | Servicio `catalogo_service.py` sin FastAPI | T-004-02, T-004-03 | `app/services/catalogo_service.py` | `feat(catalogo): implementa servicio de catalogo y calculo de cupos` | Cupos calculados sin N+1 | [x] |
-| T-004-05 | Router `/catalogo/eventos` y `{id}` | T-004-04 | `app/api/v1/catalogo.py`, `tests/test_scripts_web.py` | `feat(catalogo): expone endpoints rest del catalogo publico` | `test_catalogo.py` y `test_scripts_web.py` OK | [ ] |
+| T-004-05 | Router `/catalogo/eventos` y `{id}` | T-004-04 | `app/api/v1/catalogo.py`, `tests/test_scripts_web.py` | `feat(catalogo): expone endpoints rest del catalogo publico` | `test_catalogo.py` y `test_scripts_web.py` OK | [x] |
 | T-004-06 | Vistas `/`, `/eventos/{id}`, 404 y `catalogo.js` | T-004-05 | `app/web/catalogo.py`, `app/templates/index.html`, `app/templates/catalogo/*`, `app/static/js/catalogo.js` | `feat(web): agrega vistas web de catalogo, detalle y 404` | HTML `200`/`404` sin `innerHTML` | [ ] |
 | T-004-07 | Docs funcionales `PF-03` y `PF-04` | T-004-05 | `docs/pruebas/PF-03.md`, `docs/pruebas/PF-04.md` | `docs(pruebas): documenta casos funcionales PF-03 y PF-04` | Casos y trazabilidad listos | [ ] |
 | T-004-08 | Verificación final `ruff`, `pytest`, HTTPS | T-004-06, T-004-07 | `specs/004-catalogo-eventos/tasks.md` | `docs(specs): marca tareas verificadas de E4 tras pruebas en verde` | `ruff` y `pytest -q` 100 % verdes | [ ] |
