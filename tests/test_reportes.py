@@ -407,3 +407,80 @@ def test_web_panel_consolidado_acceso_y_js_sin_innerhtml(
 
     contenido_js = Path("app/static/js/reportes.js").read_text(encoding="utf-8")
     assert "innerHTML" not in contenido_js
+
+
+def test_web_consolidado_estilos_tabla_y_navegacion_asistencia(
+    client: TestClient,
+    db_session: Session,
+    crear_usuario_factory,
+) -> None:
+    """Regresión E7+E6+E5: CSS compartido, atributos en crearNodo y Ver asistencia."""
+    org = crear_usuario_factory(rol=Rol.ORGANIZADOR, nombre="Org Visual")
+    part = crear_usuario_factory(
+        rol=Rol.PARTICIPANTE,
+        numero_documento="8877665544",
+        nombre="Part Visual",
+    )
+    coord = crear_usuario_factory(rol=Rol.COORDINACION, nombre="Coord Visual")
+    evento = _crear_evento_escenario(
+        db_session,
+        organizador_id=org.id,
+        titulo="Simposio Consolidado",
+    )
+    insc = Inscripcion(
+        evento_id=evento.id,
+        participante_id=part.id,
+        estado=EstadoInscripcion.ACTIVA.value,
+    )
+    db_session.add(insc)
+    db_session.commit()
+
+    # Verificar hoja de estilos compartida para filtros, KPIs y tablas responsivas
+    css = Path("app/static/css/styles.css").read_text(encoding="utf-8")
+    for selector in (
+        ".formulario-filtros",
+        ".campo-busqueda",
+        ".grid-totales",
+        ".tarjeta-metrica",
+        ".tabla-responsiva",
+        ".col-numerica",
+        ".acciones-tabla",
+    ):
+        assert selector in css
+
+    # Verificar api.js procesa atributos (href en enlaces y value en options)
+    api_js = Path("app/static/js/api.js").read_text(encoding="utf-8")
+    assert "atributos = {}" in api_js
+    assert "nodo.setAttribute(clave, String(valor))" in api_js
+
+    # Verificar reportes.js usa mostrarAlerta(alerta, mensaje, "error") en el orden correcto
+    reportes_js = Path("app/static/js/reportes.js").read_text(encoding="utf-8")
+    assert 'mostrarAlerta(alerta, extraerMensajeError(error), "error")' in reportes_js
+    assert "`/eventos/${item.evento_id}/asistencia`" in reportes_js
+
+    # Coordinación consulta consolidado y navega a la vista de asistencia del evento
+    _login(client, coord)
+    panel = client.get("/coordinacion/consolidado")
+    assert panel.status_code == 200
+    assert "tabla-responsiva" in panel.text
+    assert "campo-busqueda" in panel.text
+
+    resp_asist_web = client.get(f"/eventos/{evento.id}/asistencia")
+    assert resp_asist_web.status_code == 200
+    assert 'href="/coordinacion/consolidado"' in resp_asist_web.text
+    assert "tabla-responsiva" in resp_asist_web.text
+
+    resp_asist_api = client.get(f"/api/v1/eventos/{evento.id}/asistencia")
+    assert resp_asist_api.status_code == 200
+    nomina = resp_asist_api.json()
+    assert len(nomina) == 1
+    assert nomina[0]["numero_documento"] == "••••5544"
+
+    # Vista E5 mis inscripciones también usa tabla responsiva y conserva alerta al cancelar
+    _login(client, part)
+    resp_mias = client.get("/mis-inscripciones")
+    assert resp_mias.status_code == 200
+    assert "tabla-responsiva" in resp_mias.text
+    inscripciones_js = Path("app/static/js/inscripciones.js").read_text(encoding="utf-8")
+    assert ".innerHTML" not in inscripciones_js
+    assert "limpiarAlerta: false" in inscripciones_js

@@ -15,30 +15,35 @@
         <h1 id="titulo-asistencia">Asistencia del evento</h1>
         <p>Consulta la nómina de participantes y marca su asistencia dentro de la ventana válida.</p>
       </div>
-      <a class="btn-secundario" href="{{ '/organizador/eventos' if usuario.rol == 'organizador' else '/' }}">
+      <a
+        class="btn-secundario"
+        href="{{ '/organizador/eventos' if usuario.rol == 'organizador' else '/coordinacion/consolidado' if usuario.rol == 'coordinacion' else '/' }}"
+      >
         Volver
       </a>
     </div>
 
     <div id="alerta-asistencia" class="alerta oculto" role="alert" aria-live="polite"></div>
 
-    <table id="tabla-asistencia">
-      <thead>
-        <tr>
-          <th>Participante</th>
-          <th>Documento</th>
-          <th>Correo</th>
-          <th>Inscripción</th>
-          <th>Asistencia</th>
-          <th>Acción</th>
-        </tr>
-      </thead>
-      <tbody id="cuerpo-asistencia">
-        <tr>
-          <td colspan="6">Cargando nómina de participantes...</td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="tabla-responsiva">
+      <table id="tabla-asistencia">
+        <thead>
+          <tr>
+            <th>Participante</th>
+            <th>Documento</th>
+            <th>Correo</th>
+            <th>Inscripción</th>
+            <th>Asistencia</th>
+            <th class="col-acciones">Acción</th>
+          </tr>
+        </thead>
+        <tbody id="cuerpo-asistencia">
+          <tr>
+            <td colspan="6">Cargando nómina de participantes...</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </section>
 {% endblock %}
 

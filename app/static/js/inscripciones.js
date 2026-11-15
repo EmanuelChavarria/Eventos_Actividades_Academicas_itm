@@ -16,11 +16,13 @@ const tabla = document.getElementById("tabla-mis-inscripciones");
 const cuerpo = document.getElementById("cuerpo-mis-inscripciones");
 const alerta = document.getElementById("alerta-mis-inscripciones");
 
-async function cargarMisInscripciones() {
+async function cargarMisInscripciones({ limpiarAlerta = true } = {}) {
   if (!cuerpo) {
     return;
   }
-  ocultarAlerta(alerta);
+  if (limpiarAlerta) {
+    ocultarAlerta(alerta);
+  }
   try {
     const inscripciones = await requestApi("/inscripciones/mias", {
       redireccion401: true,
@@ -93,7 +95,7 @@ function renderizarLista(inscripciones) {
     if (esActiva) {
       const btnCancelar = crearNodo("button", {
         texto: "Cancelar",
-        clase: "btn-secundario",
+        clase: "btn-secundario btn-compacto",
       });
       btnCancelar.dataset.inscripcionId = String(inscripcion.id);
       btnCancelar.onclick = () => cancelarInscripcion(inscripcion.id);
@@ -122,7 +124,7 @@ async function cancelarInscripcion(inscripcionId) {
       method: "PATCH",
     });
     mostrarAlerta(alerta, "Inscripción cancelada correctamente.", "exito");
-    await cargarMisInscripciones();
+    await cargarMisInscripciones({ limpiarAlerta: false });
   } catch (error) {
     btn.disabled = false;
     btn.textContent = "Cancelar";

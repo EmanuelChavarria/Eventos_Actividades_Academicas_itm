@@ -168,12 +168,33 @@ function renderizarEventos(eventos) {
 
   const filas = eventos.map((item) => {
     const fila = crearNodo("tr", {});
-    const columnas = [
-      item.titulo,
-      `${item.tipo} / ${item.modalidad}`,
-      item.estado,
-      formatearFechaBogota(item.fecha_inicio),
-      item.organizador_nombre,
+
+    fila.appendChild(crearNodo("td", { texto: item.titulo, clase: "col-titulo" }));
+    fila.appendChild(crearNodo("td", { texto: `${item.tipo} / ${item.modalidad}` }));
+
+    const celdaEstado = crearNodo("td", {});
+    celdaEstado.appendChild(
+      crearNodo("span", {
+        texto: item.estado,
+        clase: `insignia insignia-${item.estado}`,
+      }),
+    );
+    fila.appendChild(celdaEstado);
+
+    fila.appendChild(
+      crearNodo("td", {
+        texto: formatearFechaBogota(item.fecha_inicio),
+        clase: "col-fecha",
+      }),
+    );
+    fila.appendChild(
+      crearNodo("td", {
+        texto: item.organizador_nombre,
+        clase: "col-organizador",
+      }),
+    );
+
+    const metricas = [
       String(item.cupo_maximo),
       String(item.inscritos_activos),
       String(item.disponibles),
@@ -184,14 +205,14 @@ function renderizarEventos(eventos) {
       String(item.sin_registrar),
       `${Number(item.asistencia_pct).toFixed(2)}%`,
     ];
-    for (const texto of columnas) {
-      fila.appendChild(crearNodo("td", { texto }));
+    for (const texto of metricas) {
+      fila.appendChild(crearNodo("td", { texto, clase: "col-numerica" }));
     }
 
-    const celdaAccion = crearNodo("td", {});
+    const celdaAccion = crearNodo("td", { clase: "col-acciones" });
     const enlace = crearNodo("a", {
       texto: "Ver asistencia",
-      clase: "btn-secundario",
+      clase: "btn-secundario btn-compacto",
       atributos: { href: `/eventos/${item.evento_id}/asistencia` },
     });
     celdaAccion.appendChild(enlace);
@@ -216,7 +237,7 @@ async function cargarConsolidado() {
     renderizarEventos(datos.eventos);
   } catch (error) {
     renderizarMensajeTabla("Error al cargar el reporte consolidado.", "texto-error");
-    mostrarAlerta(alerta, "error", extraerMensajeError(error));
+    mostrarAlerta(alerta, extraerMensajeError(error), "error");
   }
 }
 
@@ -225,11 +246,17 @@ if (formFiltros) {
     event.preventDefault();
     cargarConsolidado();
   });
+  formFiltros.addEventListener("change", () => {
+    actualizarEnlaceCsv(construirParametrosFiltros());
+  });
 }
 
 if (btnLimpiar) {
   btnLimpiar.addEventListener("click", () => {
     formFiltros?.reset();
+    if (selectOrganizador) {
+      selectOrganizador.value = "";
+    }
     cargarConsolidado();
   });
 }

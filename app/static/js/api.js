@@ -122,15 +122,26 @@ export function ocultarAlerta(elemento) {
 }
 
 /**
- * Crea un elemento DOM asignando texto seguro mediante textContent.
+ * Crea un elemento DOM asignando texto seguro mediante textContent y atributos opcionales.
  */
-export function crearNodo(etiqueta, { texto = "", clase = "" } = {}) {
+export function crearNodo(etiqueta, { texto = "", clase = "", atributos = {} } = {}) {
   const nodo = document.createElement(etiqueta);
   if (clase) {
     nodo.className = clase;
   }
   if (texto) {
     nodo.textContent = texto;
+  }
+  if (atributos && typeof atributos === "object") {
+    for (const [clave, valor] of Object.entries(atributos)) {
+      if (
+        !clave.toLowerCase().startsWith("on") &&
+        valor !== undefined &&
+        valor !== null
+      ) {
+        nodo.setAttribute(clave, String(valor));
+      }
+    }
   }
   return nodo;
 }
