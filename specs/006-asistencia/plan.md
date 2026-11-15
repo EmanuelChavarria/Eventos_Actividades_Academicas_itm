@@ -8,15 +8,14 @@
 ## 1. Resumen y decisiones técnicas
 
 - **Capa Repositorio (`app/repositories/asistencia_repo.py`):**
-  - Implementación de `registrar_o_actualizar_asistencia(db, inscripcion_id, estado, usuario_id)`.
+  - Implementación de `registrar_o_actualizar(db, inscripcion_id, estado, usuario_id, ahora)`.
   - Operación UPSERT asegurada por restricción `UNIQUE (inscripcion_id)` en la tabla `asistencias`.
-  - Si no existe registro, inserta con `registrado_por` y `registrado_en` (UTC).
-  - Si ya existe, actualiza `estado`, `actualizado_por` y `actualizado_en` (UTC).
+  - Si no existe registro, inserta con `registrado_por_id`, `registrado_en` y `actualizado_en` (UTC).
+  - Si ya existe, actualiza `estado`, `registrado_por_id` y `actualizado_en` (UTC).
   - Consulta de participantes con su estado de asistencia asociado mediante `LEFT JOIN`.
 - **Capa Servicio (`app/services/asistencia_service.py`):**
-  - Validación de ventana temporal (RN-08):
-    Verifica que `evento.fecha_inicio <= ahora_utc <= evento.fecha_fin + timedelta(hours=48)`. Si no se cumple, lanza `AsistenciaNoPermitidaError`.
-  - Validación de estado: el evento no debe estar cancelado y la inscripción debe estar en estado `activa`.
+  - Validación de ventana temporal (RN-08) mediante `esta_en_ventana_asistencia` (`[fecha_inicio, fecha_fin + 48h]` en UTC). Si no se cumple, lanza `Conflicto(codigo=CodigosError.ASISTENCIA_NO_PERMITIDA)`.
+  - Validación de estado: el evento debe estar `publicado` y la inscripción debe estar en estado `activa`.
   - Control de propiedad (RN-11): verifica que `evento.organizador_id == usuario_id`.
   - Enmascaramiento de datos personales en consultas según el rol del solicitante (`organizador` vs `coordinacion`).
 - **Capa API (`app/api/v1/asistencia.py`):**
@@ -48,7 +47,7 @@
 
 ---
 
-## 4. Estructura de archivos por capa (Propiedad del Integrante B)
+## 4. Estructura de archivos por capa (Propiedad del Integrante A)
 
 ```text
 app/

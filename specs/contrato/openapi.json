@@ -1,6 +1,60 @@
 {
   "components": {
     "schemas": {
+      "AsistenciaRegistroEntrada": {
+        "description": "Carga útil para registrar o corregir asistencia de una inscripción.",
+        "properties": {
+          "estado": {
+            "$ref": "#/components/schemas/EstadoAsistencia"
+          }
+        },
+        "required": [
+          "estado"
+        ],
+        "title": "AsistenciaRegistroEntrada",
+        "type": "object"
+      },
+      "AsistenciaSalida": {
+        "description": "Respuesta pública del registro de asistencia persistido.",
+        "properties": {
+          "actualizado_en": {
+            "format": "date-time",
+            "title": "Actualizado En",
+            "type": "string"
+          },
+          "estado": {
+            "title": "Estado",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "inscripcion_id": {
+            "title": "Inscripcion Id",
+            "type": "integer"
+          },
+          "registrado_en": {
+            "format": "date-time",
+            "title": "Registrado En",
+            "type": "string"
+          },
+          "registrado_por_id": {
+            "title": "Registrado Por Id",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "inscripcion_id",
+          "estado",
+          "registrado_por_id",
+          "registrado_en",
+          "actualizado_en"
+        ],
+        "title": "AsistenciaSalida",
+        "type": "object"
+      },
       "CatalogoEventoDetalle": {
         "description": "Detalle completo de un evento publicado expuesto en el catálogo público (RF-12).",
         "properties": {
@@ -251,6 +305,15 @@
         ],
         "title": "CatalogoPaginadoSalida",
         "type": "object"
+      },
+      "EstadoAsistencia": {
+        "description": "Estados registrables de asistencia (sin registro = pendiente).",
+        "enum": [
+          "presente",
+          "ausente"
+        ],
+        "title": "EstadoAsistencia",
+        "type": "string"
       },
       "EstadoEvento": {
         "description": "Estados persistidos del ciclo de vida de un evento.",
@@ -980,6 +1043,106 @@
         "title": "Modalidad",
         "type": "string"
       },
+      "ParticipanteAsistenciaSalida": {
+        "description": "Elemento de la nómina de asistencia con privacidad diferencial según rol.",
+        "properties": {
+          "actualizado_en": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Actualizado En"
+          },
+          "asistencia_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Asistencia Id"
+          },
+          "correo": {
+            "title": "Correo",
+            "type": "string"
+          },
+          "estado_asistencia": {
+            "enum": [
+              "presente",
+              "ausente",
+              "pendiente"
+            ],
+            "title": "Estado Asistencia",
+            "type": "string"
+          },
+          "estado_inscripcion": {
+            "title": "Estado Inscripcion",
+            "type": "string"
+          },
+          "inscripcion_id": {
+            "title": "Inscripcion Id",
+            "type": "integer"
+          },
+          "nombre": {
+            "title": "Nombre",
+            "type": "string"
+          },
+          "numero_documento": {
+            "title": "Numero Documento",
+            "type": "string"
+          },
+          "participante_id": {
+            "title": "Participante Id",
+            "type": "integer"
+          },
+          "registrado_en": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Registrado En"
+          },
+          "registrado_por_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Registrado Por Id"
+          },
+          "tipo_documento": {
+            "title": "Tipo Documento",
+            "type": "string"
+          }
+        },
+        "required": [
+          "inscripcion_id",
+          "participante_id",
+          "nombre",
+          "correo",
+          "tipo_documento",
+          "numero_documento",
+          "estado_inscripcion",
+          "estado_asistencia"
+        ],
+        "title": "ParticipanteAsistenciaSalida",
+        "type": "object"
+      },
       "PublicoObjetivo": {
         "description": "Público habilitado para inscribirse en el evento.",
         "enum": [
@@ -1636,8 +1799,8 @@
     },
     "/api/v1/eventos/{evento_id}/asistencia": {
       "get": {
-        "description": "Stub E1 para consulta de asistencia (implementación en E6).",
-        "operationId": "listar_asistencia_stub_api_v1_eventos__evento_id__asistencia_get",
+        "description": "Organizador dueño ve documento completo; coordinación lo ve enmascarado.",
+        "operationId": "listar_asistencia_api_v1_eventos__evento_id__asistencia_get",
         "parameters": [
           {
             "in": "path",
@@ -1650,6 +1813,20 @@
           }
         ],
         "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/ParticipanteAsistenciaSalida"
+                  },
+                  "title": "Response Listar Asistencia Api V1 Eventos  Evento Id  Asistencia Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
           "422": {
             "content": {
               "application/json": {
@@ -1659,17 +1836,9 @@
               }
             },
             "description": "Validation Error"
-          },
-          "501": {
-            "content": {
-              "application/json": {
-                "schema": {}
-              }
-            },
-            "description": "Successful Response"
           }
         },
-        "summary": "Listar Asistencia Stub",
+        "summary": "Listar nómina de participantes con asistencia y privacidad diferencial",
         "tags": [
           "Asistencia"
         ]
@@ -1823,6 +1992,68 @@
         "summary": "Inscribirse en un evento publicado",
         "tags": [
           "Inscripciones"
+        ]
+      }
+    },
+    "/api/v1/eventos/{evento_id}/inscripciones/{inscripcion_id}/asistencia": {
+      "put": {
+        "description": "Registra o corrige asistencia dentro de la ventana válida (inicio hasta +48 h).",
+        "operationId": "registrar_o_corregir_asistencia_api_v1_eventos__evento_id__inscripciones__inscripcion_id__asistencia_put",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "evento_id",
+            "required": true,
+            "schema": {
+              "title": "Evento Id",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "path",
+            "name": "inscripcion_id",
+            "required": true,
+            "schema": {
+              "title": "Inscripcion Id",
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AsistenciaRegistroEntrada"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AsistenciaSalida"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Registrar o corregir asistencia de una inscripción activa",
+        "tags": [
+          "Asistencia"
         ]
       }
     },

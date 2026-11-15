@@ -147,6 +147,11 @@ function renderizarTarjetaEvento(ev) {
       crearEnlaceBoton("Editar", `/organizador/eventos/${ev.id}/editar`, "btn-secundario"),
     );
   }
+  if (ev.estado_efectivo === "publicado" || ev.estado_efectivo === "finalizado") {
+    acciones.appendChild(
+      crearEnlaceBoton("Asistencia", `/eventos/${ev.id}/asistencia`, "btn-secundario"),
+    );
+  }
   if (ev.estado_efectivo === "borrador") {
     const btnPublicar = crearNodo("button", { texto: "Publicar", clase: "btn-primario" });
     btnPublicar.type = "button";
