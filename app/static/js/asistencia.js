@@ -39,7 +39,7 @@ function renderizarMensajeTabla(texto, clase = "") {
 }
 
 function crearBotonEstado(eventoId, item, estadoObjetivo, etiqueta, esActivo) {
-  const clase = esActivo ? "btn-primario" : "btn-secundario";
+  const clase = esActivo ? "btn-primario btn-compacto" : "btn-secundario btn-compacto";
   const btn = crearNodo("button", { texto: etiqueta, clase });
   btn.type = "button";
   btn.dataset.inscripcionId = String(item.inscripcion_id);
@@ -75,11 +75,11 @@ function renderizarNomina(eventoId, rolUsuario, items) {
       fila.appendChild(crearNodo("td", { texto }));
     }
 
-    const celdaAccion = crearNodo("td", {});
+    const celdaAccion = crearNodo("td", { clase: "col-acciones" });
     const puedeMarcar =
       rolUsuario === "organizador" && item.estado_inscripcion === "activa";
     if (puedeMarcar) {
-      const grupo = crearNodo("div", { clase: "acciones-hero" });
+      const grupo = crearNodo("div", { clase: "acciones-tabla" });
       grupo.appendChild(
         crearBotonEstado(
           eventoId,
@@ -109,7 +109,7 @@ function renderizarNomina(eventoId, rolUsuario, items) {
   cuerpoTabla.replaceChildren(...filas);
 }
 
-async function cargarNomina() {
+async function cargarNomina({ limpiarAlerta = true } = {}) {
   if (!panelAsistencia || !cuerpoTabla) {
     return;
   }
@@ -118,7 +118,9 @@ async function cargarNomina() {
   if (!eventoId) {
     return;
   }
-  ocultarAlerta(alerta);
+  if (limpiarAlerta) {
+    ocultarAlerta(alerta);
+  }
   try {
     const items = await requestApi(`/eventos/${eventoId}/asistencia`, {
       redireccion401: true,
@@ -154,10 +156,10 @@ async function marcarAsistencia(eventoId, inscripcionId, estado) {
       `Asistencia actualizada a "${estado}".`,
       "exito",
     );
-    await cargarNomina();
+    await cargarNomina({ limpiarAlerta: false });
   } catch (error) {
     mostrarAlerta(alerta, extraerMensajeError(error), "error");
-    await cargarNomina();
+    await cargarNomina({ limpiarAlerta: false });
   }
 }
 
