@@ -1,0 +1,1648 @@
+{
+  "components": {
+    "schemas": {
+      "CatalogoEventoDetalle": {
+        "description": "Detalle completo de un evento publicado expuesto en el catálogo público (RF-12).",
+        "properties": {
+          "cupo_maximo": {
+            "title": "Cupo Maximo",
+            "type": "integer"
+          },
+          "cupos_disponibles": {
+            "title": "Cupos Disponibles",
+            "type": "integer"
+          },
+          "descripcion": {
+            "title": "Descripcion",
+            "type": "string"
+          },
+          "estado_efectivo": {
+            "title": "Estado Efectivo",
+            "type": "string"
+          },
+          "fecha_fin": {
+            "format": "date-time",
+            "title": "Fecha Fin",
+            "type": "string"
+          },
+          "fecha_inicio": {
+            "format": "date-time",
+            "title": "Fecha Inicio",
+            "type": "string"
+          },
+          "fecha_limite_inscripcion": {
+            "format": "date-time",
+            "title": "Fecha Limite Inscripcion",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "inscripciones_abiertas": {
+            "title": "Inscripciones Abiertas",
+            "type": "boolean"
+          },
+          "inscripciones_activas": {
+            "title": "Inscripciones Activas",
+            "type": "integer"
+          },
+          "lugar": {
+            "title": "Lugar",
+            "type": "string"
+          },
+          "modalidad": {
+            "$ref": "#/components/schemas/Modalidad"
+          },
+          "ponente": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ponente"
+          },
+          "publico_objetivo": {
+            "$ref": "#/components/schemas/PublicoObjetivo"
+          },
+          "requisitos": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Requisitos"
+          },
+          "responsable_correo": {
+            "title": "Responsable Correo",
+            "type": "string"
+          },
+          "responsable_nombre": {
+            "title": "Responsable Nombre",
+            "type": "string"
+          },
+          "tipo": {
+            "$ref": "#/components/schemas/TipoEvento"
+          },
+          "titulo": {
+            "title": "Titulo",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "titulo",
+          "descripcion",
+          "tipo",
+          "fecha_inicio",
+          "fecha_fin",
+          "fecha_limite_inscripcion",
+          "lugar",
+          "modalidad",
+          "publico_objetivo",
+          "ponente",
+          "cupo_maximo",
+          "inscripciones_activas",
+          "cupos_disponibles",
+          "inscripciones_abiertas",
+          "estado_efectivo",
+          "requisitos",
+          "responsable_nombre",
+          "responsable_correo"
+        ],
+        "title": "CatalogoEventoDetalle",
+        "type": "object"
+      },
+      "CatalogoEventoResumen": {
+        "description": "Resumen público de un evento en el catálogo con disponibilidad calculada.",
+        "properties": {
+          "cupo_maximo": {
+            "title": "Cupo Maximo",
+            "type": "integer"
+          },
+          "cupos_disponibles": {
+            "title": "Cupos Disponibles",
+            "type": "integer"
+          },
+          "descripcion": {
+            "title": "Descripcion",
+            "type": "string"
+          },
+          "estado_efectivo": {
+            "title": "Estado Efectivo",
+            "type": "string"
+          },
+          "fecha_fin": {
+            "format": "date-time",
+            "title": "Fecha Fin",
+            "type": "string"
+          },
+          "fecha_inicio": {
+            "format": "date-time",
+            "title": "Fecha Inicio",
+            "type": "string"
+          },
+          "fecha_limite_inscripcion": {
+            "format": "date-time",
+            "title": "Fecha Limite Inscripcion",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "inscripciones_abiertas": {
+            "title": "Inscripciones Abiertas",
+            "type": "boolean"
+          },
+          "inscripciones_activas": {
+            "title": "Inscripciones Activas",
+            "type": "integer"
+          },
+          "lugar": {
+            "title": "Lugar",
+            "type": "string"
+          },
+          "modalidad": {
+            "$ref": "#/components/schemas/Modalidad"
+          },
+          "ponente": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ponente"
+          },
+          "publico_objetivo": {
+            "$ref": "#/components/schemas/PublicoObjetivo"
+          },
+          "tipo": {
+            "$ref": "#/components/schemas/TipoEvento"
+          },
+          "titulo": {
+            "title": "Titulo",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "titulo",
+          "descripcion",
+          "tipo",
+          "fecha_inicio",
+          "fecha_fin",
+          "fecha_limite_inscripcion",
+          "lugar",
+          "modalidad",
+          "publico_objetivo",
+          "ponente",
+          "cupo_maximo",
+          "inscripciones_activas",
+          "cupos_disponibles",
+          "inscripciones_abiertas",
+          "estado_efectivo"
+        ],
+        "title": "CatalogoEventoResumen",
+        "type": "object"
+      },
+      "CatalogoPaginadoSalida": {
+        "description": "Respuesta paginada del catálogo público de eventos.",
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/CatalogoEventoResumen"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "pagina": {
+            "title": "Pagina",
+            "type": "integer"
+          },
+          "tamano": {
+            "title": "Tamano",
+            "type": "integer"
+          },
+          "total": {
+            "title": "Total",
+            "type": "integer"
+          },
+          "total_paginas": {
+            "title": "Total Paginas",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "items",
+          "total",
+          "pagina",
+          "tamano",
+          "total_paginas"
+        ],
+        "title": "CatalogoPaginadoSalida",
+        "type": "object"
+      },
+      "EstadoEvento": {
+        "description": "Estados persistidos del ciclo de vida de un evento.",
+        "enum": [
+          "borrador",
+          "publicado",
+          "cancelado"
+        ],
+        "title": "EstadoEvento",
+        "type": "string"
+      },
+      "EventoActualizar": {
+        "additionalProperties": false,
+        "description": "Campos editables de un evento existente vía `PATCH` (RF-07, RN-09).",
+        "properties": {
+          "cupo_maximo": {
+            "anyOf": [
+              {
+                "minimum": 1.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cupo Maximo"
+          },
+          "descripcion": {
+            "anyOf": [
+              {
+                "maxLength": 4000,
+                "minLength": 10,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Descripcion"
+          },
+          "fecha_fin": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fecha Fin"
+          },
+          "fecha_inicio": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fecha Inicio"
+          },
+          "fecha_limite_inscripcion": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fecha Limite Inscripcion"
+          },
+          "lugar": {
+            "anyOf": [
+              {
+                "maxLength": 200,
+                "minLength": 2,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lugar"
+          },
+          "modalidad": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Modalidad"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "ponente": {
+            "anyOf": [
+              {
+                "maxLength": 150,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ponente"
+          },
+          "publico_objetivo": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PublicoObjetivo"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "requisitos": {
+            "anyOf": [
+              {
+                "maxLength": 2000,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Requisitos"
+          },
+          "responsable_correo": {
+            "anyOf": [
+              {
+                "format": "email",
+                "maxLength": 150,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Responsable Correo"
+          },
+          "responsable_nombre": {
+            "anyOf": [
+              {
+                "maxLength": 120,
+                "minLength": 2,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Responsable Nombre"
+          },
+          "tipo": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/TipoEvento"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "titulo": {
+            "anyOf": [
+              {
+                "maxLength": 200,
+                "minLength": 3,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Titulo"
+          }
+        },
+        "title": "EventoActualizar",
+        "type": "object"
+      },
+      "EventoCancelar": {
+        "additionalProperties": false,
+        "description": "Carga útil para cancelar un evento publicado indicando motivo (RF-08).",
+        "properties": {
+          "motivo": {
+            "maxLength": 1000,
+            "minLength": 5,
+            "title": "Motivo",
+            "type": "string"
+          }
+        },
+        "required": [
+          "motivo"
+        ],
+        "title": "EventoCancelar",
+        "type": "object"
+      },
+      "EventoCrear": {
+        "additionalProperties": false,
+        "description": "Datos requeridos para crear un evento en estado `borrador` (RF-05).",
+        "properties": {
+          "cupo_maximo": {
+            "minimum": 1.0,
+            "title": "Cupo Maximo",
+            "type": "integer"
+          },
+          "descripcion": {
+            "maxLength": 4000,
+            "minLength": 10,
+            "title": "Descripcion",
+            "type": "string"
+          },
+          "fecha_fin": {
+            "format": "date-time",
+            "title": "Fecha Fin",
+            "type": "string"
+          },
+          "fecha_inicio": {
+            "format": "date-time",
+            "title": "Fecha Inicio",
+            "type": "string"
+          },
+          "fecha_limite_inscripcion": {
+            "format": "date-time",
+            "title": "Fecha Limite Inscripcion",
+            "type": "string"
+          },
+          "lugar": {
+            "maxLength": 200,
+            "minLength": 2,
+            "title": "Lugar",
+            "type": "string"
+          },
+          "modalidad": {
+            "$ref": "#/components/schemas/Modalidad"
+          },
+          "ponente": {
+            "anyOf": [
+              {
+                "maxLength": 150,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ponente"
+          },
+          "publico_objetivo": {
+            "$ref": "#/components/schemas/PublicoObjetivo",
+            "default": "todos"
+          },
+          "requisitos": {
+            "anyOf": [
+              {
+                "maxLength": 2000,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Requisitos"
+          },
+          "responsable_correo": {
+            "format": "email",
+            "maxLength": 150,
+            "title": "Responsable Correo",
+            "type": "string"
+          },
+          "responsable_nombre": {
+            "maxLength": 120,
+            "minLength": 2,
+            "title": "Responsable Nombre",
+            "type": "string"
+          },
+          "tipo": {
+            "$ref": "#/components/schemas/TipoEvento"
+          },
+          "titulo": {
+            "maxLength": 200,
+            "minLength": 3,
+            "title": "Titulo",
+            "type": "string"
+          }
+        },
+        "required": [
+          "titulo",
+          "descripcion",
+          "tipo",
+          "fecha_inicio",
+          "fecha_fin",
+          "fecha_limite_inscripcion",
+          "lugar",
+          "modalidad",
+          "responsable_nombre",
+          "responsable_correo",
+          "cupo_maximo"
+        ],
+        "title": "EventoCrear",
+        "type": "object"
+      },
+      "EventoSalida": {
+        "description": "Representación de gestión del evento con estado efectivo y ocupación calculada.",
+        "properties": {
+          "actualizado_en": {
+            "format": "date-time",
+            "title": "Actualizado En",
+            "type": "string"
+          },
+          "creado_en": {
+            "format": "date-time",
+            "title": "Creado En",
+            "type": "string"
+          },
+          "cupo_maximo": {
+            "title": "Cupo Maximo",
+            "type": "integer"
+          },
+          "cupos_disponibles": {
+            "title": "Cupos Disponibles",
+            "type": "integer"
+          },
+          "descripcion": {
+            "title": "Descripcion",
+            "type": "string"
+          },
+          "estado": {
+            "$ref": "#/components/schemas/EstadoEvento"
+          },
+          "estado_efectivo": {
+            "title": "Estado Efectivo",
+            "type": "string"
+          },
+          "fecha_fin": {
+            "format": "date-time",
+            "title": "Fecha Fin",
+            "type": "string"
+          },
+          "fecha_inicio": {
+            "format": "date-time",
+            "title": "Fecha Inicio",
+            "type": "string"
+          },
+          "fecha_limite_inscripcion": {
+            "format": "date-time",
+            "title": "Fecha Limite Inscripcion",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "inscripciones_abiertas": {
+            "title": "Inscripciones Abiertas",
+            "type": "boolean"
+          },
+          "inscripciones_activas": {
+            "title": "Inscripciones Activas",
+            "type": "integer"
+          },
+          "lugar": {
+            "title": "Lugar",
+            "type": "string"
+          },
+          "modalidad": {
+            "$ref": "#/components/schemas/Modalidad"
+          },
+          "motivo_cancelacion": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Motivo Cancelacion"
+          },
+          "organizador_id": {
+            "title": "Organizador Id",
+            "type": "integer"
+          },
+          "ponente": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ponente"
+          },
+          "publico_objetivo": {
+            "$ref": "#/components/schemas/PublicoObjetivo"
+          },
+          "requisitos": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Requisitos"
+          },
+          "responsable_correo": {
+            "title": "Responsable Correo",
+            "type": "string"
+          },
+          "responsable_nombre": {
+            "title": "Responsable Nombre",
+            "type": "string"
+          },
+          "tipo": {
+            "$ref": "#/components/schemas/TipoEvento"
+          },
+          "titulo": {
+            "title": "Titulo",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "titulo",
+          "descripcion",
+          "tipo",
+          "fecha_inicio",
+          "fecha_fin",
+          "fecha_limite_inscripcion",
+          "lugar",
+          "modalidad",
+          "publico_objetivo",
+          "ponente",
+          "requisitos",
+          "responsable_nombre",
+          "responsable_correo",
+          "cupo_maximo",
+          "estado",
+          "estado_efectivo",
+          "inscripciones_abiertas",
+          "inscripciones_activas",
+          "cupos_disponibles",
+          "motivo_cancelacion",
+          "organizador_id",
+          "creado_en",
+          "actualizado_en"
+        ],
+        "title": "EventoSalida",
+        "type": "object"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "title": "Detail",
+            "type": "array"
+          }
+        },
+        "title": "HTTPValidationError",
+        "type": "object"
+      },
+      "LoginEntrada": {
+        "additionalProperties": false,
+        "description": "Credenciales de inicio de sesión mediante documento y contraseña (RF-02).",
+        "properties": {
+          "numero_documento": {
+            "maxLength": 30,
+            "minLength": 5,
+            "title": "Numero Documento",
+            "type": "string"
+          },
+          "password": {
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Password",
+            "type": "string"
+          },
+          "tipo_documento": {
+            "$ref": "#/components/schemas/TipoDocumento"
+          }
+        },
+        "required": [
+          "tipo_documento",
+          "numero_documento",
+          "password"
+        ],
+        "title": "LoginEntrada",
+        "type": "object"
+      },
+      "Modalidad": {
+        "description": "Modalidad de realización del evento.",
+        "enum": [
+          "presencial",
+          "virtual",
+          "hibrida"
+        ],
+        "title": "Modalidad",
+        "type": "string"
+      },
+      "PublicoObjetivo": {
+        "description": "Público habilitado para inscribirse en el evento.",
+        "enum": [
+          "todos",
+          "estudiantes",
+          "docentes"
+        ],
+        "title": "PublicoObjetivo",
+        "type": "string"
+      },
+      "RegistroEntrada": {
+        "additionalProperties": false,
+        "description": "Datos requeridos para registrar públicamente a un participante (RF-01, RN-21).",
+        "properties": {
+          "correo": {
+            "format": "email",
+            "maxLength": 150,
+            "title": "Correo",
+            "type": "string"
+          },
+          "nombre": {
+            "maxLength": 120,
+            "minLength": 2,
+            "title": "Nombre",
+            "type": "string"
+          },
+          "numero_documento": {
+            "maxLength": 30,
+            "minLength": 5,
+            "title": "Numero Documento",
+            "type": "string"
+          },
+          "password": {
+            "maxLength": 128,
+            "minLength": 8,
+            "title": "Password",
+            "type": "string"
+          },
+          "tipo_documento": {
+            "$ref": "#/components/schemas/TipoDocumento"
+          },
+          "tipo_participante": {
+            "$ref": "#/components/schemas/TipoParticipante"
+          }
+        },
+        "required": [
+          "tipo_documento",
+          "numero_documento",
+          "nombre",
+          "correo",
+          "tipo_participante",
+          "password"
+        ],
+        "title": "RegistroEntrada",
+        "type": "object"
+      },
+      "Rol": {
+        "description": "Roles de autorización en el sistema.",
+        "enum": [
+          "participante",
+          "organizador",
+          "coordinacion"
+        ],
+        "title": "Rol",
+        "type": "string"
+      },
+      "TipoDocumento": {
+        "description": "Tipos de documento aceptados para identificación única.",
+        "enum": [
+          "CC",
+          "CE",
+          "TI",
+          "PAS"
+        ],
+        "title": "TipoDocumento",
+        "type": "string"
+      },
+      "TipoEvento": {
+        "description": "Categorías permitidas de eventos académicos.",
+        "enum": [
+          "conferencia",
+          "taller",
+          "seminario",
+          "capacitacion"
+        ],
+        "title": "TipoEvento",
+        "type": "string"
+      },
+      "TipoParticipante": {
+        "description": "Clasificación académica del participante.",
+        "enum": [
+          "estudiante",
+          "docente"
+        ],
+        "title": "TipoParticipante",
+        "type": "string"
+      },
+      "UsuarioSalida": {
+        "description": "Representación pública segura del usuario sin exponer el hash de contraseña.",
+        "properties": {
+          "activo": {
+            "title": "Activo",
+            "type": "boolean"
+          },
+          "correo": {
+            "title": "Correo",
+            "type": "string"
+          },
+          "creado_en": {
+            "format": "date-time",
+            "title": "Creado En",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "nombre": {
+            "title": "Nombre",
+            "type": "string"
+          },
+          "numero_documento": {
+            "title": "Numero Documento",
+            "type": "string"
+          },
+          "rol": {
+            "$ref": "#/components/schemas/Rol"
+          },
+          "tipo_documento": {
+            "$ref": "#/components/schemas/TipoDocumento"
+          },
+          "tipo_participante": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/TipoParticipante"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "tipo_documento",
+          "numero_documento",
+          "nombre",
+          "correo",
+          "rol",
+          "activo",
+          "creado_en"
+        ],
+        "title": "UsuarioSalida",
+        "type": "object"
+      },
+      "ValidationError": {
+        "properties": {
+          "ctx": {
+            "title": "Context",
+            "type": "object"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "title": "Location",
+            "type": "array"
+          },
+          "msg": {
+            "title": "Message",
+            "type": "string"
+          },
+          "type": {
+            "title": "Error Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError",
+        "type": "object"
+      }
+    }
+  },
+  "info": {
+    "description": "Plataforma para organización de eventos y actividades académicas.",
+    "title": "Eventos y Actividades Académicas",
+    "version": "0.1.0"
+  },
+  "openapi": "3.1.0",
+  "paths": {
+    "/api/v1/auth/login": {
+      "post": {
+        "description": "Autentica con documento y contraseña y entrega cookie JWT segura.",
+        "operationId": "iniciar_sesion_api_v1_auth_login_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginEntrada"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UsuarioSalida"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Iniciar sesión",
+        "tags": [
+          "Autenticación"
+        ]
+      }
+    },
+    "/api/v1/auth/logout": {
+      "post": {
+        "description": "Elimina la cookie de sesión del navegador.",
+        "operationId": "cerrar_sesion_api_v1_auth_logout_post",
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Cerrar sesión",
+        "tags": [
+          "Autenticación"
+        ]
+      }
+    },
+    "/api/v1/auth/registro": {
+      "post": {
+        "description": "Registra públicamente un nuevo participante (estudiante o docente).",
+        "operationId": "registrar_participante_api_v1_auth_registro_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegistroEntrada"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UsuarioSalida"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Registrar participante",
+        "tags": [
+          "Autenticación"
+        ]
+      }
+    },
+    "/api/v1/auth/yo": {
+      "get": {
+        "description": "Retorna la información pública del usuario autenticado y activo.",
+        "operationId": "obtener_usuario_actual_api_v1_auth_yo_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UsuarioSalida"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Consultar usuario autenticado",
+        "tags": [
+          "Autenticación"
+        ]
+      }
+    },
+    "/api/v1/catalogo/eventos": {
+      "get": {
+        "description": "Devuelve eventos publicados paginados con filtros y disponibilidad real.",
+        "operationId": "listar_catalogo_api_v1_catalogo_eventos_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "tipo",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/TipoEvento"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Tipo"
+            }
+          },
+          {
+            "in": "query",
+            "name": "modalidad",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/Modalidad"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Modalidad"
+            }
+          },
+          {
+            "in": "query",
+            "name": "fecha_desde",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Fecha Desde"
+            }
+          },
+          {
+            "in": "query",
+            "name": "fecha_hasta",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Fecha Hasta"
+            }
+          },
+          {
+            "in": "query",
+            "name": "texto",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "maxLength": 120,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Texto"
+            }
+          },
+          {
+            "in": "query",
+            "name": "incluir_finalizados",
+            "required": false,
+            "schema": {
+              "default": false,
+              "title": "Incluir Finalizados",
+              "type": "boolean"
+            }
+          },
+          {
+            "in": "query",
+            "name": "pagina",
+            "required": false,
+            "schema": {
+              "default": 1,
+              "minimum": 1,
+              "title": "Pagina",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "tamano",
+            "required": false,
+            "schema": {
+              "default": 10,
+              "maximum": 50,
+              "minimum": 1,
+              "title": "Tamano",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CatalogoPaginadoSalida"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Listar catálogo público de eventos publicados",
+        "tags": [
+          "Catálogo"
+        ]
+      }
+    },
+    "/api/v1/catalogo/eventos/{evento_id}": {
+      "get": {
+        "description": "Devuelve detalle y cupos disponibles en tiempo real o 404 si no es público.",
+        "operationId": "obtener_detalle_catalogo_api_v1_catalogo_eventos__evento_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "evento_id",
+            "required": true,
+            "schema": {
+              "title": "Evento Id",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CatalogoEventoDetalle"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Consultar detalle público de un evento publicado",
+        "tags": [
+          "Catálogo"
+        ]
+      }
+    },
+    "/api/v1/eventos": {
+      "post": {
+        "description": "Crea una actividad académica en estado `borrador` asignada al organizador actual.",
+        "operationId": "crear_evento_api_v1_eventos_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EventoCrear"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EventoSalida"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Crear un evento en borrador",
+        "tags": [
+          "eventos"
+        ]
+      }
+    },
+    "/api/v1/eventos/{evento_id}": {
+      "get": {
+        "description": "Devuelve el detalle de un evento perteneciente al organizador autenticado.",
+        "operationId": "obtener_evento_propio_api_v1_eventos__evento_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "evento_id",
+            "required": true,
+            "schema": {
+              "title": "Evento Id",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EventoSalida"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Obtener detalle de gestión de un evento propio",
+        "tags": [
+          "eventos"
+        ]
+      },
+      "patch": {
+        "description": "Actualiza datos o cupo de un evento propio no cancelado ni finalizado.",
+        "operationId": "actualizar_evento_api_v1_eventos__evento_id__patch",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "evento_id",
+            "required": true,
+            "schema": {
+              "title": "Evento Id",
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EventoActualizar"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EventoSalida"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Editar un evento propio",
+        "tags": [
+          "eventos"
+        ]
+      }
+    },
+    "/api/v1/eventos/{evento_id}/asistencia": {
+      "get": {
+        "description": "Stub E1 para consulta de asistencia (implementación en E6).",
+        "operationId": "listar_asistencia_stub_api_v1_eventos__evento_id__asistencia_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "evento_id",
+            "required": true,
+            "schema": {
+              "title": "Evento Id",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "501": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Listar Asistencia Stub",
+        "tags": [
+          "Asistencia"
+        ]
+      }
+    },
+    "/api/v1/eventos/{evento_id}/cancelar": {
+      "post": {
+        "description": "Cancela un evento publicado no finalizado conservando sus inscripciones.",
+        "operationId": "cancelar_evento_api_v1_eventos__evento_id__cancelar_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "evento_id",
+            "required": true,
+            "schema": {
+              "title": "Evento Id",
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EventoCancelar"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EventoSalida"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Cancelar un evento publicado indicando motivo",
+        "tags": [
+          "eventos"
+        ]
+      }
+    },
+    "/api/v1/eventos/{evento_id}/publicar": {
+      "post": {
+        "description": "Publica un evento en `borrador` sin aprobación previa si cumple fechas y cupo.",
+        "operationId": "publicar_evento_api_v1_eventos__evento_id__publicar_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "evento_id",
+            "required": true,
+            "schema": {
+              "title": "Evento Id",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EventoSalida"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Publicar directamente un evento propio",
+        "tags": [
+          "eventos"
+        ]
+      }
+    },
+    "/api/v1/inscripciones/mias": {
+      "get": {
+        "description": "Stub E1 para consulta de inscripciones (implementación en E5).",
+        "operationId": "listar_mis_inscripciones_stub_api_v1_inscripciones_mias_get",
+        "responses": {
+          "501": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Listar Mis Inscripciones Stub",
+        "tags": [
+          "Inscripciones"
+        ]
+      }
+    },
+    "/api/v1/organizador/eventos": {
+      "get": {
+        "description": "Lista los eventos propios del organizador con estado efectivo y ocupación.",
+        "operationId": "listar_eventos_organizador_api_v1_organizador_eventos_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/EventoSalida"
+                  },
+                  "title": "Response Listar Eventos Organizador Api V1 Organizador Eventos Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Listar eventos del organizador autenticado",
+        "tags": [
+          "eventos"
+        ]
+      }
+    },
+    "/api/v1/reportes/consolidado": {
+      "get": {
+        "description": "Stub E1 para reporte consolidado (implementación en E7).",
+        "operationId": "obtener_consolidado_stub_api_v1_reportes_consolidado_get",
+        "responses": {
+          "501": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Obtener Consolidado Stub",
+        "tags": [
+          "Reportes"
+        ]
+      }
+    },
+    "/health": {
+      "get": {
+        "description": "Verifica disponibilidad de la aplicación y conectividad con SQLite.",
+        "operationId": "healthcheck_health_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "title": "Response Healthcheck Health Get",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Healthcheck",
+        "tags": [
+          "Plataforma"
+        ]
+      }
+    }
+  }
+}
