@@ -18,7 +18,7 @@
 - [x] **T-005-04** [US3] Cancelación de inscripción propia y liberación de cupo en servicio y repositorio · Commit: `feat(inscripciones): implementa cancelacion con liberacion de cupo` · Terminado cuando: se permite cancelar solo antes de `fecha_inicio` y se actualiza a `cancelada`.
 
 ### Fase 3: Endpoints API REST (US1, US2, US3, US4, US5)
-- [ ] **T-005-05** [US1, US2] Endpoint `POST /api/v1/eventos/{id}/inscripciones` con manejo de errores tipados 409 · Commit: `feat(inscripciones): expone post de inscripcion a un evento` · Terminado cuando: responde 201 en éxito y 409 con códigos de dominio específicos.
+- [x] **T-005-05** [US1, US2] Endpoint `POST /api/v1/eventos/{id}/inscripciones` con manejo de errores tipados 409 · Commit: `feat(inscripciones): expone post de inscripcion a un evento` · Terminado cuando: responde 201 en éxito y 409 con códigos de dominio específicos.
 - [ ] **T-005-06** [US3] Endpoint `PATCH /api/v1/inscripciones/{id}/cancelar` con verificación de propietario · Commit: `feat(inscripciones): expone patch de cancelacion de inscripcion` · Terminado cuando: responde 200 liberando el cupo o 409/403 si no procede.
 - [ ] **T-005-07** [US5] Endpoint `GET /api/v1/inscripciones/mias` para participante · Commit: `feat(inscripciones): expone listado de inscripciones del participante` · Terminado cuando: retorna historial cronológico con estado del evento.
 - [ ] **T-005-08** [US4] Endpoint `GET /api/v1/eventos/{id}/inscripciones` con enmascaramiento diferencial · Commit: `feat(inscripciones): expone inscritos para organizador y coordinacion` · Terminado cuando: organizador ve documento completo y coordinación enmascarado (`••••1234`).
