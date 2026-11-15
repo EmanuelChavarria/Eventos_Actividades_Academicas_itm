@@ -1,0 +1,117 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  calidad:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Instalar dependencias de desarrollo
+        run: |
+          if [ -f requirements-dev.txt ]; then
+            pip install -r requirements-dev.txt
+          else
+            pip install ruff pre-commit
+          fi
+      - name: Verificación de estilo y tipos con Ruff
+        run: ruff check .
+      - name: Verificación de formato con Ruff
+        run: ruff format --check .
+      - name: Formato de los mensajes de commit
+        if: github.event_name == 'pull_request'
+        run: python scripts/check_commits.py "origin/${{ github.base_ref }}..HEAD"
+
+  pruebas:
+    runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: sqlite:///./ci.db
+      SECRET_KEY: clave-ci-pruebas-eventos-academicos-32c
+      COOKIE_SECURE: "true"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Instalar dependencias
+        run: |
+          if [ -f requirements-dev.txt ]; then
+            pip install -r requirements-dev.txt
+          fi
+          if [ -f requirements.txt ]; then
+            pip install -r requirements.txt
+          fi
+      - name: Aplicar migraciones
+        run: |
+          if [ -f alembic.ini ]; then
+            alembic upgrade head
+          fi
+      - name: Cargar datos iniciales
+        run: |
+          if [ -f scripts/seed.py ]; then
+            python scripts/seed.py
+          fi
+      - name: Contrato OpenAPI sin desvíos
+        run: |
+          if [ -f app/main.py ]; then
+            python scripts/export_openapi.py --check
+          else
+            echo "app/main.py no existe aún (Fase 0); verificación omitida."
+          fi
+      - name: Ejecutar pruebas automatizadas
+        run: |
+          if [ -d tests ]; then
+            pytest -q
+          else
+            echo "Suite tests no existe aún (Fase 0); verificación omitida."
+          fi
+
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configurar entorno para Docker
+        run: |
+          if [ -f .env.example ]; then
+            cp .env.example .env
+            sed -i 's/^SECRET_KEY=.*/SECRET_KEY=clave-ci-docker-eventos-academicos-32c/' .env
+          else
+            echo "DATABASE_URL=sqlite:///./data/eventos.db" > .env
+            echo "COOKIE_SECURE=true" >> .env
+            echo "SECRET_KEY=clave-ci-docker-eventos-academicos-32c" >> .env
+          fi
+      - name: Generar certificado autofirmado para HTTPS
+        run: |
+          mkdir -p certs
+          openssl req -x509 -newkey rsa:2048 -nodes -days 1 -subj "/CN=localhost" \
+            -keyout certs/localhost-key.pem -out certs/localhost.pem
+      - name: Build y arranque de contenedores
+        run: docker compose up -d --build
+      - name: Esperar disponibilidad de /health
+        run: |
+          if [ -f app/main.py ]; then
+            for i in $(seq 1 20); do
+              curl -fsk https://localhost:8000/health && exit 0
+              sleep 3
+            done
+            docker compose logs web
+            exit 1
+          else
+            echo "app/main.py aún no implementada (Fase 0); build verificado exitosamente."
+          fi
+      - name: Detener contenedores
+        if: always()
+        run: docker compose down -v
