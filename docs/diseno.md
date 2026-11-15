@@ -232,3 +232,53 @@ El contrato formal generado desde la aplicación se encuentra versionado en [spe
 - **E7 — Consolidado:** [specs/007-consolidado/](../specs/007-consolidado/spec.md)
 - **E10 — DevOps, CI y Docker:** [specs/010-devops-ci-docker/](../specs/010-devops-ci-docker/spec.md)
 
+---
+
+## 7. Justificación de Tecnologías y Elección de Frontend
+
+| Componente | Tecnología elegida | Justificación técnica y de alcance |
+|---|---|---|
+| **Lenguaje y Web API** | Python 3.12 + FastAPI | Tipado estático nativo, inyección de dependencias limpia para autenticación/autorización (`deps.py`), generación automática del contrato OpenAPI (`/docs`) y alto rendimiento. |
+| **Validación** | Pydantic v2 | Validación declarativa estricta (`extra="forbid"`, validación de formatos de documento y zonas horarias `FechaConZona`) con serialización uniforme de errores. |
+| **Persistencia y migraciones** | SQLite + SQLAlchemy 2.x + Alembic | Aprobada por el cliente para escala académica; garantiza integridad estricta con `PRAGMA foreign_keys=ON`, `WAL`, `CHECK`, índice único parcial y control atómico de cupos (`BEGIN IMMEDIATE`) sin requerir servidor de BD externo. |
+| **Seguridad** | `argon2-cffi`, PyJWT (`HS256`), TLS obligatorio | Hashing resistente a fuerza bruta (`argon2id`), cookies `HttpOnly` + `SameSite=Lax` + `Secure` siempre activas sobre HTTPS y validación `Origin`/`Referer` contra CSRF. |
+| **Calidad y pruebas** | `pytest`, `ruff`, GitHub Actions, Docker | Verificación continua de reglas críticas (cupo concurrente en 20 hilos, permisos, fechas UTC) y entorno reproducible con y sin contenedores. |
+
+### 7.1 Justificación de Jinja2 como esqueleto + JavaScript modular (`fetch` a `/api/v1`)
+
+En la entrevista inicial (pregunta 14), el cliente permitió usar **Jinja2** siempre que se justificara técnicamente por qué se elige frente a un framework SPA tradicional (como React o Vue) y se demostrara el consumo real de la API REST mediante JavaScript:
+
+1. **Separación real entre interfaz y API REST:** Las plantillas Jinja2 (`app/templates/`) actúan exclusivamente como esqueleto HTML con herencia de layout (`base.html`) y autoescape activo, **sin renderizar datos de negocio directamente desde el servidor ni acoplar SQL a las vistas**. Toda la carga, filtrado, creación, edición, inscripción, asistencia y consolidado se ejecuta desde el navegador hacia `/api/v1/*` usando `fetch()` en los módulos `app/static/js/*.js` (verificado en DevTools en [PF-03](../evidencias/PF-03/pf-03-1_catalogo-filtros-red.png) y [PF-12](pruebas/PF-12.md)).
+2. **Simplicidad operativa y cero paso de compilación:** Al no introducir Node.js, bundlers (`Vite`/`Webpack`) ni estado duplicado de cliente, ambos integrantes pueden levantar, probar y depurar la aplicación íntegra con un único proceso Python + HTTPS en Windows, macOS, Linux o Docker.
+3. **Seguridad XSS por diseño:** El cliente común [app/static/js/api.js](../app/static/js/api.js) centraliza el manejo uniforme de errores, las redirecciones ante `401`, el formateo de fechas en `America/Bogota` mediante `Intl.DateTimeFormat` y la construcción segura del DOM con `crearNodo` y `textContent` (prohibido `innerHTML` con datos de API o usuario).
+
+---
+
+## 8. Prototipos e Interfaces Implementadas
+
+Cada flujo cuenta con su plantilla HTML esqueleto y módulo JavaScript ES6 dedicado:
+
+| Vista web | Plantilla Jinja2 | Módulo JS (`fetch`) | Funcionalidad principal |
+|---|---|---|---|
+| `/` | `app/templates/index.html` | `app/static/js/catalogo.js` | Catálogo público paginado y filtros |
+| `/eventos/{evento_id}` | `app/templates/catalogo/detalle.html` | `app/static/js/catalogo.js`, `inscripciones.js` | Detalle, disponibilidad real e inscripción |
+| `/login`, `/registro` | `app/templates/auth/login.html`, `registro.html` | `app/static/js/auth.js` | Autenticación y registro de participantes |
+| `/organizador/eventos`, `/nuevo`, `/{id}/editar` | `app/templates/eventos/mis_eventos.html`, `formulario.html` | `app/static/js/eventos.js` | Gestión, publicación y cancelación de eventos |
+| `/mis-inscripciones` | `app/templates/inscripciones/mias.html` | `app/static/js/inscripciones.js` | Historial y cancelación de inscripciones |
+| `/eventos/{id}/asistencia` | `app/templates/asistencia/registro.html` | `app/static/js/asistencia.js` | Nómina, registro/corrección y privacidad |
+| `/coordinacion/consolidado` | `app/templates/reportes/consolidado.html` | `app/static/js/reportes.js` | Consolidado global, filtros y exportación CSV |
+
+### Capturas de las pantallas en ejecución
+
+- **Catálogo público con filtros y llamada `fetch` en DevTools (`/`):**
+  ![Catálogo público y pestaña Red](../evidencias/PF-03/pf-03-1_catalogo-filtros-red.png)
+- **Detalle público de actividad con cupos en tiempo real (`/eventos/6`):**
+  ![Detalle de evento](../evidencias/PF-03/pf-03-3_detalle-evento-cupos.png)
+- **Panel de gestión del organizador y publicación directa (`/organizador/eventos`):**
+  ![Creación y publicación de evento](../evidencias/PF-01/pf-01-1_creacion-evento-borrador.png)
+- **Formulario de creación con validación de servidor visible (`/organizador/eventos/nuevo`):**
+  ![Validación en formulario web](../evidencias/PF-02/pf-02-1_ui-rechazo-rango-fechas.png)
+- **Vista de recurso inexistente amigable (`/eventos/999999`):**
+  ![Vista 404 amigable](../evidencias/PF-04/pf-04-2_ui-404-actividad-no-disponible.png)
+
+
