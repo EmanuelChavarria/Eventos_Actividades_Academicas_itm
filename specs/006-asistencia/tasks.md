@@ -24,5 +24,5 @@
 - [x] **T-006-06** [US4] Pantalla y controles interactivos de asistencia en `app/templates/asistencia/registro.html` y `app/static/js/asistencia.js` · Commit: `feat(web): agrega pantalla de registro de asistencia` · Terminado cuando: permite registrar asistencia interactivamente con DOM seguro.
 
 ### Fase 5: Pruebas Automatizadas y Evidencias Funcionales (US1, US2, US3)
-- [ ] **T-006-07** [US1, US2, US3] Pruebas unitarias y de integración en `tests/test_asistencia.py` · Commit: `test(asistencia): agrega pruebas de permisos y regla de inicio` · Terminado cuando: las pruebas verifican la ventana de 48 h, el rechazo previo a inicio y permisos de organizador.
+- [x] **T-006-07** [US1, US2, US3] Pruebas unitarias y de integración en `tests/test_asistencia.py` · Commit: `test(asistencia): agrega pruebas de permisos y regla de inicio` · Terminado cuando: las pruebas verifican la ventana de 48 h, el rechazo previo a inicio y permisos de organizador.
 - [ ] **T-006-08** [US1..US3] Documentación de prueba funcional PF-10 en `docs/pruebas/PF-10.md` con evidencias · Commit: `docs(pruebas): documenta pf-10 con evidencias` · Terminado cuando: se registran pasos, capturas y resultado de PF-10.
