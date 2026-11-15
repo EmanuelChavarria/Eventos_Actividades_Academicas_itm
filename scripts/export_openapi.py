@@ -38,7 +38,7 @@ def exportar_contrato() -> int:
 
 
 def verificar_contrato() -> int:
-    """Compara el esquema OpenAPI actual con el archivo versionado en specs/contrato/openapi.json."""
+    """Compara el esquema OpenAPI actual con specs/contrato/openapi.json."""
     if not CONTRATO_PATH.exists():
         print(
             f"Error: No existe el archivo de contrato {CONTRATO_PATH}.\n"
@@ -52,8 +52,10 @@ def verificar_contrato() -> int:
 
     if contenido_actual != contenido_guardado:
         print(
-            f"Error: El contrato OpenAPI en {CONTRATO_PATH} no coincide con el esquema actual de la API.\n"
-            "Ejecuta 'python scripts/export_openapi.py' para actualizar el contrato y commitea los cambios.",
+            f"Error: El contrato OpenAPI en {CONTRATO_PATH} "
+            "no coincide con el esquema actual de la API.\n"
+            "Ejecuta 'python scripts/export_openapi.py' para actualizar "
+            "el contrato y commitea los cambios.",
             file=sys.stderr,
         )
         return 1

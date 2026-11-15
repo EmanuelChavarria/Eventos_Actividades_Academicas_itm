@@ -38,7 +38,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       DATABASE_URL: sqlite:///./ci.db
-      SECRET_KEY: clave-solo-para-ci
+      SECRET_KEY: clave-ci-pruebas-eventos-academicos-32c
       COOKIE_SECURE: "true"
     steps:
       - uses: actions/checkout@v4
@@ -87,10 +87,11 @@ jobs:
         run: |
           if [ -f .env.example ]; then
             cp .env.example .env
+            sed -i 's/^SECRET_KEY=.*/SECRET_KEY=clave-ci-docker-eventos-academicos-32c/' .env
           else
             echo "DATABASE_URL=sqlite:///./data/eventos.db" > .env
             echo "COOKIE_SECURE=true" >> .env
-            echo "SECRET_KEY=clave-para-docker-ci-12345" >> .env
+            echo "SECRET_KEY=clave-ci-docker-eventos-academicos-32c" >> .env
           fi
       - name: Generar certificado autofirmado para HTTPS
         run: |

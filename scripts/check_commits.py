@@ -24,7 +24,7 @@ MAX_LENGTH = 72
 
 def validar_mensaje(mensaje: str) -> tuple[bool, str]:
     """Valida la primera línea de un mensaje de commit."""
-    lineas = [l for l in mensaje.strip().splitlines() if l.strip()]
+    lineas = [linea for linea in mensaje.strip().splitlines() if linea.strip()]
     if not lineas:
         return False, "El mensaje de commit está vacío."
 
@@ -37,7 +37,8 @@ def validar_mensaje(mensaje: str) -> tuple[bool, str]:
     if len(primera_linea) > MAX_LENGTH:
         return (
             False,
-            f"La primera línea excede {MAX_LENGTH} caracteres (longitud actual: {len(primera_linea)}).\n"
+            f"La primera línea excede {MAX_LENGTH} caracteres "
+            f"(longitud actual: {len(primera_linea)}).\n"
             f"Línea: {primera_linea}",
         )
 
@@ -64,7 +65,7 @@ def validar_archivo(ruta_archivo: str) -> int:
         print(f"Error: no se encontró el archivo {ruta_archivo}", file=sys.stderr)
         return 1
 
-    with open(ruta_archivo, "r", encoding="utf-8", errors="replace") as f:
+    with open(ruta_archivo, encoding="utf-8", errors="replace") as f:
         contenido = f.read()
 
     valido, razon = validar_mensaje(contenido)
@@ -84,7 +85,7 @@ def validar_rango(rango: str) -> int:
         print(f"Error al ejecutar git log: {e.stderr}", file=sys.stderr)
         return 1
 
-    lineas = [l for l in resultado.stdout.strip().splitlines() if l.strip()]
+    lineas = [linea for linea in resultado.stdout.strip().splitlines() if linea.strip()]
     if not lineas:
         return 0
 
