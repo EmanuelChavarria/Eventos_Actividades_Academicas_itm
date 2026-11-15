@@ -11,7 +11,7 @@
 
 ### Fase 1: Capa de Datos y Schemas (US1, US2)
 - [x] **T-005-01** [US1] Schemas de entrada y salida para inscripción en `app/schemas/inscripcion.py` · Commit: `feat(inscripciones): agrega schemas de inscripcion` · Terminado cuando: los schemas Pydantic v2 validan y serializan fechas con zona y estados.
-- [ ] **T-005-02** [US1, US2] Repositorio de inscripciones con transacción `BEGIN IMMEDIATE` e inserción condicional en `app/repositories/inscripcion_repo.py` · Commit: `feat(inscripciones): agrega repositorio con alta atomica por cupo` · Terminado cuando: la inserción condicional garantiza cero sobrecupos.
+- [x] **T-005-02** [US1, US2] Repositorio de inscripciones con transacción `BEGIN IMMEDIATE` e inserción condicional en `app/repositories/inscripcion_repo.py` · Commit: `feat(inscripciones): agrega repositorio con alta atomica por cupo` · Terminado cuando: la inserción condicional garantiza cero sobrecupos.
 
 ### Fase 2: Lógica de Negocio y Reglas Críticas (US1, US2, US3)
 - [ ] **T-005-03** [US1, US2] Servicio de inscripciones con validación de RN-04 a RN-07 y RN-11 en `app/services/inscripcion_service.py` · Commit: `feat(inscripciones): implementa reglas de cupo duplicados y estados` · Terminado cuando: se validan cupo, duplicado activo, fecha límite y público objetivo.
