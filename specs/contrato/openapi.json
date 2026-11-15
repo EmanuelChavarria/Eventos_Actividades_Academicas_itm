@@ -723,6 +723,225 @@
         "title": "HTTPValidationError",
         "type": "object"
       },
+      "InscripcionDetalle": {
+        "description": "Detalle extendido con título del evento para 'Mis inscripciones'.",
+        "properties": {
+          "cancelada_en": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cancelada En"
+          },
+          "creado_en": {
+            "format": "date-time",
+            "title": "Creado En",
+            "type": "string"
+          },
+          "estado": {
+            "title": "Estado",
+            "type": "string"
+          },
+          "estado_evento": {
+            "title": "Estado Evento",
+            "type": "string"
+          },
+          "evento_id": {
+            "title": "Evento Id",
+            "type": "integer"
+          },
+          "fecha_inicio_evento": {
+            "format": "date-time",
+            "title": "Fecha Inicio Evento",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "participante_id": {
+            "title": "Participante Id",
+            "type": "integer"
+          },
+          "titulo_evento": {
+            "title": "Titulo Evento",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "evento_id",
+          "participante_id",
+          "estado",
+          "creado_en",
+          "titulo_evento",
+          "fecha_inicio_evento",
+          "estado_evento"
+        ],
+        "title": "InscripcionDetalle",
+        "type": "object"
+      },
+      "InscripcionSalida": {
+        "description": "Respuesta pública de una inscripción (sin datos sensibles).",
+        "properties": {
+          "cancelada_en": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cancelada En"
+          },
+          "creado_en": {
+            "format": "date-time",
+            "title": "Creado En",
+            "type": "string"
+          },
+          "estado": {
+            "title": "Estado",
+            "type": "string"
+          },
+          "evento_id": {
+            "title": "Evento Id",
+            "type": "integer"
+          },
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "participante_id": {
+            "title": "Participante Id",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "evento_id",
+          "participante_id",
+          "estado",
+          "creado_en"
+        ],
+        "title": "InscripcionSalida",
+        "type": "object"
+      },
+      "InscritoEnmascarado": {
+        "description": "Inscrito visible para coordinación (documento enmascarado).",
+        "properties": {
+          "cancelada_en": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cancelada En"
+          },
+          "creado_en": {
+            "format": "date-time",
+            "title": "Creado En",
+            "type": "string"
+          },
+          "estado": {
+            "title": "Estado",
+            "type": "string"
+          },
+          "inscripcion_id": {
+            "title": "Inscripcion Id",
+            "type": "integer"
+          },
+          "nombre": {
+            "title": "Nombre",
+            "type": "string"
+          },
+          "numero_documento": {
+            "title": "Numero Documento",
+            "type": "string"
+          },
+          "participante_id": {
+            "title": "Participante Id",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "inscripcion_id",
+          "participante_id",
+          "nombre",
+          "numero_documento",
+          "estado",
+          "creado_en"
+        ],
+        "title": "InscritoEnmascarado",
+        "type": "object"
+      },
+      "InscritoSalida": {
+        "description": "Inscrito visible para el organizador (documento completo).",
+        "properties": {
+          "cancelada_en": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cancelada En"
+          },
+          "creado_en": {
+            "format": "date-time",
+            "title": "Creado En",
+            "type": "string"
+          },
+          "estado": {
+            "title": "Estado",
+            "type": "string"
+          },
+          "inscripcion_id": {
+            "title": "Inscripcion Id",
+            "type": "integer"
+          },
+          "nombre": {
+            "title": "Nombre",
+            "type": "string"
+          },
+          "numero_documento": {
+            "title": "Numero Documento",
+            "type": "string"
+          },
+          "participante_id": {
+            "title": "Participante Id",
+            "type": "integer"
+          },
+          "tipo_documento": {
+            "title": "Tipo Documento",
+            "type": "string"
+          }
+        },
+        "required": [
+          "inscripcion_id",
+          "participante_id",
+          "nombre",
+          "numero_documento",
+          "tipo_documento",
+          "estado",
+          "creado_en"
+        ],
+        "title": "InscritoSalida",
+        "type": "object"
+      },
       "LoginEntrada": {
         "additionalProperties": false,
         "description": "Credenciales de inicio de sesión mediante documento y contraseña (RF-02).",
@@ -1509,6 +1728,104 @@
         ]
       }
     },
+    "/api/v1/eventos/{evento_id}/inscripciones": {
+      "get": {
+        "description": "Organizador dueño ve documento completo; coordinación lo ve enmascarado.",
+        "operationId": "listar_inscritos_api_v1_eventos__evento_id__inscripciones_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "evento_id",
+            "required": true,
+            "schema": {
+              "title": "Evento Id",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "anyOf": [
+                    {
+                      "items": {
+                        "$ref": "#/components/schemas/InscritoSalida"
+                      },
+                      "type": "array"
+                    },
+                    {
+                      "items": {
+                        "$ref": "#/components/schemas/InscritoEnmascarado"
+                      },
+                      "type": "array"
+                    }
+                  ],
+                  "title": "Response Listar Inscritos Api V1 Eventos  Evento Id  Inscripciones Get"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Listar inscritos de un evento con privacidad diferencial",
+        "tags": [
+          "Inscripciones"
+        ]
+      },
+      "post": {
+        "description": "Inscribe al participante autenticado en el evento indicado.\n\nResponde 201 en éxito o 409 con código de dominio específico si falla.",
+        "operationId": "inscribirse_api_v1_eventos__evento_id__inscripciones_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "evento_id",
+            "required": true,
+            "schema": {
+              "title": "Evento Id",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InscripcionSalida"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Inscribirse en un evento publicado",
+        "tags": [
+          "Inscripciones"
+        ]
+      }
+    },
     "/api/v1/eventos/{evento_id}/publicar": {
       "post": {
         "description": "Publica un evento en `borrador` sin aprobación previa si cumple fechas y cupo.",
@@ -1554,19 +1871,68 @@
     },
     "/api/v1/inscripciones/mias": {
       "get": {
-        "description": "Stub E1 para consulta de inscripciones (implementación en E5).",
-        "operationId": "listar_mis_inscripciones_stub_api_v1_inscripciones_mias_get",
+        "description": "Retorna el historial completo de inscripciones del participante autenticado.",
+        "operationId": "listar_mis_inscripciones_api_v1_inscripciones_mias_get",
         "responses": {
-          "501": {
+          "200": {
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/InscripcionDetalle"
+                  },
+                  "title": "Response Listar Mis Inscripciones Api V1 Inscripciones Mias Get",
+                  "type": "array"
+                }
               }
             },
             "description": "Successful Response"
           }
         },
-        "summary": "Listar Mis Inscripciones Stub",
+        "summary": "Listar mis inscripciones",
+        "tags": [
+          "Inscripciones"
+        ]
+      }
+    },
+    "/api/v1/inscripciones/{inscripcion_id}/cancelar": {
+      "patch": {
+        "description": "Cancela la inscripción activa del participante si el evento aún no ha iniciado.",
+        "operationId": "cancelar_inscripcion_api_v1_inscripciones__inscripcion_id__cancelar_patch",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "inscripcion_id",
+            "required": true,
+            "schema": {
+              "title": "Inscripcion Id",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InscripcionSalida"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Cancelar inscripción propia antes del inicio del evento",
         "tags": [
           "Inscripciones"
         ]
