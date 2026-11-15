@@ -8,21 +8,23 @@
 
     <div id="alerta-mis-inscripciones" class="alerta oculto" role="alert" aria-live="polite"></div>
 
-    <table id="tabla-mis-inscripciones">
-      <thead>
-        <tr>
-          <th>Evento</th>
-          <th>Fecha inicio</th>
-          <th>Estado</th>
-          <th>Acci&oacute;n</th>
-        </tr>
-      </thead>
-      <tbody id="cuerpo-mis-inscripciones">
-        <tr>
-          <td colspan="4">Cargando inscripciones...</td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="tabla-responsiva">
+      <table id="tabla-mis-inscripciones">
+        <thead>
+          <tr>
+            <th>Evento</th>
+            <th class="col-fecha">Fecha inicio</th>
+            <th>Estado</th>
+            <th class="col-acciones">Acci&oacute;n</th>
+          </tr>
+        </thead>
+        <tbody id="cuerpo-mis-inscripciones">
+          <tr>
+            <td colspan="4">Cargando inscripciones...</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </section>
 {% endblock %}
 

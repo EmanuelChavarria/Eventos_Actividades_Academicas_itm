@@ -63,7 +63,7 @@
           <option value="">Todos</option>
         </select>
       </div>
-      <div class="campo">
+      <div class="campo campo-busqueda">
         <label for="filtro-texto">Buscar</label>
         <input
           id="filtro-texto"
@@ -92,32 +92,34 @@
       <div class="tarjeta-metrica"><span>Asistencia</span><strong id="total-asistencia">0.00%</strong></div>
     </section>
 
-    <table id="tabla-consolidado">
-      <thead>
-        <tr>
-          <th>Evento</th>
-          <th>Tipo / Modalidad</th>
-          <th>Estado</th>
-          <th>Inicio</th>
-          <th>Organizador</th>
-          <th>Cupo</th>
-          <th>Inscritos</th>
-          <th>Disponibles</th>
-          <th>Ocupación %</th>
-          <th>Cancelaciones</th>
-          <th>Presentes</th>
-          <th>Ausentes</th>
-          <th>Sin registrar</th>
-          <th>Asistencia %</th>
-          <th>Asistencia</th>
-        </tr>
-      </thead>
-      <tbody id="cuerpo-consolidado">
-        <tr>
-          <td colspan="15">Cargando reporte consolidado...</td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="tabla-responsiva">
+      <table id="tabla-consolidado">
+        <thead>
+          <tr>
+            <th>Evento</th>
+            <th>Tipo / Modalidad</th>
+            <th>Estado</th>
+            <th class="col-fecha">Inicio</th>
+            <th>Organizador</th>
+            <th class="col-numerica">Cupo</th>
+            <th class="col-numerica">Inscritos</th>
+            <th class="col-numerica">Disponibles</th>
+            <th class="col-numerica">Ocupación %</th>
+            <th class="col-numerica">Cancelaciones</th>
+            <th class="col-numerica">Presentes</th>
+            <th class="col-numerica">Ausentes</th>
+            <th class="col-numerica">Sin registrar</th>
+            <th class="col-numerica">Asistencia %</th>
+            <th class="col-acciones">Asistencia</th>
+          </tr>
+        </thead>
+        <tbody id="cuerpo-consolidado">
+          <tr>
+            <td colspan="15">Cargando reporte consolidado...</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </section>
 {% endblock %}
 
