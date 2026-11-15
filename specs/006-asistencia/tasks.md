@@ -10,7 +10,7 @@
 ## Tareas de Implementación
 
 ### Fase 1: Capa de Datos y Schemas (US1, US2)
-- [ ] **T-006-01** [US1, US2] Schemas Pydantic para registro y consulta de asistencia en `app/schemas/asistencia.py` · Commit: `feat(asistencia): agrega schemas de asistencia` · Terminado cuando: los schemas validan estados `presente`/`ausente` y formatean fechas con zona horaria.
+- [x] **T-006-01** [US1, US2] Schemas Pydantic para registro y consulta de asistencia en `app/schemas/asistencia.py` · Commit: `feat(asistencia): agrega schemas de asistencia` · Terminado cuando: los schemas validan estados `presente`/`ausente` y formatean fechas con zona horaria.
 - [ ] **T-006-02** [US1, US2] Repositorio de asistencia con UPSERT idempotente en `app/repositories/asistencia_repo.py` · Commit: `feat(asistencia): agrega repositorio con upsert por inscripcion` · Terminado cuando: registra o actualiza la asistencia de una inscripción sin duplicar filas.
 
 ### Fase 2: Lógica de Negocio y Reglas Críticas (US1, US2, US3)
