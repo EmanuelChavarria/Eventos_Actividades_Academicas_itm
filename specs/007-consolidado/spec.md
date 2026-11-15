@@ -2,7 +2,7 @@
 
 - **Épica:** E7 · **Condiciones:** CA-06 · **Requisitos:** RF-24..RF-26, RF-30 (opcional), RNF-06, RNF-13
 - **Rama de feature:** `007-consolidado` · **Creada:** 2026-11-14
-- **Estado:** borrador · **Responsable:** Integrante A
+- **Estado:** aprobada · **Responsable:** Integrante A
 - **Entrada:** Panel de métricas globales y agregadas por evento, cálculo de tasas de ocupación y asistencia, filtros multidimensionales y exportación segura a CSV.
 
 ---
@@ -38,7 +38,7 @@ Como personal de coordinación académica quiero visualizar un reporte consolida
 
 ### Historia de Usuario 2 - Filtrado multicriterio del consolidado (Prioridad: P1)
 
-Como coordinación quiero aplicar filtros combinados por rango de fechas (inicio/fin), tipo de evento, estado (`borrador`, `publicado`, `finalizado`, `cancelado`), organizador, modalidad (`presencial`, `virtual`) y búsqueda de texto.
+Como coordinación quiero aplicar filtros combinados por rango de fechas (inicio/fin), tipo de evento, estado (`borrador`, `publicado`, `finalizado`, `cancelado`), organizador, modalidad (`presencial`, `virtual`, `hibrida`) y búsqueda de texto.
 
 - **Por qué esta prioridad:** Facilita la auditoría específica de periodos académicos y dependencias.
 - **Prueba independiente:** Consultar la API pasando parámetros query `?fecha_desde=...&tipo=...&estado=...` y comprobar que el resultado coincide exactamente con los filtros.
@@ -93,7 +93,7 @@ Como coordinación quiero descargar el reporte consolidado en formato CSV, asegu
 
 ## 6. Seguridad y privacidad
 
-- **Mínimo Privilegio:** Restricción estricta mediante dependencia `requerir_rol(["coordinacion"])`.
+- **Mínimo Privilegio:** Restricción estricta mediante dependencia `require_roles(Rol.COORDINACION)` (y vista web en `/coordinacion/consolidado`).
 - **Prevención de Inyección CSV:** Todo valor textual que inicie con `=`, `+`, `-`, `@` o tabuladores debe ser sanitizado con prefijo `'`.
 - **Enmascaramiento:** Documentos de identidad siempre anonimizados en vistas y descargas (`••••1234`).
 

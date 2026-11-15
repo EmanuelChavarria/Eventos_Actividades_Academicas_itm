@@ -1,17 +1,49 @@
-"""Router v1 de reportes y consolidado (stub E1, implementación completa en E7)."""
+"""Router v1 del reporte consolidado y exportación CSV para coordinación (E7)."""
 
-from fastapi import APIRouter, status
+from __future__ import annotations
 
-from app.core.errors import CodigosError, ErrorDominio
+from typing import Annotated
+
+from fastapi import APIRouter, Depends, Query, Response
+from sqlalchemy.orm import Session
+
+from app.api.deps import require_roles
+from app.core.database import get_db
+from app.models.enums import Rol
+from app.models.usuario import Usuario
+from app.schemas.reporte import ConsolidadoFiltros, ConsolidadoSalida
+from app.services import reporte_service
 
 router = APIRouter(prefix="/reportes", tags=["Reportes"])
 
 
-@router.get("/consolidado", status_code=status.HTTP_501_NOT_IMPLEMENTED)
-def obtener_consolidado_stub() -> None:
-    """Stub E1 para reporte consolidado (implementación en E7)."""
-    raise ErrorDominio(
-        codigo=CodigosError.NO_IMPLEMENTADO,
-        mensaje="El módulo de reportes se implementa en E7.",
-        status_code=status.HTTP_501_NOT_IMPLEMENTED,
+@router.get(
+    "/consolidado",
+    response_model=ConsolidadoSalida,
+    summary="Consultar reporte consolidado de eventos y asistencia",
+)
+def obtener_consolidado(
+    filtros: Annotated[ConsolidadoFiltros, Query()],
+    db: Session = Depends(get_db),
+    usuario: Usuario = Depends(require_roles(Rol.COORDINACION)),
+) -> ConsolidadoSalida:
+    """Devuelve métricas agregadas por evento y totales globales solo para coordinación."""
+    return reporte_service.obtener_consolidado(db, filtros, usuario)
+
+
+@router.get(
+    "/consolidado/csv",
+    summary="Exportar reporte consolidado en CSV neutralizado",
+)
+def exportar_consolidado_csv(
+    filtros: Annotated[ConsolidadoFiltros, Query()],
+    db: Session = Depends(get_db),
+    usuario: Usuario = Depends(require_roles(Rol.COORDINACION)),
+) -> Response:
+    """Descarga el reporte consolidado filtrado en CSV protegiendo contra fórmulas peligrosas."""
+    contenido = reporte_service.exportar_consolidado_csv(db, filtros, usuario)
+    return Response(
+        content=contenido,
+        media_type="text/csv; charset=utf-8",
+        headers={"Content-Disposition": 'attachment; filename="consolidado.csv"'},
     )

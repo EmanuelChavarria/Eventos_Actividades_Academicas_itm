@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+
+{% block titulo %}Panel consolidado de coordinación{% endblock %}
+
+{% block contenido %}
+  <section id="panel-consolidado" class="tarjeta" aria-labelledby="titulo-consolidado">
+    <div class="encabezado-seccion">
+      <div>
+        <h1 id="titulo-consolidado">Panel consolidado de eventos</h1>
+        <p>Consulta métricas globales de cupos, cancelaciones y asistencia para todos los eventos.</p>
+      </div>
+      <a
+        id="btn-exportar-csv"
+        class="btn-secundario"
+        href="/api/v1/reportes/consolidado/csv"
+      >
+        Exportar CSV
+      </a>
+    </div>
+
+    <div id="alerta-consolidado" class="alerta oculto" role="alert" aria-live="polite"></div>
+
+    <form id="form-filtros-consolidado" class="formulario-filtros">
+      <div class="campo">
+        <label for="filtro-fecha-desde">Desde</label>
+        <input id="filtro-fecha-desde" name="fecha_desde" type="date" />
+      </div>
+      <div class="campo">
+        <label for="filtro-fecha-hasta">Hasta</label>
+        <input id="filtro-fecha-hasta" name="fecha_hasta" type="date" />
+      </div>
+      <div class="campo">
+        <label for="filtro-tipo">Tipo</label>
+        <select id="filtro-tipo" name="tipo">
+          <option value="">Todos</option>
+          {% for tipo in tipos %}
+            <option value="{{ tipo }}">{{ tipo }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="campo">
+        <label for="filtro-modalidad">Modalidad</label>
+        <select id="filtro-modalidad" name="modalidad">
+          <option value="">Todas</option>
+          {% for modalidad in modalidades %}
+            <option value="{{ modalidad }}">{{ modalidad }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="campo">
+        <label for="filtro-estado">Estado</label>
+        <select id="filtro-estado" name="estado">
+          <option value="">Todos</option>
+          <option value="borrador">borrador</option>
+          <option value="publicado">publicado</option>
+          <option value="finalizado">finalizado</option>
+          <option value="cancelado">cancelado</option>
+        </select>
+      </div>
+      <div class="campo">
+        <label for="filtro-organizador">Organizador</label>
+        <select id="filtro-organizador" name="organizador_id">
+          <option value="">Todos</option>
+        </select>
+      </div>
+      <div class="campo">
+        <label for="filtro-texto">Buscar</label>
+        <input
+          id="filtro-texto"
+          name="texto"
+          type="search"
+          maxlength="120"
+          placeholder="Título, descripción u organizador"
+        />
+      </div>
+      <div class="acciones-formulario">
+        <button id="btn-filtrar" class="btn-primario" type="submit">Filtrar</button>
+        <button id="btn-limpiar" class="btn-secundario" type="button">Limpiar</button>
+      </div>
+    </form>
+
+    <section id="resumen-totales" class="grid-totales" aria-label="Totales globales">
+      <div class="tarjeta-metrica"><span>Eventos</span><strong id="total-eventos">0</strong></div>
+      <div class="tarjeta-metrica"><span>Cupo total</span><strong id="total-cupo">0</strong></div>
+      <div class="tarjeta-metrica"><span>Inscritos activos</span><strong id="total-inscritos">0</strong></div>
+      <div class="tarjeta-metrica"><span>Disponibles</span><strong id="total-disponibles">0</strong></div>
+      <div class="tarjeta-metrica"><span>Ocupación</span><strong id="total-ocupacion">0.00%</strong></div>
+      <div class="tarjeta-metrica"><span>Cancelaciones</span><strong id="total-cancelaciones">0</strong></div>
+      <div class="tarjeta-metrica"><span>Presentes</span><strong id="total-presentes">0</strong></div>
+      <div class="tarjeta-metrica"><span>Ausentes</span><strong id="total-ausentes">0</strong></div>
+      <div class="tarjeta-metrica"><span>Sin registrar</span><strong id="total-sin-registrar">0</strong></div>
+      <div class="tarjeta-metrica"><span>Asistencia</span><strong id="total-asistencia">0.00%</strong></div>
+    </section>
+
+    <table id="tabla-consolidado">
+      <thead>
+        <tr>
+          <th>Evento</th>
+          <th>Tipo / Modalidad</th>
+          <th>Estado</th>
+          <th>Inicio</th>
+          <th>Organizador</th>
+          <th>Cupo</th>
+          <th>Inscritos</th>
+          <th>Disponibles</th>
+          <th>Ocupación %</th>
+          <th>Cancelaciones</th>
+          <th>Presentes</th>
+          <th>Ausentes</th>
+          <th>Sin registrar</th>
+          <th>Asistencia %</th>
+          <th>Asistencia</th>
+        </tr>
+      </thead>
+      <tbody id="cuerpo-consolidado">
+        <tr>
+          <td colspan="15">Cargando reporte consolidado...</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+{% endblock %}
+
+{% block scripts %}
+  <script type="module" src="/static/js/reportes.js"></script>
+{% endblock %}
