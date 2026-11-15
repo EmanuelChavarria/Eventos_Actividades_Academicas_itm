@@ -56,7 +56,6 @@ def test_web_base_docs_y_estaticos_sin_innerhtml(client: TestClient) -> None:
 def test_stubs_api_v1_responden_501_uniforme(client: TestClient) -> None:
     """RNF-07: los endpoints stub pendientes de E5-E7 devuelven 501 NO_IMPLEMENTADO uniforme."""
     rutas = [
-        ("GET", "/api/v1/inscripciones/mias"),
         ("GET", "/api/v1/eventos/1/asistencia"),
         ("GET", "/api/v1/reportes/consolidado"),
     ]

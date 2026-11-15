@@ -24,10 +24,10 @@
 - [x] **T-005-08** [US4] Endpoint `GET /api/v1/eventos/{id}/inscripciones` con enmascaramiento diferencial · Commit: `feat(inscripciones): expone inscritos para organizador y coordinacion` · Terminado cuando: organizador ve documento completo y coordinación enmascarado (`••••1234`).
 
 ### Fase 4: Vistas Web Jinja2 y Módulos JS (US1, US5)
-- [ ] **T-005-09** [US1] Conexión del botón «Inscribirse» en detalle del evento con manejo de errores DOM seguro en `app/static/js/` · Commit: `feat(web): conecta boton de inscripcion con api y muestra errores` · Terminado cuando: la interfaz consume la API con fetch sin recargar página.
-- [ ] **T-005-10** [US5] Plantilla y controlador de página «Mis inscripciones» en `app/templates/inscripciones/mias.html` · Commit: `feat(web): agrega pagina de mis inscripciones con cancelacion` · Terminado cuando: permite ver inscripciones y cancelar interactivamente.
+- [x] **T-005-09** [US1] Conexión del botón «Inscribirse» en detalle del evento con manejo de errores DOM seguro en `app/static/js/` · Commit: `feat(web): conecta boton de inscripcion con api y muestra errores` · Terminado cuando: la interfaz consume la API con fetch sin recargar página.
+- [x] **T-005-10** [US5] Plantilla y controlador de página «Mis inscripciones» en `app/templates/inscripciones/mias.html` · Commit: `feat(web): agrega pagina de mis inscripciones con cancelacion` · Terminado cuando: permite ver inscripciones y cancelar interactivamente.
 
 ### Fase 5: Pruebas Automatizadas y Evidencias Funcionales (US1, US2, US3, US4)
-- [ ] **T-005-11** [US1, US2, US3] Pruebas unitarias y de integración en `tests/test_inscripciones.py` · Commit: `test(inscripciones): agrega pruebas de cupo duplicados y concurrencia` · Terminado cuando: suite de pruebas verifica cupo, duplicados, público y simulación concurrente con hilos.
+- [x] **T-005-11** [US1, US2, US3] Pruebas unitarias y de integración en `tests/test_inscripciones.py` · Commit: `test(inscripciones): agrega pruebas de cupo duplicados y concurrencia` · Terminado cuando: suite de pruebas verifica cupo, duplicados, público y simulación concurrente con hilos.
 - [ ] **T-005-12** [US1, US2] Evidencia de prueba de concurrencia y simultaneidad para PF-07 · Commit: `docs(pruebas): registra verificacion manual de cupo bajo simultaneidad` · Terminado cuando: se documenta la prueba de estrés de cupo con evidencias.
 - [ ] **T-005-13** [US1..US5] Documentación de pruebas funcionales PF-05 a PF-08 en `docs/pruebas/` · Commit: `docs(pruebas): documenta pf-05 a pf-08 con evidencias` · Terminado cuando: los documentos PF-05 a PF-08 quedan completos con pasos y resultados.
