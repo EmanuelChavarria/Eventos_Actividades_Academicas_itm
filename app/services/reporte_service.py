@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import csv
+import io
 from types import SimpleNamespace
 
 from sqlalchemy.orm import Session
@@ -17,6 +19,7 @@ from app.schemas.reporte import (
     ConsolidadoTotales,
     EventoConsolidadoItem,
 )
+from app.services.asistencia_service import _enmascarar_documento
 from app.services.evento_service import calcular_estado_efectivo
 
 
@@ -100,3 +103,74 @@ def listar_organizadores(db: Session, usuario: Usuario) -> list[tuple[int, str]]
     """Lista organizadores visibles para el filtro del panel de coordinación."""
     _validar_coordinacion(usuario)
     return reporte_repo.listar_organizadores(db)
+
+
+def enmascarar_documento(numero: str) -> str:
+    """Enmascara números de documento antes de exponerlos en exportaciones."""
+    return _enmascarar_documento(numero)
+
+
+def sanitizar_celda_csv(valor: object) -> str:
+    """Neutraliza celdas que inician con =, +, -, @ o caracteres de control (CWE-1236)."""
+    texto = "" if valor is None else str(valor)
+    if texto and (
+        texto[0] in {"=", "+", "-", "@", "\t", "\r"}
+        or texto.lstrip().startswith(("=", "+", "-", "@"))
+    ):
+        return f"'{texto}"
+    return texto
+
+
+def exportar_consolidado_csv(
+    db: Session,
+    filtros: ConsolidadoFiltros,
+    usuario: Usuario,
+    proveedor_ahora: ProveedorAhora = ahora_utc,
+) -> str:
+    """Exporta las filas filtradas del consolidado en formato CSV neutralizado."""
+    consolidado = obtener_consolidado(db, filtros, usuario, proveedor_ahora=proveedor_ahora)
+    buffer = io.StringIO()
+    escritor = csv.writer(buffer, lineterminator="\n")
+    escritor.writerow(
+        [
+            "evento_id",
+            "titulo",
+            "tipo",
+            "modalidad",
+            "estado",
+            "fecha_inicio",
+            "fecha_fin",
+            "organizador_nombre",
+            "cupo_maximo",
+            "inscritos_activos",
+            "disponibles",
+            "ocupacion_pct",
+            "cancelaciones",
+            "presentes",
+            "ausentes",
+            "sin_registrar",
+            "asistencia_pct",
+        ]
+    )
+    for evento in consolidado.eventos:
+        fila = [
+            evento.evento_id,
+            evento.titulo,
+            evento.tipo,
+            evento.modalidad,
+            evento.estado,
+            evento.fecha_inicio.isoformat(),
+            evento.fecha_fin.isoformat(),
+            evento.organizador_nombre,
+            evento.cupo_maximo,
+            evento.inscritos_activos,
+            evento.disponibles,
+            f"{evento.ocupacion_pct:.2f}",
+            evento.cancelaciones,
+            evento.presentes,
+            evento.ausentes,
+            evento.sin_registrar,
+            f"{evento.asistencia_pct:.2f}",
+        ]
+        escritor.writerow([sanitizar_celda_csv(celda) for celda in fila])
+    return buffer.getvalue()

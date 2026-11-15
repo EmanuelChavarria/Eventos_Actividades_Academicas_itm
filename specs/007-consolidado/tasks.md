@@ -15,7 +15,7 @@
 
 ### Fase 2: Lógica de Negocio y Métricas Analíticas (US1, US2, US3, US4)
 - [x] **T-007-03** [US1, US3] Servicio con cálculo de porcentajes, protección de división por cero y totales en `app/services/reporte_service.py` · Commit: `feat(reportes): calcula porcentaje de asistencia y totales globales` · Terminado cuando: calcula ocupación %, asistencia % y objeto `totales`.
-- [ ] **T-007-04** [US4] Generación de archivo CSV sanitizado contra inyecciones de fórmulas en `app/services/reporte_service.py` · Commit: `feat(reportes): agrega exportacion del consolidado a csv` · Terminado cuando: neutraliza caracteres `=`, `+`, `-`, `@` y enmascara identificaciones.
+- [x] **T-007-04** [US4] Generación de archivo CSV sanitizado contra inyecciones de fórmulas en `app/services/reporte_service.py` · Commit: `feat(reportes): agrega exportacion del consolidado a csv` · Terminado cuando: neutraliza caracteres `=`, `+`, `-`, `@` y enmascara identificaciones.
 
 ### Fase 3: Endpoints API REST (US1, US2, US3, US4)
 - [ ] **T-007-05** [US1, US2, US3] Endpoint `GET /api/v1/reportes/consolidado` exclusivo para coordinación en `app/api/v1/reportes.py` · Commit: `feat(reportes): expone get consolidado para coordinacion` · Terminado cuando: responde 200 con el consolidado a coordinación y 403 a otros roles.
