@@ -306,6 +306,86 @@
         "title": "CatalogoPaginadoSalida",
         "type": "object"
       },
+      "ConsolidadoSalida": {
+        "description": "Respuesta completa del panel consolidado con detalle y totales.",
+        "properties": {
+          "eventos": {
+            "items": {
+              "$ref": "#/components/schemas/EventoConsolidadoItem"
+            },
+            "title": "Eventos",
+            "type": "array"
+          },
+          "totales": {
+            "$ref": "#/components/schemas/ConsolidadoTotales"
+          }
+        },
+        "required": [
+          "eventos",
+          "totales"
+        ],
+        "title": "ConsolidadoSalida",
+        "type": "object"
+      },
+      "ConsolidadoTotales": {
+        "description": "Totales globales coherentes con las filas del consolidado (RF-26).",
+        "properties": {
+          "asistencia_pct": {
+            "title": "Asistencia Pct",
+            "type": "number"
+          },
+          "ausentes": {
+            "title": "Ausentes",
+            "type": "integer"
+          },
+          "cancelaciones": {
+            "title": "Cancelaciones",
+            "type": "integer"
+          },
+          "cupo_total": {
+            "title": "Cupo Total",
+            "type": "integer"
+          },
+          "disponibles": {
+            "title": "Disponibles",
+            "type": "integer"
+          },
+          "inscritos_activos": {
+            "title": "Inscritos Activos",
+            "type": "integer"
+          },
+          "ocupacion_pct": {
+            "title": "Ocupacion Pct",
+            "type": "number"
+          },
+          "presentes": {
+            "title": "Presentes",
+            "type": "integer"
+          },
+          "sin_registrar": {
+            "title": "Sin Registrar",
+            "type": "integer"
+          },
+          "total_eventos": {
+            "title": "Total Eventos",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "total_eventos",
+          "cupo_total",
+          "inscritos_activos",
+          "disponibles",
+          "ocupacion_pct",
+          "cancelaciones",
+          "presentes",
+          "ausentes",
+          "sin_registrar",
+          "asistencia_pct"
+        ],
+        "title": "ConsolidadoTotales",
+        "type": "object"
+      },
       "EstadoAsistencia": {
         "description": "Estados registrables de asistencia (sin registro = pendiente).",
         "enum": [
@@ -515,6 +595,107 @@
           "motivo"
         ],
         "title": "EventoCancelar",
+        "type": "object"
+      },
+      "EventoConsolidadoItem": {
+        "description": "Métricas agregadas de inscripción y asistencia para un evento.",
+        "properties": {
+          "asistencia_pct": {
+            "title": "Asistencia Pct",
+            "type": "number"
+          },
+          "ausentes": {
+            "title": "Ausentes",
+            "type": "integer"
+          },
+          "cancelaciones": {
+            "title": "Cancelaciones",
+            "type": "integer"
+          },
+          "cupo_maximo": {
+            "title": "Cupo Maximo",
+            "type": "integer"
+          },
+          "disponibles": {
+            "title": "Disponibles",
+            "type": "integer"
+          },
+          "estado": {
+            "title": "Estado",
+            "type": "string"
+          },
+          "evento_id": {
+            "title": "Evento Id",
+            "type": "integer"
+          },
+          "fecha_fin": {
+            "format": "date-time",
+            "title": "Fecha Fin",
+            "type": "string"
+          },
+          "fecha_inicio": {
+            "format": "date-time",
+            "title": "Fecha Inicio",
+            "type": "string"
+          },
+          "inscritos_activos": {
+            "title": "Inscritos Activos",
+            "type": "integer"
+          },
+          "modalidad": {
+            "title": "Modalidad",
+            "type": "string"
+          },
+          "ocupacion_pct": {
+            "title": "Ocupacion Pct",
+            "type": "number"
+          },
+          "organizador_id": {
+            "title": "Organizador Id",
+            "type": "integer"
+          },
+          "organizador_nombre": {
+            "title": "Organizador Nombre",
+            "type": "string"
+          },
+          "presentes": {
+            "title": "Presentes",
+            "type": "integer"
+          },
+          "sin_registrar": {
+            "title": "Sin Registrar",
+            "type": "integer"
+          },
+          "tipo": {
+            "title": "Tipo",
+            "type": "string"
+          },
+          "titulo": {
+            "title": "Titulo",
+            "type": "string"
+          }
+        },
+        "required": [
+          "evento_id",
+          "titulo",
+          "tipo",
+          "modalidad",
+          "estado",
+          "fecha_inicio",
+          "fecha_fin",
+          "organizador_id",
+          "organizador_nombre",
+          "cupo_maximo",
+          "inscritos_activos",
+          "disponibles",
+          "ocupacion_pct",
+          "cancelaciones",
+          "presentes",
+          "ausentes",
+          "sin_registrar",
+          "asistencia_pct"
+        ],
+        "title": "EventoConsolidadoItem",
         "type": "object"
       },
       "EventoCrear": {
@@ -2197,19 +2378,309 @@
     },
     "/api/v1/reportes/consolidado": {
       "get": {
-        "description": "Stub E1 para reporte consolidado (implementación en E7).",
-        "operationId": "obtener_consolidado_stub_api_v1_reportes_consolidado_get",
+        "description": "Devuelve métricas agregadas por evento y totales globales solo para coordinación.",
+        "operationId": "obtener_consolidado_api_v1_reportes_consolidado_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "fecha_desde",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Fecha Desde"
+            }
+          },
+          {
+            "in": "query",
+            "name": "fecha_hasta",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Fecha Hasta"
+            }
+          },
+          {
+            "in": "query",
+            "name": "tipo",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/TipoEvento"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Tipo"
+            }
+          },
+          {
+            "in": "query",
+            "name": "modalidad",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/Modalidad"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Modalidad"
+            }
+          },
+          {
+            "in": "query",
+            "name": "estado",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "borrador",
+                    "publicado",
+                    "finalizado",
+                    "cancelado"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Estado"
+            }
+          },
+          {
+            "in": "query",
+            "name": "organizador_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "minimum": 1,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Organizador Id"
+            }
+          },
+          {
+            "in": "query",
+            "name": "texto",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "maxLength": 120,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Texto"
+            }
+          }
+        ],
         "responses": {
-          "501": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConsolidadoSalida"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Consultar reporte consolidado de eventos y asistencia",
+        "tags": [
+          "Reportes"
+        ]
+      }
+    },
+    "/api/v1/reportes/consolidado/csv": {
+      "get": {
+        "description": "Descarga el reporte consolidado filtrado en CSV protegiendo contra fórmulas peligrosas.",
+        "operationId": "exportar_consolidado_csv_api_v1_reportes_consolidado_csv_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "fecha_desde",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Fecha Desde"
+            }
+          },
+          {
+            "in": "query",
+            "name": "fecha_hasta",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Fecha Hasta"
+            }
+          },
+          {
+            "in": "query",
+            "name": "tipo",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/TipoEvento"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Tipo"
+            }
+          },
+          {
+            "in": "query",
+            "name": "modalidad",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/Modalidad"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Modalidad"
+            }
+          },
+          {
+            "in": "query",
+            "name": "estado",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "borrador",
+                    "publicado",
+                    "finalizado",
+                    "cancelado"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Estado"
+            }
+          },
+          {
+            "in": "query",
+            "name": "organizador_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "minimum": 1,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Organizador Id"
+            }
+          },
+          {
+            "in": "query",
+            "name": "texto",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "maxLength": 120,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Texto"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
             "content": {
               "application/json": {
                 "schema": {}
               }
             },
             "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
           }
         },
-        "summary": "Obtener Consolidado Stub",
+        "summary": "Exportar reporte consolidado en CSV neutralizado",
         "tags": [
           "Reportes"
         ]
