@@ -14,7 +14,7 @@
 - [x] **T-007-02** [US1, US2] Consulta agregada optimizada con `GROUP BY` y `case()` en `app/repositories/reporte_repo.py` · Commit: `feat(reportes): implementa consulta agregada de eventos` · Terminado cuando: consolida eventos, inscritos activos, cancelaciones y asistencia en una sola consulta.
 
 ### Fase 2: Lógica de Negocio y Métricas Analíticas (US1, US2, US3, US4)
-- [ ] **T-007-03** [US1, US3] Servicio con cálculo de porcentajes, protección de división por cero y totales en `app/services/reporte_service.py` · Commit: `feat(reportes): calcula porcentaje de asistencia y totales globales` · Terminado cuando: calcula ocupación %, asistencia % y objeto `totales`.
+- [x] **T-007-03** [US1, US3] Servicio con cálculo de porcentajes, protección de división por cero y totales en `app/services/reporte_service.py` · Commit: `feat(reportes): calcula porcentaje de asistencia y totales globales` · Terminado cuando: calcula ocupación %, asistencia % y objeto `totales`.
 - [ ] **T-007-04** [US4] Generación de archivo CSV sanitizado contra inyecciones de fórmulas en `app/services/reporte_service.py` · Commit: `feat(reportes): agrega exportacion del consolidado a csv` · Terminado cuando: neutraliza caracteres `=`, `+`, `-`, `@` y enmascara identificaciones.
 
 ### Fase 3: Endpoints API REST (US1, US2, US3, US4)
