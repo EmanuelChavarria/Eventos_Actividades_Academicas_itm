@@ -51,7 +51,7 @@
 
 ---
 
-## 4. Estructura de archivos por capa (Propiedad del Integrante B)
+## 4. Estructura de archivos por capa (Propiedad del Integrante A)
 
 ```text
 app/
