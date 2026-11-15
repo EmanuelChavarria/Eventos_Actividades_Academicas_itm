@@ -14,7 +14,7 @@
 - [x] **T-006-02** [US1, US2] Repositorio de asistencia con UPSERT idempotente en `app/repositories/asistencia_repo.py` · Commit: `feat(asistencia): agrega repositorio con upsert por inscripcion` · Terminado cuando: registra o actualiza la asistencia de una inscripción sin duplicar filas.
 
 ### Fase 2: Lógica de Negocio y Reglas Críticas (US1, US2, US3)
-- [ ] **T-006-03** [US1, US2, US3] Servicio de asistencia con validación de ventana temporal (RN-08) y propiedad (RN-11) en `app/services/asistencia_service.py` · Commit: `feat(asistencia): implementa reglas de registro y correccion` · Terminado cuando: rechaza operaciones fuera de la ventana de 48 h tras fin y restringe mutaciones al organizador.
+- [x] **T-006-03** [US1, US2, US3] Servicio de asistencia con validación de ventana temporal (RN-08) y propiedad (RN-11) en `app/services/asistencia_service.py` · Commit: `feat(asistencia): implementa reglas de registro y correccion` · Terminado cuando: rechaza operaciones fuera de la ventana de 48 h tras fin y restringe mutaciones al organizador.
 
 ### Fase 3: Endpoints API REST (US1, US2, US3)
 - [ ] **T-006-04** [US1, US2] Endpoint `PUT /api/v1/eventos/{id}/inscripciones/{insc_id}/asistencia` · Commit: `feat(asistencia): expone endpoint para registrar y corregir asistencia` · Terminado cuando: permite registrar o corregir el estado de asistencia respondiendo 200 o 409 tipado.
