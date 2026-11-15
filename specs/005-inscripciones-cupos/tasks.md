@@ -15,7 +15,7 @@
 
 ### Fase 2: Lógica de Negocio y Reglas Críticas (US1, US2, US3)
 - [x] **T-005-03** [US1, US2] Servicio de inscripciones con validación de RN-04 a RN-07 y RN-11 en `app/services/inscripcion_service.py` · Commit: `feat(inscripciones): implementa reglas de cupo duplicados y estados` · Terminado cuando: se validan cupo, duplicado activo, fecha límite y público objetivo.
-- [ ] **T-005-04** [US3] Cancelación de inscripción propia y liberación de cupo en servicio y repositorio · Commit: `feat(inscripciones): implementa cancelacion con liberacion de cupo` · Terminado cuando: se permite cancelar solo antes de `fecha_inicio` y se actualiza a `cancelada`.
+- [x] **T-005-04** [US3] Cancelación de inscripción propia y liberación de cupo en servicio y repositorio · Commit: `feat(inscripciones): implementa cancelacion con liberacion de cupo` · Terminado cuando: se permite cancelar solo antes de `fecha_inicio` y se actualiza a `cancelada`.
 
 ### Fase 3: Endpoints API REST (US1, US2, US3, US4, US5)
 - [ ] **T-005-05** [US1, US2] Endpoint `POST /api/v1/eventos/{id}/inscripciones` con manejo de errores tipados 409 · Commit: `feat(inscripciones): expone post de inscripcion a un evento` · Terminado cuando: responde 201 en éxito y 409 con códigos de dominio específicos.
