@@ -158,3 +158,57 @@ Cada épica cuenta con sus historias y criterios detallados en `specs/`:
 - **E6 (`specs/006-asistencia/`):** Registro y corrección idempotente de asistencia dentro de ventana de 48 h y privacidad diferencial por rol (`HU-E6-01`..`04`).
 - **E7 (`specs/007-consolidado/`):** Panel consolidado para coordinación con métricas, totales exactos, filtros combinables y exportación CSV sanitizada (`HU-E7-01`..`04`).
 - **E10 (`specs/010-devops-ci-docker/`):** Contenerización Docker, scripts HTTPS, pipeline CI y verificación automática del contrato OpenAPI.
+
+---
+
+## 7. Registro de Entrevista con el Cliente y Supuestos
+
+### 7.1 Registro de la entrevista estructurada
+
+- **Interlocutor (cliente / docente):** Juan Carlos Morales Guerra
+- **Canal:** Chat institucional (Microsoft Teams)
+- **Evidencias gráficas:**
+  - Preguntas 1 a 12 enviadas: [evidencias_entrevista1.png](../evidencias/evidencias_entrevista1.png)
+  - Preguntas 12 a 14 y respuestas 1 a 10 del cliente: [evidencias_entrevista2.png](../evidencias/evidencias_entrevista2.png)
+  - Respuestas 12 a 14 y cierre del cliente: [evidencias_entrevista3.png](../evidencias/evidencias_entrevista3.png)
+
+| # | Tema consultado al cliente | Respuesta literal / síntesis fiel del cliente | Clasificación / Resolución adoptada |
+|---:|---|---|---|
+| **1** | Público inscribible, obligatoriedad de cuenta e identificador único | Pueden inscribirse **estudiantes y docentes**. Inicialmente nombre y correo son suficientes; delega al equipo definir cómo identificar a cada participante y evitar duplicados. | **Confirmado (estudiantes/docentes)** + **Decisión del equipo aprobada:** cuenta obligatoria e identificación única por `(tipo_documento, numero_documento)`. |
+| **2** | Datos obligatorios y opcionales de un evento | Debe tener nombre, descripción, tipo, fecha/hora inicio y fin, lugar o modalidad, organizador, responsable, cupo máximo, fecha límite de inscripción y estado. Opcionales: ponente y requisitos. | **Confirmado por el cliente** e implementado íntegramente en `Evento`. |
+| **3** | Estados, quién publica, aprobación y cancelación | Se requiere crear, publicar, modificar y cancelar eventos; el equipo debe proponer estados, permisos, condiciones de aprobación y restricciones como reglas de negocio. | **Decisión del equipo por delegación:** `borrador`, `publicado`, `cancelado` (+ `finalizado` calculado); publicación directa por el organizador sin flujo de aprobación. |
+| **4** | Cupo, lista de espera y edición posterior | Se debe controlar disponibilidad y evitar superar la capacidad; el equipo define si habrá lista de espera y cómo se modifica el cupo. | **Decisión del equipo por delegación:** sin lista de espera; cupo ampliable siempre y reducible solo hasta las inscripciones activas. |
+| **5** | Inscripción duplicada y reinscripción | Una persona no debe ocupar dos cupos en el mismo evento; el equipo define cómo detectar duplicados y tratar reinscripciones tras cancelar. | **Confirmado (no ocupar dos cupos)** + **Decisión del equipo:** índice único parcial de inscripción activa (`409 INSCRIPCION_DUPLICADA`); reinscripción crea fila nueva conservando historial. |
+| **6** | Restricciones de compatibilidad para inscribirse | El equipo debe establecer las condiciones considerando fechas, disponibilidad, estado del evento y requisitos de participación. | **Decisión del equipo por delegación:** evento `publicado`, `ahora < fecha_limite_inscripcion`, cupo disponible, sin duplicado activo y cumplimiento de `publico_objetivo`; sin validación de traslape horario. |
+| **7** | Cancelación de inscripción por el participante | **Sí**, los participantes pueden cancelar; el equipo define el plazo y cómo actualizar cupos conservando historial. | **Confirmado (permitir cancelar)** + **Decisión del equipo:** cancelación permitida hasta `fecha_inicio`, marca `cancelada` y libera cupo. |
+| **8** | Registro de asistencia, estados y correcciones | Se necesita registrar asistencia; el equipo define quién registra, cuándo, qué estados y cómo corregir. | **Confirmado (registrar asistencia)** + **Decisión del equipo:** solo organizador propietario, estados `presente`/`ausente`, ventana `[fecha_inicio, fecha_fin + 48h]`, UPSERT auditado. |
+| **9** | Creación de cuentas y permisos de organizador/coordinación | Ambos roles deben acceder al sistema; el equipo define creación de cuentas, autenticación y permisos. | **Confirmado (acceso org./coord.)** + **Decisión del equipo:** `crear_usuario.py` y seed; login con documento + contraseña (`argon2id`, cookie JWT `HttpOnly Secure`). |
+| **10** | Indicadores, filtros y exportación en consolidado | Coordinación necesita consultar eventos, inscritos, cupos disponibles y asistencia; el equipo propone indicadores/filtros. **La exportación es opcional.** | **Confirmado (consulta consolidada + exportación opcional)** + **Decisión del equipo:** ocupación %, asistencia %, totales exactos y exportación CSV neutralizada. |
+| **11** | Zona horaria, formato de fecha e idioma | *Pregunta formulada al cliente en captura 1; el fragmento de la respuesta 11 no quedó visible entre el recorte de `evidencias_entrevista2.png` y `evidencias_entrevista3.png`.* | **[Supuesto S-11 / S-14 consolidado en specs]:** almacenamiento en UTC, API ISO-8601 con zona (`-05:00`), presentación en español y zona `America/Bogota`. |
+| **12** | Volumen esperado y viabilidad de SQLite | Aplicación académica de escala pequeña; **se puede usar SQLite** siempre que cumpla los requisitos e integridad de los datos. | **Confirmado por el cliente:** SQLite con `PRAGMA foreign_keys=ON`, `WAL`, `CHECK`, `UNIQUE` y `BEGIN IMMEDIATE`. |
+| **13** | Visitantes sin sesión en catálogo | **Sí**, visitantes consultan eventos publicados sin iniciar sesión; el equipo define condiciones para inscribirse. | **Confirmado por el cliente:** catálogo público anónimo; inscripción exige sesión autenticada de participante. |
+| **14** | Uso de Jinja2 frente a framework frontend SPA | **Se permite usar Jinja2** aclarando que es motor de plantillas (no framework frontend), siempre que se **justifique** y se **demuestre el consumo de la API REST mediante JavaScript**. | **Confirmado por el cliente (condicionado):** Jinja2 como esqueleto HTML + módulos JS consumiendo `/api/v1` vía `fetch` (evidenciado en `PF-03` y `PF-12`). |
+
+### 7.2 Estado de Supuestos (`S-01` a `S-15`) y Pendientes
+
+Ninguna respuesta del cliente ha sido inventada. Se distingue explícitamente qué fue **confirmado por el cliente**, qué corresponde a **decisión del equipo aprobada por delegación** y qué permanece como **Supuesto pendiente de confirmación**:
+
+| ID | Tema | Estado de validación | Definición adoptada |
+|---|---|---|---|
+| **S-01** | Provisión de cuentas administrativas | Decisión del equipo (por delegación en p. 9) | Seed reproducible (`scripts/seed.py`) y script CLI (`scripts/crear_usuario.py`). |
+| **S-02** | Catálogo público vs inscripción autenticada | **Confirmado por el cliente** (p. 13) | Visitantes consultan sin sesión; inscribirse exige rol `participante`. |
+| **S-03** | Identidad única del usuario | Decisión del equipo (por delegación en p. 1) | `(tipo_documento, numero_documento)` único (`409 DOCUMENTO_DUPLICADO`); correo solo contacto. |
+| **S-04** | Estados del evento | Decisión del equipo (por delegación en p. 3) | Almacenados: `borrador`, `publicado`, `cancelado`; `finalizado` calculado. |
+| **S-05** | Duplicados y reinscripción | Confirmado parcialmente (p. 5) + decisión del equipo | Máximo 1 inscripción `activa` por persona/evento; reinscripción crea fila nueva. |
+| **S-06** | Lista de espera | Decisión del equipo (por delegación en p. 4) | No se implementa lista de espera. |
+| **S-07** | Fecha de cierre de inscripciones | Decisión del equipo (por delegación en p. 6) | `fecha_limite_inscripcion` configurable (`<= fecha_inicio`). |
+| **S-08** | Ventana y estados de asistencia | Decisión del equipo (por delegación en p. 8) | `presente`/`ausente`, ventana `[fecha_inicio, fecha_fin + 48h]`, corrección auditada. |
+| **S-09** | Alcance de permisos por rol y dueño | Decisión del equipo (por delegación en p. 3 y 9) | Organizador: solo sus eventos; coordinación: solo lectura; participante: lo propio. |
+| **S-10** | Cancelación de evento y sus inscripciones | Decisión del equipo (por delegación en p. 3) | Conserva historial de inscripciones y bloquea nuevas inscripciones o asistencia. |
+| **S-11** | Zona horaria y formato de fechas | *Supuesto pendiente de confirmación en captura 2–3* (resuelto en specs) | Almacenamiento en UTC, API con zona (`-05:00`) y vista en `America/Bogota`. |
+| **S-12** | Traslape de horarios entre eventos | Decisión del equipo (por delegación en p. 6) | No se valida traslape horario entre inscripciones. |
+| **S-13** | Método de autenticación y recuperación | Decisión del equipo (por delegación en p. 9) | Documento + contraseña (`argon2id`), JWT en cookie; sin flujo de recuperación. |
+| **S-14** | Idioma de la interfaz y mensajes | *Supuesto pendiente de confirmación en captura 2–3* (resuelto en specs) | Español en interfaz, mensajes de error y documentación. |
+| **S-15** | Flujo de aprobación de eventos | Decisión del equipo (por delegación en p. 3) | Publicación directa del organizador sin aprobación previa. |
+| **P16** | Alcance de pruebas `pytest`, CI y Docker en evaluación | **Supuesto pendiente de confirmación** | Se mantienen como complemento de calidad; las 12 pruebas `PF-01..PF-12` y ejecución bare-metal sin Docker siguen siendo el entregable base obligatorio. |
+
