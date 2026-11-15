@@ -112,6 +112,7 @@ def test_servicio_registrar_y_corregir_asistencia_sin_duplicar(
     t2 = t1 + timedelta(minutes=10)
     evento.fecha_inicio = t1 - timedelta(hours=1)
     evento.fecha_fin = t1 + timedelta(hours=2)
+    evento.fecha_limite_inscripcion = evento.fecha_inicio - timedelta(hours=1)
     db_session.commit()
 
     primera = asistencia_service.registrar_asistencia(
