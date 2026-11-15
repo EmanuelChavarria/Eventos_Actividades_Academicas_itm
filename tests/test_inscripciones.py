@@ -376,9 +376,8 @@ def test_cancelar_inscripcion_ajena_retorna_403(
 
     _login_participante(client, usuario_ajeno)
     resp_cancel = _cancelar(client, inscripcion_id)
-    # No se filtra si la inscripcion existe o pertenece a otro usuario (404 uniforme)
-    assert resp_cancel.status_code == 404
-    assert resp_cancel.json()["error"]["codigo"] == CodigosError.INSCRIPCION_NO_ENCONTRADA
+    assert resp_cancel.status_code == 403
+    assert resp_cancel.json()["error"]["codigo"] == CodigosError.SIN_PERMISO
 
 
 # ---------------------------------------------------------------------------
@@ -403,6 +402,9 @@ def test_listar_mis_inscripciones(
     assert len(datos) == 1
     assert datos[0]["estado"] == "activa"
     assert datos[0]["evento_id"] == evento.id
+    assert datos[0]["titulo_evento"] == evento.titulo
+    assert datos[0]["fecha_inicio_evento"] == evento.fecha_inicio.isoformat().replace("+00:00", "Z")
+    assert datos[0]["estado_evento"] == "publicado"
 
 
 def test_listar_inscritos_organizador_ve_documento_completo(

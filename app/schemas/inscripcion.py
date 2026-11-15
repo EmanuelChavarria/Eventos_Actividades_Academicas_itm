@@ -24,6 +24,7 @@ class InscripcionDetalle(InscripcionSalida):
     """Detalle extendido con título del evento para 'Mis inscripciones'."""
 
     titulo_evento: str
+    fecha_inicio_evento: datetime
     estado_evento: str
 
 

@@ -6,7 +6,7 @@ from collections.abc import Sequence
 from datetime import datetime
 
 from sqlalchemy import func, select, text
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 
 from app.core.errors import CodigosError, Conflicto, NoEncontrado
 from app.core.fechas import ahora_utc
@@ -121,6 +121,7 @@ def listar_de_participante(db: Session, participante_id: int) -> list[Inscripcio
     """Retorna todas las inscripciones de un participante, más recientes primero."""
     consulta = (
         select(Inscripcion)
+        .options(joinedload(Inscripcion.evento))
         .where(Inscripcion.participante_id == participante_id)
         .order_by(Inscripcion.creado_en.desc())
     )

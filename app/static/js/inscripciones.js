@@ -76,12 +76,12 @@ function renderizarLista(inscripciones) {
     const esActiva = inscripcion.estado === "activa";
 
     const celdas = [
-      { texto: inscripcion.tituloEvento || inscripcion.titulo_evento },
+      { texto: inscripcion.titulo_evento },
       {
-        texto: formatearFechaBogota(inscripcion.creadoEn || inscripcion.creado_en),
+        texto: formatearFechaBogota(inscripcion.fecha_inicio_evento),
       },
       {
-        texto: esActiva ? "Activa" : "Cancelada",
+        texto: inscripcion.estado_evento,
       },
     ];
 

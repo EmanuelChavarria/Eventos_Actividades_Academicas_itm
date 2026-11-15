@@ -14,6 +14,7 @@ from app.models.inscripcion import Inscripcion
 from app.models.usuario import Usuario
 from app.repositories import inscripcion_repo
 from app.schemas.inscripcion import (
+    InscripcionDetalle,
     InscritoEnmascarado,
     InscritoSalida,
 )
@@ -116,10 +117,10 @@ def cancelar_inscripcion(
     ahora = proveedor_ahora()
 
     inscripcion = inscripcion_repo.obtener_por_id(db, inscripcion_id)
-    if inscripcion is None or inscripcion.participante_id != usuario.id:
+    if inscripcion is None:
         raise NoEncontrado(
             codigo=CodigosError.INSCRIPCION_NO_ENCONTRADA,
-            mensaje="Inscripción no encontrada o no pertenece a tu cuenta.",
+            mensaje="Inscripción no encontrada.",
         )
 
     # Solo el propietario puede cancelar su inscripción
@@ -151,9 +152,43 @@ def cancelar_inscripcion(
     return inscripcion_repo.cancelar(db, inscripcion, ahora)
 
 
-def listar_mis_inscripciones(db: Session, participante: Usuario) -> list[Inscripcion]:
-    """Retorna todas las inscripciones del participante ordenadas cronológicamente."""
-    return inscripcion_repo.listar_de_participante(db, participante.id)
+def listar_mis_inscripciones(
+    db: Session,
+    participante: Usuario,
+) -> list[InscripcionDetalle]:
+    """Retorna todas las inscripciones del participante con detalle del evento.
+
+    Incluye `titulo_evento`, `fecha_inicio_evento` y `estado_evento`
+    (calculado: 'finalizado' si fecha_fin < ahora, 'cancelado' si el evento
+    está cancelado, o el estado persistido del evento).
+    """
+    ahora = ahora_utc()
+    inscripciones = inscripcion_repo.listar_de_participante(db, participante.id)
+
+    resultado: list[InscripcionDetalle] = []
+    for insc in inscripciones:
+        evento = insc.evento
+        if evento.fecha_fin < ahora:
+            estado_evento = "finalizado"
+        elif evento.estado == EstadoEvento.CANCELADO.value:
+            estado_evento = "cancelado"
+        else:
+            estado_evento = evento.estado
+
+        resultado.append(
+            InscripcionDetalle(
+                id=insc.id,
+                evento_id=insc.evento_id,
+                participante_id=insc.participante_id,
+                estado=insc.estado,
+                creado_en=insc.creado_en,
+                cancelada_en=insc.cancelada_en,
+                titulo_evento=evento.titulo,
+                fecha_inicio_evento=evento.fecha_inicio,
+                estado_evento=estado_evento,
+            )
+        )
+    return resultado
 
 
 def listar_inscritos(

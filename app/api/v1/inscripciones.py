@@ -10,6 +10,7 @@ from app.core.database import get_db
 from app.models.enums import Rol
 from app.models.usuario import Usuario
 from app.schemas.inscripcion import (
+    InscripcionDetalle,
     InscripcionSalida,
     InscritoEnmascarado,
     InscritoSalida,
@@ -57,16 +58,15 @@ def cancelar_inscripcion(
 
 @router.get(
     "/inscripciones/mias",
-    response_model=list[InscripcionSalida],
+    response_model=list[InscripcionDetalle],
     summary="Listar mis inscripciones",
 )
 def listar_mis_inscripciones(
     db: Session = Depends(get_db),
     usuario: Usuario = Depends(require_roles(Rol.PARTICIPANTE)),
-) -> list[InscripcionSalida]:
+) -> list[InscripcionDetalle]:
     """Retorna el historial completo de inscripciones del participante autenticado."""
-    inscripciones = inscripcion_service.listar_mis_inscripciones(db, usuario)
-    return [InscripcionSalida.model_validate(i) for i in inscripciones]
+    return inscripcion_service.listar_mis_inscripciones(db, usuario)
 
 
 @router.get(
