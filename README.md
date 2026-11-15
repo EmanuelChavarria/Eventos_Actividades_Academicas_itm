@@ -1,13 +1,20 @@
 # PF-04 — Organización de Eventos y Actividades Académicas
 
-Plataforma web y API REST en Python (FastAPI, SQLite, SQLAlchemy, Alembic y Jinja2 + JS modular) para gestionar eventos académicos, catálogo público, inscripciones con cupo atómico, asistencia y reportes consolidados.
+Plataforma web y API REST en Python (**FastAPI**, **SQLite**, **SQLAlchemy**, **Alembic** y **Jinja2 + JavaScript modular**) para gestionar eventos académicos, catálogo público, inscripciones con cupo atómico, asistencia y reportes consolidados.
+
+## Descripción y arquitectura
+
+El sistema resuelve el ciclo completo de actividades académicas institucionales bajo separación estricta en **4 capas** (`app/api/v1` + `app/web` → `app/services` → `app/repositories` → `app/models`), con autenticación segura basada en documento de identidad, fechas normalizadas en UTC con presentación en `America/Bogota`, control atómico de cupos en SQLite (`BEGIN IMMEDIATE`) y consumo de `/api/v1` vía `fetch` desde el navegador.
+
+- **Roles soportados:** `participante` (estudiante/docente), `organizador` (gestión exclusiva de sus eventos y asistencia) y `coordinacion` (consulta consolidada y exportación CSV en solo lectura).
+- **Documentación detallada de análisis y diseño:** [docs/requisitos.md](docs/requisitos.md) (requisitos RF/RNF/RN y entrevista al cliente) · [docs/diseno.md](docs/diseno.md) (arquitectura, modelo de datos, API y justificación tecnológica).
 
 ## Requisitos previos
 
 - **Python 3.11 o superior** (desarrollado con Python 3.12).
 - **Git**.
 - **`mkcert`** (recomendado para certificados TLS locales confiables en `https://localhost:8000`) o `openssl` como alternativa.
-- Opcional: **`uv`** para crear el entorno virtual e instalar dependencias más rápido.
+- Opcional: **`uv`** para crear el entorno virtual e instalar dependencias más rápido, y **Docker / Docker Compose** si se opta por ejecución en contenedores (ver [docs/devops.md](docs/devops.md)).
 
 ---
 
@@ -128,6 +135,8 @@ uvicorn app.main:app --reload --ssl-keyfile certs/localhost-key.pem --ssl-certfi
 ```
 
 ### Opción B: Ejecución con Docker Compose
+
+Para la guía completa de contenerización, volúmenes, certificados en contenedor, CI/CD y reglas de protección de ramas, consulta [docs/devops.md](docs/devops.md).
 
 ```bash
 # Construir y levantar el contenedor en segundo plano:
