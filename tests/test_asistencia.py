@@ -419,11 +419,21 @@ def test_vista_web_asistencia_y_js_sin_innerhtml(
     _login(client, part)
     assert client.get(f"/eventos/{evento.id}/asistencia").status_code == 403
 
-    # Organizador -> 200 HTML con script asistencia.js
+    # Organizador -> 200 HTML con script asistencia.js y enlace volver propio
     _login(client, org)
     vista = client.get(f"/eventos/{evento.id}/asistencia")
     assert vista.status_code == 200
     assert "/static/js/asistencia.js" in vista.text
+    assert "tabla-responsiva" in vista.text
+    assert 'href="/organizador/eventos"' in vista.text
+
+    # Coordinación -> 200 HTML con enlace volver al consolidado
+    coord = crear_usuario_factory(rol=Rol.COORDINACION, nombre="Coord Web")
+    _login(client, coord)
+    vista_coord = client.get(f"/eventos/{evento.id}/asistencia")
+    assert vista_coord.status_code == 200
+    assert 'href="/coordinacion/consolidado"' in vista_coord.text
 
     contenido_js = Path("app/static/js/asistencia.js").read_text(encoding="utf-8")
     assert "innerHTML" not in contenido_js
+    assert "limpiarAlerta: false" in contenido_js
