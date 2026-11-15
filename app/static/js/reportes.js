@@ -1,6 +1,6 @@
 /**
  * Módulo JS del panel consolidado de coordinación (E7).
- * Consume GET /api/v1/reportes/consolidado con DOM seguro (sin innerHTML).
+ * Consume GET /api/v1/reportes/consolidado usando DOM seguro (crearNodo y textContent).
  */
 
 import {
