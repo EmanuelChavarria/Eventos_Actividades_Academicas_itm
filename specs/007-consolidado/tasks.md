@@ -10,7 +10,7 @@
 ## Tareas de Implementación
 
 ### Fase 1: Capa de Datos y Schemas (US1, US3)
-- [ ] **T-007-01** [US1, US3] Schemas Pydantic para métricas por evento y totales globales en `app/schemas/reporte.py` · Commit: `feat(reportes): agrega schemas de consolidado y totales` · Terminado cuando: los schemas definen métricas, porcentajes y totales.
+- [x] **T-007-01** [US1, US3] Schemas Pydantic para métricas por evento y totales globales en `app/schemas/reporte.py` · Commit: `feat(reportes): agrega schemas de consolidado y totales` · Terminado cuando: los schemas definen métricas, porcentajes y totales.
 - [ ] **T-007-02** [US1, US2] Consulta agregada optimizada con `GROUP BY` y `case()` en `app/repositories/reporte_repo.py` · Commit: `feat(reportes): implementa consulta agregada de eventos` · Terminado cuando: consolida eventos, inscritos activos, cancelaciones y asistencia en una sola consulta.
 
 ### Fase 2: Lógica de Negocio y Métricas Analíticas (US1, US2, US3, US4)
