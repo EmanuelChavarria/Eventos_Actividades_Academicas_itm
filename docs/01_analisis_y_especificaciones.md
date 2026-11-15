@@ -403,7 +403,7 @@ Los criterios de aceptación de cada historia se verifican con las pruebas PF-01
 
 **Definido como terminado:** PF-05 a PF-08 aprobadas; el cupo nunca se excede incluso con solicitudes simultáneas.
 
-### E6 — Registro y consulta de asistencia · Integrante B · rama `006-asistencia` · **CA-05**
+### E6 — Registro y consulta de asistencia · Integrante A · rama `006-asistencia` · **CA-05**
 
 **Spec (SDD):** `specs/006-asistencia/` — se redacta y aprueba antes de escribir código.
 **Objetivo:** registrar quién asistió y conservar la relación actividad–participante–asistencia.
@@ -429,7 +429,7 @@ Los criterios de aceptación de cada historia se verifican con las pruebas PF-01
 
 **Definido como terminado:** PF-10 aprobada; no existen dos registros de asistencia para una misma inscripción.
 
-### E7 — Consolidado para coordinación · Integrante B · rama `007-consolidado` · **CA-06**
+### E7 — Consolidado para coordinación · Integrante A · rama `007-consolidado` · **CA-06**
 
 **Spec (SDD):** `specs/007-consolidado/` — se redacta y aprueba antes de escribir código.
 **Objetivo:** que coordinación consulte cantidades coherentes de eventos, inscripciones y asistencia.
@@ -546,22 +546,22 @@ Entregables: `docs/trazabilidad.md` (CA-01…CA-06 ↔ requisito ↔ componente 
 | E3 | Gestión de eventos | CA-01 | **A** | `003-gestion-eventos` |
 | E4 | Catálogo y consulta de eventos | CA-02 | **A** | `004-catalogo-eventos` |
 | E5 | Inscripciones y control de cupos | CA-03, CA-04 | **B** | `005-inscripciones-cupos` |
-| E6 | Registro y consulta de asistencia | CA-05 | **B** | `006-asistencia` |
-| E7 | Consolidado para coordinación | CA-06 | **B** | `007-consolidado` |
+| E6 | Registro y consulta de asistencia | CA-05 | **A** | `006-asistencia` |
+| E7 | Consolidado para coordinación | CA-06 | **A** | `007-consolidado` |
 | E8 | Pruebas funcionales (PF-01…PF-12) | Todos | A: PF-01–04, 09 · B: PF-05–08, 10, 11 · ambos: PF-12 | `test/E8a-…` · `test/E8b-…` |
 | E9 | Documentación y trazabilidad | Todos | A: requisitos, diseño, README 1–5 · B: trazabilidad, README 6–9 | `docs/E9a-…` · `docs/E9b-…` |
 | E10 | DevOps: CI, Docker, hooks, contrato OpenAPI | RNF-20…23 | **B** | `010-devops-ci-docker` |
 
-Carga equilibrada: A concentra el código base y los flujos de eventos; B concentra el flujo de inscripción/asistencia/consolidado y toda la infraestructura de SDD y DevOps (que puede avanzar en la Fase 0 mientras A entrega E1).
+Carga reasignada (acuerdo del equipo): A concentra el código base, los flujos de eventos y asume **E6 (Asistencia)** y **E7 (Consolidado)** tras completarse E5; B cubre E0, E10 y **E5 (Inscripciones y cupos)**.
 
 ### Propiedad de archivos (para evitar conflictos)
 
 | Integrante A | Integrante B |
 |---|---|
 | `app/core/*`, `app/models/*`, `app/main.py`, `app/api/deps.py`, `app/api/router.py`, `migrations/`, `scripts/seed.py`, `requirements*.txt`, `.gitignore`, `.env.example`, `ruff.toml`, `tests/conftest.py`, `app/templates/base.html`, `app/static/*` | — (solo consume; propone cambios a A) |
-| `*auth*`, `*evento*`, `*catalogo*` en `schemas/`, `repositories/`, `services/`, `api/v1/`, `web/`, `templates/{auth,eventos,catalogo}/` | `*inscripcion*`, `*asistencia*`, `*reporte*` en `schemas/`, `repositories/`, `services/`, `api/v1/`, `web/`, `templates/{inscripciones,asistencia,reportes}/` |
-| `tests/test_permisos.py`, `tests/test_auth.py` | `tests/test_inscripciones.py`, `tests/test_asistencia.py`, `tests/test_reportes.py` |
-| `specs/001…004-*/` | `.specify/memory/constitution.md`, `specs/README.md`, `.specify/templates/`, `specs/005…007-*/`, `specs/010-devops-ci-docker/` |
+| `*auth*`, `*evento*`, `*catalogo*`, `*asistencia*`, `*reporte*` en `schemas/`, `repositories/`, `services/`, `api/v1/`, `web/`, `templates/{auth,eventos,catalogo,asistencia,reportes}/` | `*inscripcion*` en `schemas/`, `repositories/`, `services/`, `api/v1/`, `web/`, `templates/inscripciones/` |
+| `tests/test_permisos.py`, `tests/test_auth.py`, `tests/test_asistencia.py`, `tests/test_reportes.py` | `tests/test_inscripciones.py` |
+| `specs/001…004-*/`, `specs/006-asistencia/`, `specs/007-consolidado/` | `.specify/memory/constitution.md`, `specs/README.md`, `.specify/templates/`, `specs/005-inscripciones-cupos/`, `specs/010-devops-ci-docker/` |
 | `docs/requisitos.md`, `docs/diseno.md`, `docs/pruebas/PF-01…04,09`, `evidencias/PF-01…04,09` | `docs/trazabilidad.md`, `docs/pruebas.md`, `docs/devops.md`, `docs/pruebas/PF-05…08,10,11`, `evidencias/PF-05…08,10,11`, `evidencias/devops/` |
 | `README.md` secciones 1–5 | `README.md` secciones 6–9 |
 | — | `Dockerfile`, `docker-compose.yml`, `.dockerignore`, `.gitattributes`, `.github/`, `.pre-commit-config.yaml`, `scripts/{entrypoint.sh,check_commits.py,export_openapi.py}` |
@@ -575,9 +575,9 @@ Excepciones acordadas: `inscripcion_repo.py` nace en E1 (A) con los conteos de s
    - B completa y fusiona **E0** (constitución y plantillas) lo antes posible: es pequeña y habilita las specs.
    - A, en cuanto E0 esté en `main`, escribe y aprueba la spec de E1 y entrega **E1**, luego **E2**.
    - Mientras tanto B redacta los archivos de **E10** y las specs de E5/E6/E7 (sin código).
-2. **Fase 1:** A hace E3 y E4; B fusiona E10 (cuando E1 esté en `main`) y hace E5 y E6, usando el seed para probar sin esperar a E3.
-3. **Fase 2:** B hace E7; A cierra detalles de interfaz y E8-A.
-4. **Fase 3:** PF-12 juntos, E9 y revisión cruzada de todos los PRs.
+2. **Fase 1:** A hace E3 y E4; B fusiona E10 (cuando E1 esté en `main`) y entrega E5.
+3. **Fase 2:** Tras fusionarse E5, A implementa **E6** (`006-asistencia`) y luego **E7** (`007-consolidado`).
+4. **Fase 3:** E8-A, E8-B, PF-12 juntos, E9 y revisión cruzada de todos los PRs.
 5. **Sincronización diaria:** `git fetch && git rebase origin/main` y avisar al compañero cuando se fusione un PR que le afecte.
 
 ## Metodología SDD (Spec-Driven Development)
@@ -1102,7 +1102,7 @@ refactor(eventos): extrae validación de fechas a función reutilizable
 2. `001-fundacion` (A) → desbloquea el código de todos.
 3. `010-devops-ci-docker` (B) → se fusiona cuando E1 esté en `main` y active el CI para el resto.
 4. `002-autenticacion-roles` (A); B integra sus routers tras él.
-5. Luego en paralelo: A → E3, E4; B → E5, E6, E7.
+5. Luego en paralelo: A → E3, E4 (y E6, E7 tras E5); B → E5.
 6. Pruebas (E8) y documentación (E9) por rama propia de cada uno.
 
 ## Plan mínimo de pruebas funcionales (Actividad 6)

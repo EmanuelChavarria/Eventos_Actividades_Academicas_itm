@@ -2,7 +2,7 @@
 
 - **Épica:** E6 · **Condiciones:** CA-05 · **Requisitos:** RF-20..RF-23, RN-08, RN-10, RN-11, RNF-06, RNF-08
 - **Rama de feature:** `006-asistencia` · **Creada:** 2026-11-14
-- **Estado:** borrador · **Responsable:** Integrante B
+- **Estado:** borrador · **Responsable:** Integrante A
 - **Entrada:** Control de asistencia a eventos académicos, ventana temporal de registro y corrección, trazabilidad de auditoría y visualización protegida por roles.
 
 ---
