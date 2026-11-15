@@ -21,7 +21,7 @@
 - [x] **T-006-05** [US3] Endpoint `GET /api/v1/eventos/{id}/asistencia` con enmascaramiento diferencial · Commit: `feat(asistencia): expone lista de participantes con asistencia` · Terminado cuando: muestra documento completo a organizador y enmascarado (`••••1234`) a coordinación.
 
 ### Fase 4: Vistas Web Jinja2 y Módulos JS (US4)
-- [ ] **T-006-06** [US4] Pantalla y controles interactivos de asistencia en `app/templates/asistencia/registro.html` y `app/static/js/asistencia.js` · Commit: `feat(web): agrega pantalla de registro de asistencia` · Terminado cuando: permite registrar asistencia interactivamente con DOM seguro.
+- [x] **T-006-06** [US4] Pantalla y controles interactivos de asistencia en `app/templates/asistencia/registro.html` y `app/static/js/asistencia.js` · Commit: `feat(web): agrega pantalla de registro de asistencia` · Terminado cuando: permite registrar asistencia interactivamente con DOM seguro.
 
 ### Fase 5: Pruebas Automatizadas y Evidencias Funcionales (US1, US2, US3)
 - [ ] **T-006-07** [US1, US2, US3] Pruebas unitarias y de integración en `tests/test_asistencia.py` · Commit: `test(asistencia): agrega pruebas de permisos y regla de inicio` · Terminado cuando: las pruebas verifican la ventana de 48 h, el rechazo previo a inicio y permisos de organizador.
