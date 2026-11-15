@@ -14,7 +14,7 @@
 - [x] **T-005-02** [US1, US2] Repositorio de inscripciones con transacción `BEGIN IMMEDIATE` e inserción condicional en `app/repositories/inscripcion_repo.py` · Commit: `feat(inscripciones): agrega repositorio con alta atomica por cupo` · Terminado cuando: la inserción condicional garantiza cero sobrecupos.
 
 ### Fase 2: Lógica de Negocio y Reglas Críticas (US1, US2, US3)
-- [ ] **T-005-03** [US1, US2] Servicio de inscripciones con validación de RN-04 a RN-07 y RN-11 en `app/services/inscripcion_service.py` · Commit: `feat(inscripciones): implementa reglas de cupo duplicados y estados` · Terminado cuando: se validan cupo, duplicado activo, fecha límite y público objetivo.
+- [x] **T-005-03** [US1, US2] Servicio de inscripciones con validación de RN-04 a RN-07 y RN-11 en `app/services/inscripcion_service.py` · Commit: `feat(inscripciones): implementa reglas de cupo duplicados y estados` · Terminado cuando: se validan cupo, duplicado activo, fecha límite y público objetivo.
 - [ ] **T-005-04** [US3] Cancelación de inscripción propia y liberación de cupo en servicio y repositorio · Commit: `feat(inscripciones): implementa cancelacion con liberacion de cupo` · Terminado cuando: se permite cancelar solo antes de `fecha_inicio` y se actualiza a `cancelada`.
 
 ### Fase 3: Endpoints API REST (US1, US2, US3, US4, US5)
