@@ -13,7 +13,11 @@ import json
 import sys
 from pathlib import Path
 
-CONTRATO_PATH = Path("specs/contrato/openapi.json")
+RAIZ = Path(__file__).resolve().parent.parent
+if str(RAIZ) not in sys.path:
+    sys.path.insert(0, str(RAIZ))
+
+CONTRATO_PATH = RAIZ / "specs" / "contrato" / "openapi.json"
 
 
 def obtener_openapi_actual() -> str:
