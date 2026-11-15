@@ -216,6 +216,37 @@ function renderizarDetalleEvento(ev) {
   if (zonaInscripcion) {
     zonaInscripcion.dataset.inscripcionesAbiertas = String(ev.inscripciones_abiertas);
   }
+  configurarBotonInscripcion(ev);
+}
+
+function configurarBotonInscripcion(evento) {
+  const btn = document.getElementById("btn-inscribirse");
+  const zona = document.getElementById("zona-inscripcion");
+  if (!btn || !zona) {
+    return;
+  }
+
+  const esParticipante = zona.dataset.usuarioRol === "participante";
+  const abiertas = evento.inscripciones_abiertas === true;
+
+  btn.disabled = !(esParticipante && abiertas);
+  btn.textContent = esParticipante && abiertas ? "Inscribirse" : "Inscripciones cerradas";
+  btn.dataset.eventoId = String(evento.id);
+
+  btn.onclick = async () => {
+    btn.disabled = true;
+    try {
+      await requestApi(`/eventos/${evento.id}/inscripciones`, {
+        method: "POST",
+      });
+      mostrarAlerta(alertaGlobal, "Te has inscrito exitosamente en el evento.", "exito");
+      btn.textContent = "Inscrito";
+      btn.disabled = true;
+    } catch (error) {
+      btn.disabled = false;
+      mostrarAlerta(alertaGlobal, extraerMensajeError(error), "error");
+    }
+  };
 }
 
 async function cargarDetalleEvento() {
