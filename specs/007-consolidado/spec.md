@@ -2,7 +2,7 @@
 
 - **Épica:** E7 · **Condiciones:** CA-06 · **Requisitos:** RF-24..RF-26, RF-30 (opcional), RNF-06, RNF-13
 - **Rama de feature:** `007-consolidado` · **Creada:** 2026-11-14
-- **Estado:** borrador · **Responsable:** Integrante B
+- **Estado:** borrador · **Responsable:** Integrante A
 - **Entrada:** Panel de métricas globales y agregadas por evento, cálculo de tasas de ocupación y asistencia, filtros multidimensionales y exportación segura a CSV.
 
 ---

@@ -1,6 +1,6 @@
 # Tareas: Consolidado para Coordinación Académica
 
-- **Rama:** `007-consolidado` · **Responsable:** Integrante B
+- **Rama:** `007-consolidado` · **Responsable:** Integrante A
 - **Entradas:** `specs/007-consolidado/spec.md`, `specs/007-consolidado/plan.md`
 - **Regla de oro:** **1 tarea = 1 commit atómico** en Conventional Commits en español (`tipo(alcance): descripción`, ≤ 72 caracteres). Marca la tarea `[x]` en este archivo dentro del mismo commit.
 - **Pruebas primero:** Para la coherencia de totales y la protección contra división por cero, las pruebas se redactan rojo → verde.

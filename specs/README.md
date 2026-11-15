@@ -16,8 +16,8 @@ Las ramas de desarrollo de cada feature siguen la convención `NNN-slug` pasando
 | **E3** | `003-gestion-eventos` | Gestión de eventos (creación/edición) | **A** | `003-gestion-eventos` |
 | **E4** | `004-catalogo-eventos` | Catálogo y consulta de eventos | **A** | `004-catalogo-eventos` |
 | **E5** | `005-inscripciones-cupos` | Inscripciones y control atómico de cupos | **B** | `005-inscripciones-cupos` |
-| **E6** | `006-asistencia` | Registro y consulta de asistencia | **B** | `006-asistencia` |
-| **E7** | `007-consolidado` | Consolidado para coordinación | **B** | `007-consolidado` |
+| **E6** | `006-asistencia` | Registro y consulta de asistencia | **A** | `006-asistencia` |
+| **E7** | `007-consolidado` | Consolidado para coordinación | **A** | `007-consolidado` |
 | **E8** | *(Pruebas)* | Pruebas funcionales PF-01…PF-12 | **A y B** | `test/E8a-…` / `test/E8b-…` |
 | **E9** | *(Docs)* | Documentación, diseño y trazabilidad | **A y B** | `docs/E9a-…` / `docs/E9b-…` |
 | **E10** | `010-devops-ci-docker` | DevOps: CI, Docker, hooks y contrato | **B** | `010-devops-ci-docker` |

@@ -1,6 +1,6 @@
 # Tareas: Registro y Consulta de Asistencia
 
-- **Rama:** `006-asistencia` · **Responsable:** Integrante B
+- **Rama:** `006-asistencia` · **Responsable:** Integrante A
 - **Entradas:** `specs/006-asistencia/spec.md`, `specs/006-asistencia/plan.md`
 - **Regla de oro:** **1 tarea = 1 commit atómico** en Conventional Commits en español (`tipo(alcance): descripción`, ≤ 72 caracteres). Marca la tarea `[x]` en este archivo dentro del mismo commit.
 - **Pruebas primero:** Para la ventana de 48 h y permisos de organizador, las pruebas pytest se redactan rojo → verde.
