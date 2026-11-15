@@ -2,7 +2,7 @@
 
 - **Épica:** E6 · **Condiciones:** CA-05 · **Requisitos:** RF-20..RF-23, RN-08, RN-10, RN-11, RNF-06, RNF-08
 - **Rama de feature:** `006-asistencia` · **Creada:** 2026-11-14
-- **Estado:** borrador · **Responsable:** Integrante A
+- **Estado:** aprobada · **Responsable:** Integrante A
 - **Entrada:** Control de asistencia a eventos académicos, ventana temporal de registro y corrección, trazabilidad de auditoría y visualización protegida por roles.
 
 ---
@@ -30,7 +30,7 @@ Como organizador del evento quiero marcar la asistencia (`presente` o `ausente`)
 - **Por qué esta prioridad:** Cumple la condición CA-05 y la trazabilidad de participación académica.
 - **Prueba independiente:** Enviar `PUT /api/v1/eventos/{id}/inscripciones/{inscripcion_id}/asistencia` con estado `presente` durante el rango de fechas válido y verificar respuesta 200 con persistencia en BD.
 - **Escenarios de aceptación:**
-  1. **Dado** un evento publicado, una inscripción activa y la fecha actual comprendida entre `evento.fecha_inicio` y `evento.fecha_fin + 48 horas` (en UTC), **Cuando** el organizador propietario envía la solicitud de asistencia, **Entonces** el sistema responde `200 OK`, persiste el estado (`presente` o `ausente`), registra `registrado_por` con el ID del organizador y `registrado_en` en UTC.
+  1. **Dado** un evento publicado, una inscripción activa y la fecha actual comprendida entre `evento.fecha_inicio` y `evento.fecha_fin + 48 horas` (en UTC), **Cuando** el organizador propietario envía la solicitud de asistencia, **Entonces** el sistema responde `200 OK`, persiste el estado (`presente` o `ausente`), registra `registrado_por_id` con el ID del organizador y `registrado_en`/`actualizado_en` en UTC.
   2. **Dado** un intento de registro antes de la `fecha_inicio` del evento o posterior a 48 horas de la `fecha_fin`, **Cuando** el organizador intenta registrar asistencia, **Entonces** el sistema responde `409 Conflict` con código `ASISTENCIA_NO_PERMITIDA`.
   3. **Dado** un evento en estado `cancelado` o una inscripción en estado `cancelada`, **Cuando** se intenta registrar asistencia, **Entonces** el sistema responde `409 Conflict` con código `ASISTENCIA_NO_PERMITIDA`.
 
@@ -41,9 +41,9 @@ Como organizador del evento quiero marcar la asistencia (`presente` o `ausente`)
 Como organizador quiero rectificar el estado de asistencia previamente registrado a un participante dentro del plazo límite, para subsanar errores humanos conservando la auditoría de cambio.
 
 - **Por qué esta prioridad:** Garantiza exactitud en los datos sin duplicar registros de asistencia.
-- **Prueba independiente:** Modificar una asistencia de `ausente` a `presente` dentro de la ventana temporal y verificar que se actualiza el mismo registro y se actualizan `actualizado_por` y `actualizado_en`.
+- **Prueba independiente:** Modificar una asistencia de `ausente` a `presente` dentro de la ventana temporal y verificar que se actualiza el mismo registro y se actualizan `registrado_por_id` y `actualizado_en`.
 - **Escenarios de aceptación:**
-  1. **Dado** una asistencia ya registrada previamente, **Cuando** el organizador envía un nuevo estado dentro de la ventana de 48 horas, **Entonces** el sistema responde `200 OK`, actualiza el estado en el registro existente (sin crear filas adicionales), fija `actualizado_por` y `actualizado_en` en UTC.
+  1. **Dado** una asistencia ya registrada previamente, **Cuando** el organizador envía un nuevo estado dentro de la ventana de 48 horas, **Entonces** el sistema responde `200 OK`, actualiza el estado en el registro existente (sin crear filas adicionales), fija `registrado_por_id` y `actualizado_en` en UTC.
   2. **Dado** que ya transcurrieron más de 48 horas desde `evento.fecha_fin`, **Cuando** se intenta rectificar una asistencia, **Entonces** el sistema responde `409 Conflict` con código `ASISTENCIA_NO_PERMITIDA`.
 
 ---
@@ -79,7 +79,7 @@ Como organizador quiero disponer de una pantalla web con la nómina de inscritos
   Cualquier operación fuera de este intervalo levanta error `409 ASISTENCIA_NO_PERMITIDA`.
 - **RN-10 (Unicidad y Auditoría de Asistencia):**
   - Una inscripción solo puede tener a lo sumo un registro de asistencia asociado (`UNIQUE(inscripcion_id)`).
-  - Todo cambio persiste `actualizado_por` y `actualizado_en` (UTC).
+  - Todo cambio persiste `registrado_por_id` y `actualizado_en` (UTC).
 - **RN-11 (Mínimo Privilegio):** Solo el organizador creador del evento (`evento.organizador_id == usuario.id`) puede registrar o corregir asistencia. Coordinación solo tiene permisos de lectura (`GET`).
 
 ---
