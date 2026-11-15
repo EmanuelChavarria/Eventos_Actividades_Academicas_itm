@@ -19,9 +19,9 @@
 
 ### Fase 3: Endpoints API REST (US1, US2, US3, US4, US5)
 - [x] **T-005-05** [US1, US2] Endpoint `POST /api/v1/eventos/{id}/inscripciones` con manejo de errores tipados 409 · Commit: `feat(inscripciones): expone post de inscripcion a un evento` · Terminado cuando: responde 201 en éxito y 409 con códigos de dominio específicos.
-- [ ] **T-005-06** [US3] Endpoint `PATCH /api/v1/inscripciones/{id}/cancelar` con verificación de propietario · Commit: `feat(inscripciones): expone patch de cancelacion de inscripcion` · Terminado cuando: responde 200 liberando el cupo o 409/403 si no procede.
-- [ ] **T-005-07** [US5] Endpoint `GET /api/v1/inscripciones/mias` para participante · Commit: `feat(inscripciones): expone listado de inscripciones del participante` · Terminado cuando: retorna historial cronológico con estado del evento.
-- [ ] **T-005-08** [US4] Endpoint `GET /api/v1/eventos/{id}/inscripciones` con enmascaramiento diferencial · Commit: `feat(inscripciones): expone inscritos para organizador y coordinacion` · Terminado cuando: organizador ve documento completo y coordinación enmascarado (`••••1234`).
+- [x] **T-005-06** [US3] Endpoint `PATCH /api/v1/inscripciones/{id}/cancelar` con verificación de propietario · Commit: `feat(inscripciones): expone patch de cancelacion de inscripcion` · Terminado cuando: responde 200 liberando el cupo o 409/403 si no procede.
+- [x] **T-005-07** [US5] Endpoint `GET /api/v1/inscripciones/mias` para participante · Commit: `feat(inscripciones): expone listado de inscripciones del participante` · Terminado cuando: retorna historial cronológico con estado del evento.
+- [x] **T-005-08** [US4] Endpoint `GET /api/v1/eventos/{id}/inscripciones` con enmascaramiento diferencial · Commit: `feat(inscripciones): expone inscritos para organizador y coordinacion` · Terminado cuando: organizador ve documento completo y coordinación enmascarado (`••••1234`).
 
 ### Fase 4: Vistas Web Jinja2 y Módulos JS (US1, US5)
 - [ ] **T-005-09** [US1] Conexión del botón «Inscribirse» en detalle del evento con manejo de errores DOM seguro en `app/static/js/` · Commit: `feat(web): conecta boton de inscripcion con api y muestra errores` · Terminado cuando: la interfaz consume la API con fetch sin recargar página.
