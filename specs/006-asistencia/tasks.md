@@ -18,7 +18,7 @@
 
 ### Fase 3: Endpoints API REST (US1, US2, US3)
 - [x] **T-006-04** [US1, US2] Endpoint `PUT /api/v1/eventos/{id}/inscripciones/{insc_id}/asistencia` · Commit: `feat(asistencia): expone endpoint para registrar y corregir asistencia` · Terminado cuando: permite registrar o corregir el estado de asistencia respondiendo 200 o 409 tipado.
-- [ ] **T-006-05** [US3] Endpoint `GET /api/v1/eventos/{id}/asistencia` con enmascaramiento diferencial · Commit: `feat(asistencia): expone lista de participantes con asistencia` · Terminado cuando: muestra documento completo a organizador y enmascarado (`••••1234`) a coordinación.
+- [x] **T-006-05** [US3] Endpoint `GET /api/v1/eventos/{id}/asistencia` con enmascaramiento diferencial · Commit: `feat(asistencia): expone lista de participantes con asistencia` · Terminado cuando: muestra documento completo a organizador y enmascarado (`••••1234`) a coordinación.
 
 ### Fase 4: Vistas Web Jinja2 y Módulos JS (US4)
 - [ ] **T-006-06** [US4] Pantalla y controles interactivos de asistencia en `app/templates/asistencia/registro.html` y `app/static/js/asistencia.js` · Commit: `feat(web): agrega pantalla de registro de asistencia` · Terminado cuando: permite registrar asistencia interactivamente con DOM seguro.
