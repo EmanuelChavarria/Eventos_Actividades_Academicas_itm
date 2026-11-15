@@ -53,16 +53,17 @@ def test_web_base_docs_y_estaticos_sin_innerhtml(client: TestClient) -> None:
     assert "America/Bogota" in js.text
 
 
-def test_stubs_api_v1_responden_501_uniforme(client: TestClient) -> None:
-    """RNF-07: los endpoints stub pendientes de E5-E7 devuelven 501 NO_IMPLEMENTADO uniforme."""
-    rutas = [
-        ("GET", "/api/v1/reportes/consolidado"),
-    ]
-    for metodo, ruta in rutas:
-        resp = client.request(metodo, ruta)
-        assert resp.status_code == 501
-        cuerpo = resp.json()
-        assert cuerpo["error"]["codigo"] == CodigosError.NO_IMPLEMENTADO
+def test_api_v1_sin_stubs_501_pendientes(client: TestClient) -> None:
+    """RNF-07: con E7 completada no quedan endpoints /api/v1 pendientes en 501."""
+    resp = client.get("/openapi.json")
+    assert resp.status_code == 200
+    esquema = resp.json()
+    for ruta, metodos in esquema.get("paths", {}).items():
+        if not ruta.startswith("/api/v1/"):
+            continue
+        for operacion in metodos.values():
+            if isinstance(operacion, dict):
+                assert "501" not in operacion.get("responses", {}), ruta
 
 
 def test_deps_rechaza_sin_sesion_inactivo_y_rol_insuficiente(crear_usuario_factory) -> None:
