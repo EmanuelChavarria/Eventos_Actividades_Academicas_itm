@@ -40,6 +40,7 @@ jobs:
       DATABASE_URL: sqlite:///./ci.db
       SECRET_KEY: clave-ci-pruebas-eventos-academicos-32c
       COOKIE_SECURE: "true"
+      PYTHONPATH: .
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -98,6 +99,8 @@ jobs:
           mkdir -p certs
           openssl req -x509 -newkey rsa:2048 -nodes -days 1 -subj "/CN=localhost" \
             -keyout certs/localhost-key.pem -out certs/localhost.pem
+          chmod 755 certs
+          chmod 644 certs/localhost.pem certs/localhost-key.pem
       - name: Build y arranque de contenedores
         run: docker compose up -d --build
       - name: Esperar disponibilidad de /health

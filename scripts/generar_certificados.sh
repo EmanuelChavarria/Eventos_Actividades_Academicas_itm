@@ -18,6 +18,8 @@ if command -v mkcert >/dev/null 2>&1; then
   echo "Generando certificados locales confiables con mkcert..."
   mkcert -install
   mkcert -key-file "${KEY_FILE}" -cert-file "${CERT_FILE}" localhost 127.0.0.1 ::1
+  chmod 755 "${CERTS_DIR}"
+  chmod 644 "${CERT_FILE}" "${KEY_FILE}"
   echo "Certificados listos en certs/localhost.pem y certs/localhost-key.pem"
   exit 0
 fi
@@ -29,6 +31,8 @@ if command -v openssl >/dev/null 2>&1; then
     -addext "subjectAltName=DNS:localhost,IP:127.0.0.1" \
     -keyout "${KEY_FILE}" \
     -out "${CERT_FILE}"
+  chmod 755 "${CERTS_DIR}"
+  chmod 644 "${CERT_FILE}" "${KEY_FILE}"
   echo "Certificados autofirmados listos en certs/ (el navegador pedirá aceptar la excepción)."
   exit 0
 fi
