@@ -197,6 +197,37 @@ Todos los endpoints se encuentran documentados interactivamente en `https://loca
 | **Reportes** | `GET` | `/api/v1/reportes/consolidado` | Coordinación | Consolidado con filtros, métricas y totales coherentes (`RF-24`, `RF-26`, `CA-06`). |
 | **Reportes** | `GET` | `/api/v1/reportes/consolidado/csv` | Coordinación | Exportación a CSV con UTF-8 BOM y neutralización de fórmulas (`RF-30`). |
 
+### Ejemplos de uso y catálogo de errores de dominio
+
+- **Ejemplo de inicio de sesión (`POST /api/v1/auth/login`):**
+  ```json
+  {
+    "tipo_documento": "CC",
+    "numero_documento": "1000000101",
+    "password": "DemoFicticia123!"
+  }
+  ```
+  Respuesta `200 OK` (fija cookie `pf04_session` con banderas `HttpOnly; Secure; SameSite=Lax`):
+  ```json
+  {
+    "id": 4,
+    "nombre": "Ana Torres (Estudiante Demo)",
+    "rol": "participante",
+    "tipo_participante": "estudiante"
+  }
+  ```
+- **Ejemplo de error controlado (`409 CUPO_AGOTADO` en `POST /api/v1/eventos/{id}/inscripciones`):**
+  ```json
+  {
+    "error": {
+      "codigo": "CUPO_AGOTADO",
+      "mensaje": "El evento ha alcanzado su capacidad máxima de inscripciones.",
+      "detalles": []
+    }
+  }
+  ```
+- **Códigos de error frecuentes:** `CREDENCIALES_INVALIDAS` (`401`), `SIN_PERMISO` (`403`), `EVENTO_NO_ENCONTRADO` / `INSCRIPCION_NO_ENCONTRADA` (`404`), `DOCUMENTO_DUPLICADO` / `INSCRIPCION_DUPLICADA` / `CUPO_AGOTADO` / `INSCRIPCIONES_CERRADAS` / `PUBLICO_NO_PERMITIDO` / `CANCELACION_NO_PERMITIDA` / `ASISTENCIA_NO_PERMITIDA` / `EVENTO_NO_PUBLICADO` (`409`), `ERROR_VALIDACION` (`422`), `DEMASIADOS_INTENTOS` (`429`).
+
 ---
 
 ## 7. Estrategia de Pruebas y Evidencias Funcionales
@@ -222,7 +253,7 @@ La documentación completa de condiciones, datos, pasos y resultados esperados/o
 
 ### 7.2 Pruebas Automatizadas (pytest)
 
-La suite automatizada consta de **77 pruebas** que verifican el cumplimiento estricto de las reglas críticas:
+La suite automatizada consta de **79 pruebas** que verifican el cumplimiento estricto de las reglas críticas:
 
 ```bash
 # Ejecución local:
@@ -237,10 +268,11 @@ Cobertura automatizada por módulo:
 - `tests/test_permisos.py`: Mínimo privilegio, validación de roles en API y vistas web, defensa CSRF.
 - `tests/test_eventos.py`: Ciclo de vida de eventos, restricciones CHECK, edición y cancelación.
 - `tests/test_catalogo.py`: Filtros de catálogo, visibilidad exclusiva de publicados, cupo calculado.
-- `tests/test_inscripciones.py`: Inscripción atómica, rechazos tipados 409 y prueba de estrés concurrente con 20 hilos (`ThreadPoolExecutor`) garantizando cero sobrecupos.
+- `tests/test_inscripciones.py`: Inscripción atómica, rechazos tipados 409, UI de cancelación y prueba de estrés concurrente con 20 hilos (`ThreadPoolExecutor`) garantizando cero sobrecupos.
 - `tests/test_asistencia.py`: Ventana de asistencia de 48 h, UPSERT de corrección y permisos de organizador.
-- `tests/test_reportes.py`: Consulta consolidada, cálculo exacto de métricas, coherencia de totales y CSV seguro.
-- `tests/test_scripts_web.py`: Integración de scripts administrativos y renderizado de plantillas Jinja2.
+- `tests/test_reportes.py`: Consulta consolidada, cálculo exacto de métricas, coherencia de totales, CSV seguro y navegación web.
+- `tests/test_scripts_web.py`: Integración de scripts administrativos (`seed.py`, `crear_usuario.py`), logging seguro y renderizado de plantillas Jinja2.
+- `tests/test_seguridad_fechas_bd.py`: Validación de `SECRET_KEY`, `COOKIE_SECURE`, fechas UTC/`America/Bogota`, ventana 48 h y restricciones SQLite.
 
 ---
 
@@ -255,25 +287,41 @@ El proyecto se desarrolló bajo la metodología **Spec-Driven Development (SDD)*
   - Gestión de eventos (`E3`), Catálogo público (`E4`).
   - Implementación de asistencia (`E6`) y consolidado (`E7`).
   - Pruebas funcionales PF-01..PF-04 y PF-09 (`E8-A`).
+  - Requisitos, diseño y README secciones 1–5 (`E9-A`), correcciones visuales y de UX (`#20`, `#21`) y cierre consolidado de trazabilidad y README secciones 6–9 (`E9-B`).
 - **Integrante B (Santiago Henao):**
   - Cimientos SDD y constitución v2.0.2 (`E0`).
-  - Infraestructura DevOps, Dockerfile, docker-compose, CI y contrato OpenAPI (`E10`).
+  - Infraestructura DevOps, Dockerfile, docker-compose, CI y contrato OpenAPI (`E10`, `#16`).
   - Inscripciones, control atómico de cupos y cancelación (`E5`).
-  - Pruebas funcionales PF-05..PF-08, PF-10..PF-12 e índice maestro (`E8-B`).
-  - Matriz de trazabilidad integral y documentación DevOps (`E9-B`).
+  - Pruebas funcionales PF-05..PF-08, PF-10..PF-12, evidencias e índice maestro (`E8-B`, `#17`, `#22`).
+  - Base inicial de trazabilidad, documentación DevOps y README 6–9 (`#18`).
 
 ### 8.2 Registro de Pull Requests integrados en `main`
 
-| PR # | Rama de feature | Propósito y Requisitos | Autor |
-|:---:|---|---|:---:|
-| **[#3](https://github.com/EmanuelChavarria/Eventos_Actividades_Academicas_itm/pull/3)** | `docs/E0-sdd-constitucion` | Constitución del proyecto v2.0.2 y plantillas SDD trazables | Integrante B |
-| **[#11](https://github.com/EmanuelChavarria/Eventos_Actividades_Academicas_itm/pull/11)** | `010-devops-ci-docker` | Contenerización Docker, pipeline CI en GitHub Actions y OpenAPI inicial | Integrante B |
-| **[#12](https://github.com/EmanuelChavarria/Eventos_Actividades_Academicas_itm/pull/12)** | `005-inscripciones-cupos` | Inscripciones, control atómico con `BEGIN IMMEDIATE` y cancelación | Integrante B |
+| PR # | Rama de feature | Propósito y Requisitos | Responsable |
+|:---:|---|---|---|
+| **[#1](https://github.com/EmanuelChavarria/Eventos_Actividades_Academicas_itm/pull/1)** | `docs/E0-https` | Regla HTTPS obligatorio en todos los entornos con certificados `mkcert` | Integrante A |
+| **[#2](https://github.com/EmanuelChavarria/Eventos_Actividades_Academicas_itm/pull/2)** | `docs/evidencias-entrevista` | Capturas de evidencia de entrevista con el cliente | Integrante A |
+| **[#3](https://github.com/EmanuelChavarria/Eventos_Actividades_Academicas_itm/pull/3)** | `docs/E0-sdd-constitucion` | Constitución del proyecto v2.0.2 y plantillas SDD trazables | Integrante B *(fusionado por A)* |
+| **[#4](https://github.com/EmanuelChavarria/Eventos_Actividades_Academicas_itm/pull/4)** | `001-fundacion` | Fundación, BD SQLite, migraciones, seed, layout y `/health` | Integrante A |
+| **[#5](https://github.com/EmanuelChavarria/Eventos_Actividades_Academicas_itm/pull/5)** | `002-autenticacion-roles` | Autenticación segura (argon2id, JWT HttpOnly Secure), roles y CSRF | Integrante A |
+| **[#6](https://github.com/EmanuelChavarria/Eventos_Actividades_Academicas_itm/pull/6)** | `003-gestion-eventos` | Gestión de eventos académicos (creación, edición, publicación, cancelación) | Integrante A |
+| **[#7](https://github.com/EmanuelChavarria/Eventos_Actividades_Academicas_itm/pull/7)** | `004-catalogo-eventos` | Catálogo público con filtros, paginación y cupos en tiempo real | Integrante A |
+| **[#8](https://github.com/EmanuelChavarria/Eventos_Actividades_Academicas_itm/pull/8)** | `005-inscripciones-cupos` | Spec, plan y tareas SDD de E5 | Integrantes A / B |
+| **[#9](https://github.com/EmanuelChavarria/Eventos_Actividades_Academicas_itm/pull/9)** | `006-asistencia` | Spec, plan y tareas SDD de E6 | Integrante A |
+| **[#10](https://github.com/EmanuelChavarria/Eventos_Actividades_Academicas_itm/pull/10)** | `007-consolidado` | Spec, plan y tareas SDD de E7 | Integrante A |
+| **[#11](https://github.com/EmanuelChavarria/Eventos_Actividades_Academicas_itm/pull/11)** | `010-devops-ci-docker` | Contenerización Docker, pipeline CI en GitHub Actions y OpenAPI inicial | Integrante B *(fusionado por A)* |
+| **[#12](https://github.com/EmanuelChavarria/Eventos_Actividades_Academicas_itm/pull/12)** | `005-inscripciones-cupos` | Inscripciones, control atómico con `BEGIN IMMEDIATE` y cancelación | Integrante B *(fusionado por A)* |
 | **[#13](https://github.com/EmanuelChavarria/Eventos_Actividades_Academicas_itm/pull/13)** | `docs/reasignacion-e6-e7` | Reasignación acordada de épicas E6 y E7 al Integrante A | Integrante A |
 | **[#14](https://github.com/EmanuelChavarria/Eventos_Actividades_Academicas_itm/pull/14)** | `006-asistencia` | Registro y corrección de asistencia en ventana de 48 horas | Integrante A |
 | **[#15](https://github.com/EmanuelChavarria/Eventos_Actividades_Academicas_itm/pull/15)** | `007-consolidado` | Consulta consolidada para coordinación y exportación CSV sanitizada | Integrante A |
 | **[#16](https://github.com/EmanuelChavarria/Eventos_Actividades_Academicas_itm/pull/16)** | `fix/E10-ci-openapi-docker` | Corrección de PYTHONPATH en exportador OpenAPI y permisos de certs Docker | Integrante B |
 | **[#17](https://github.com/EmanuelChavarria/Eventos_Actividades_Academicas_itm/pull/17)** | `test/E8b-pruebas-inscripcion-asistencia` | Documentación de pruebas funcionales PF-05 a PF-12 e índice general | Integrante B |
+| **[#18](https://github.com/EmanuelChavarria/Eventos_Actividades_Academicas_itm/pull/18)** | `docs/E9b-trazabilidad-readme` | Base inicial de trazabilidad, `docs/devops.md` y README 6–9 | Integrante B |
+| **[#19](https://github.com/EmanuelChavarria/Eventos_Actividades_Academicas_itm/pull/19)** | `test/E8a-pruebas-eventos-acceso` | Pruebas funcionales PF-01..PF-04 y PF-09 con evidencias visuales | Integrante A |
+| **[#20](https://github.com/EmanuelChavarria/Eventos_Actividades_Academicas_itm/pull/20)** | `fix/visual-consolidado-asistencia-e5` | Estilos responsivos, atributos en `crearNodo`, navegación y alertas | Integrante A |
+| **[#21](https://github.com/EmanuelChavarria/Eventos_Actividades_Academicas_itm/pull/21)** | `fix/mis-inscripciones-estado-cancelada` | Badges de estado en `/mis-inscripciones` y acciones descriptivas | Integrante A |
+| **[#22](https://github.com/EmanuelChavarria/Eventos_Actividades_Academicas_itm/pull/22)** | `test/E8b-evidencias-pf05-pf12` | Evidencias visuales completas de PF-05..PF-08 y PF-10..PF-12 | Integrantes B / A |
+| **[#23](https://github.com/EmanuelChavarria/Eventos_Actividades_Academicas_itm/pull/23)** | `docs/E9a-requisitos-diseno` | Requisitos, entrevista, diseño técnico y README secciones 1–5 | Integrante A |
 
 Para consultar la matriz completa de requisitos contra código y pruebas, ver [docs/trazabilidad.md](docs/trazabilidad.md).
 

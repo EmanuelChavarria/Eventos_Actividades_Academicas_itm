@@ -494,7 +494,9 @@ Entregables: `docs/requisitos.md` (método de levantamiento, **registro de la en
 
 **Regla:** nunca inventar respuestas del cliente; lo no confirmado se rotula «Supuesto pendiente de confirmación».
 
-### E9-B — Trazabilidad y README (secciones 6–9) · Integrante B · rama `docs/E9b-trazabilidad-readme`
+### E9-B — Trazabilidad y README (secciones 6–9) · Integrante A · rama `e9b-trazabilidad`
+
+*(Reasignada a Integrante A para consolidar y completar la entrega final tras el borrador inicial de B en `#18` y la integración de los PRs `#19`–`#23`.)*
 
 Entregables: `docs/trazabilidad.md` (CA-01…CA-06 ↔ requisito ↔ componente ↔ PR ↔ prueba, con enlaces reales), README secciones 6 a 9 (tabla de endpoints reales con ejemplos y errores, pruebas y evidencias, control de versiones con aportes verificables de cada integrante, conclusiones y limitaciones).
 
@@ -549,10 +551,10 @@ Entregables: `docs/trazabilidad.md` (CA-01…CA-06 ↔ requisito ↔ componente 
 | E6 | Registro y consulta de asistencia | CA-05 | **A** | `006-asistencia` |
 | E7 | Consolidado para coordinación | CA-06 | **A** | `007-consolidado` |
 | E8 | Pruebas funcionales (PF-01…PF-12) | Todos | A: PF-01–04, 09 · B: PF-05–08, 10, 11 · ambos: PF-12 | `test/E8a-…` · `test/E8b-…` |
-| E9 | Documentación y trazabilidad | Todos | A: requisitos, diseño, README 1–5 · B: trazabilidad, README 6–9 | `docs/E9a-…` · `docs/E9b-…` |
+| E9 | Documentación y trazabilidad | Todos | A: requisitos, diseño, trazabilidad y README 1–9 (con base inicial de B en `#18`) | `docs/E9a-…` · `e9b-trazabilidad` |
 | E10 | DevOps: CI, Docker, hooks, contrato OpenAPI | RNF-20…23 | **B** | `010-devops-ci-docker` |
 
-Carga reasignada (acuerdo del equipo): A concentra el código base, los flujos de eventos y asume **E6 (Asistencia)** y **E7 (Consolidado)** tras completarse E5; B cubre E0, E10 y **E5 (Inscripciones y cupos)**.
+Carga reasignada (acuerdo del equipo): A concentra el código base, los flujos de eventos y asume **E6 (Asistencia)**, **E7 (Consolidado)** y el cierre consolidado de **E9-B (Trazabilidad y README 6–9)**; B cubre E0, E10, **E5 (Inscripciones y cupos)** y **E8-B**.
 
 ### Propiedad de archivos (para evitar conflictos)
 
@@ -562,8 +564,8 @@ Carga reasignada (acuerdo del equipo): A concentra el código base, los flujos d
 | `*auth*`, `*evento*`, `*catalogo*`, `*asistencia*`, `*reporte*` en `schemas/`, `repositories/`, `services/`, `api/v1/`, `web/`, `templates/{auth,eventos,catalogo,asistencia,reportes}/` | `*inscripcion*` en `schemas/`, `repositories/`, `services/`, `api/v1/`, `web/`, `templates/inscripciones/` |
 | `tests/test_permisos.py`, `tests/test_auth.py`, `tests/test_asistencia.py`, `tests/test_reportes.py` | `tests/test_inscripciones.py` |
 | `specs/001…004-*/`, `specs/006-asistencia/`, `specs/007-consolidado/` | `.specify/memory/constitution.md`, `specs/README.md`, `.specify/templates/`, `specs/005-inscripciones-cupos/`, `specs/010-devops-ci-docker/` |
-| `docs/requisitos.md`, `docs/diseno.md`, `docs/pruebas/PF-01…04,09`, `evidencias/PF-01…04,09` | `docs/trazabilidad.md`, `docs/pruebas.md`, `docs/devops.md`, `docs/pruebas/PF-05…08,10,11`, `evidencias/PF-05…08,10,11`, `evidencias/devops/` |
-| `README.md` secciones 1–5 | `README.md` secciones 6–9 |
+| `docs/requisitos.md`, `docs/diseno.md`, `docs/trazabilidad.md`, `docs/pruebas/PF-01…04,09`, `evidencias/PF-01…04,09` | `docs/pruebas.md`, `docs/devops.md`, `docs/pruebas/PF-05…08,10,11`, `evidencias/PF-05…08,10,11`, `evidencias/devops/` |
+| `README.md` secciones 1–9 *(secciones 6–9 consolidadas sobre base inicial de B)* | — |
 | — | `Dockerfile`, `docker-compose.yml`, `.dockerignore`, `.gitattributes`, `.github/`, `.pre-commit-config.yaml`, `scripts/{entrypoint.sh,check_commits.py,export_openapi.py}` |
 | Compartido: `specs/contrato/openapi.json` — lo regenera con el script quien cambie la API | |
 
@@ -596,7 +598,7 @@ Excepciones acordadas: `inscripcion_repo.py` nace en E1 (A) con los conteos de s
 | 6 | **Tareas** atómicas, cada una = un commit | `specs/NNN-slug/tasks.md` | Dueño de la épica |
 | 7 | **Contrato de API** generado desde el código y verificado en CI | `specs/contrato/openapi.json` | Quien cambie la API |
 | 8 | Código + pruebas (pytest y PF-01…PF-12) | `app/`, `tests/`, `docs/pruebas/` | Dueño de la épica |
-| 9 | Trazabilidad CA ↔ RF ↔ spec ↔ código ↔ PR ↔ prueba | `docs/trazabilidad.md` | B (E9-B) |
+| 9 | Trazabilidad CA ↔ RF ↔ spec ↔ código ↔ PR ↔ prueba | `docs/trazabilidad.md` | A (E9-B) |
 
 Tabla épica ↔ feature (numeración de Spec Kit, definida en `specs/README.md`): E1 → `001-fundacion`, E2 → `002-autenticacion-roles`, E3 → `003-gestion-eventos`, E4 → `004-catalogo-eventos`, E5 → `005-inscripciones-cupos`, E6 → `006-asistencia`, E7 → `007-consolidado`, E10 → `010-devops-ci-docker`.
 

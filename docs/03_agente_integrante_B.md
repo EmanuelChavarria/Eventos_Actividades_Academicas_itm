@@ -9,8 +9,8 @@ Tienes la responsabilidad del **marco de trabajo** (SDD y DevOps: constitución,
 
 Eres un agente de desarrollo que trabaja con tu humano (Integrante B). Implementas **solo las épicas asignadas a B**, siguiendo la metodología **SDD** (spec → plan → tareas → implementación), la arquitectura, los requisitos, las reglas de negocio, el CI y el flujo de Git descritos abajo. Las demás épicas son del otro integrante; conócelas porque se integran con las tuyas, pero no las implementes.
 
-**Tus épicas:** E0 Cimientos de SDD · E5 Inscripciones y cupos · E8-B Pruebas · E9-B Trazabilidad y README 6–9 · E10 DevOps
-**Épicas del otro integrante (solo para coordinación):** E1 Fundación · E2 Autenticación y roles · E3 Gestión de eventos · E4 Catálogo · E6 Asistencia · E7 Consolidado · E8-A Pruebas · E9-A Requisitos, diseño y README 1–5
+**Tus épicas:** E0 Cimientos de SDD · E5 Inscripciones y cupos · E8-B Pruebas · E10 DevOps *(base inicial de E9-B en `#18`; cierre consolidado por A)*
+**Épicas del otro integrante (solo para coordinación):** E1 Fundación · E2 Autenticación y roles · E3 Gestión de eventos · E4 Catálogo · E6 Asistencia · E7 Consolidado · E8-A Pruebas · E9-A Requisitos, diseño y README 1–5 · E9-B Trazabilidad y README 6–9 (cierre consolidado)
 
 ## Reglas de conducta del agente (aplican a todo el trabajo)
 
@@ -55,10 +55,10 @@ Eres un agente de desarrollo que trabaja con tu humano (Integrante B). Implement
 | E6 | Registro y consulta de asistencia | CA-05 | **A** | `006-asistencia` |
 | E7 | Consolidado para coordinación | CA-06 | **A** | `007-consolidado` |
 | E8 | Pruebas funcionales (PF-01…PF-12) | Todos | A: PF-01–04, 09 · B: PF-05–08, 10, 11 · ambos: PF-12 | `test/E8a-…` · `test/E8b-…` |
-| E9 | Documentación y trazabilidad | Todos | A: requisitos, diseño, README 1–5 · B: trazabilidad, README 6–9 | `docs/E9a-…` · `docs/E9b-…` |
+| E9 | Documentación y trazabilidad | Todos | A: requisitos, diseño, trazabilidad y README 1–9 (con base inicial de B en `#18`) | `docs/E9a-…` · `e9b-trazabilidad` |
 | E10 | DevOps: CI, Docker, hooks, contrato OpenAPI | RNF-20…23 | **B** | `010-devops-ci-docker` |
 
-Carga reasignada (acuerdo del equipo): A concentra el código base, los flujos de eventos y asume **E6 (Asistencia)** y **E7 (Consolidado)** tras completarse E5; B cubre E0, E10 y **E5 (Inscripciones y cupos)**.
+Carga reasignada (acuerdo del equipo): A concentra el código base, los flujos de eventos y asume **E6 (Asistencia)**, **E7 (Consolidado)** y el cierre consolidado de **E9-B (Trazabilidad y README 6–9)**; B cubre E0, E10, **E5 (Inscripciones y cupos)** y **E8-B**.
 
 ### Propiedad de archivos (para evitar conflictos)
 
@@ -68,8 +68,8 @@ Carga reasignada (acuerdo del equipo): A concentra el código base, los flujos d
 | `*auth*`, `*evento*`, `*catalogo*`, `*asistencia*`, `*reporte*` en `schemas/`, `repositories/`, `services/`, `api/v1/`, `web/`, `templates/{auth,eventos,catalogo,asistencia,reportes}/` | `*inscripcion*` en `schemas/`, `repositories/`, `services/`, `api/v1/`, `web/`, `templates/inscripciones/` |
 | `tests/test_permisos.py`, `tests/test_auth.py`, `tests/test_asistencia.py`, `tests/test_reportes.py` | `tests/test_inscripciones.py` |
 | `specs/001…004-*/`, `specs/006-asistencia/`, `specs/007-consolidado/` | `.specify/memory/constitution.md`, `specs/README.md`, `.specify/templates/`, `specs/005-inscripciones-cupos/`, `specs/010-devops-ci-docker/` |
-| `docs/requisitos.md`, `docs/diseno.md`, `docs/pruebas/PF-01…04,09`, `evidencias/PF-01…04,09` | `docs/trazabilidad.md`, `docs/pruebas.md`, `docs/devops.md`, `docs/pruebas/PF-05…08,10,11`, `evidencias/PF-05…08,10,11`, `evidencias/devops/` |
-| `README.md` secciones 1–5 | `README.md` secciones 6–9 |
+| `docs/requisitos.md`, `docs/diseno.md`, `docs/trazabilidad.md`, `docs/pruebas/PF-01…04,09`, `evidencias/PF-01…04,09` | `docs/pruebas.md`, `docs/devops.md`, `docs/pruebas/PF-05…08,10,11`, `evidencias/PF-05…08,10,11`, `evidencias/devops/` |
+| `README.md` secciones 1–9 *(secciones 6–9 consolidadas sobre base inicial de B)* | — |
 | — | `Dockerfile`, `docker-compose.yml`, `.dockerignore`, `.gitattributes`, `.github/`, `.pre-commit-config.yaml`, `scripts/{entrypoint.sh,check_commits.py,export_openapi.py}` |
 | Compartido: `specs/contrato/openapi.json` — lo regenera con el script quien cambie la API | |
 
@@ -306,7 +306,7 @@ Las aclaraciones del cliente y las decisiones finales aprobadas (sección anteri
 | 6 | **Tareas** atómicas, cada una = un commit | `specs/NNN-slug/tasks.md` | Dueño de la épica |
 | 7 | **Contrato de API** generado desde el código y verificado en CI | `specs/contrato/openapi.json` | Quien cambie la API |
 | 8 | Código + pruebas (pytest y PF-01…PF-12) | `app/`, `tests/`, `docs/pruebas/` | Dueño de la épica |
-| 9 | Trazabilidad CA ↔ RF ↔ spec ↔ código ↔ PR ↔ prueba | `docs/trazabilidad.md` | B (E9-B) |
+| 9 | Trazabilidad CA ↔ RF ↔ spec ↔ código ↔ PR ↔ prueba | `docs/trazabilidad.md` | A (E9-B) |
 
 Tabla épica ↔ feature (numeración de Spec Kit, definida en `specs/README.md`): E1 → `001-fundacion`, E2 → `002-autenticacion-roles`, E3 → `003-gestion-eventos`, E4 → `004-catalogo-eventos`, E5 → `005-inscripciones-cupos`, E6 → `006-asistencia`, E7 → `007-consolidado`, E10 → `010-devops-ci-docker`.
 
@@ -508,7 +508,9 @@ Ejecutar y documentar **PF-05, PF-06, PF-07, PF-08, PF-10 y PF-11**, el índice 
 | `docs(pruebas): registra resultados y evidencias de PF-10 y PF-11` |
 | `docs(pruebas): registra flujo completo PF-12 con capturas de interfaz y BD` |
 
-### E9-B — Trazabilidad y README (secciones 6–9) · Integrante B · rama `docs/E9b-trazabilidad-readme`
+### E9-B — Trazabilidad y README (secciones 6–9) · Integrante A *(reasignada)* · rama `e9b-trazabilidad`
+
+*(Inicialmente asignada a B con borrador en `#18`; reasignada a A para completar y consolidar la entrega final tras los PRs `#19`–`#23`.)*
 
 Entregables: `docs/trazabilidad.md` (CA-01…CA-06 ↔ requisito ↔ componente ↔ PR ↔ prueba, con enlaces reales), README secciones 6 a 9 (tabla de endpoints reales con ejemplos y errores, pruebas y evidencias, control de versiones con aportes verificables de cada integrante, conclusiones y limitaciones).
 
