@@ -19,7 +19,7 @@ Las ramas de desarrollo de cada feature siguen la convención `NNN-slug` pasando
 | **E6** | `006-asistencia` | Registro y consulta de asistencia | **A** | `006-asistencia` |
 | **E7** | `007-consolidado` | Consolidado para coordinación | **A** | `007-consolidado` |
 | **E8** | *(Pruebas)* | Pruebas funcionales PF-01…PF-12 | **A y B** | `test/E8a-…` / `test/E8b-…` |
-| **E9** | *(Docs)* | Documentación, diseño y trazabilidad | **A y B** | `docs/E9a-…` / `docs/E9b-…` |
+| **E9** | *(Docs)* | Documentación, diseño y trazabilidad | **A** | `docs/E9a-…` / `e9b-trazabilidad` |
 | **E10** | `010-devops-ci-docker` | DevOps: CI, Docker, hooks y contrato | **B** | `010-devops-ci-docker` |
 
 ---
