@@ -29,5 +29,5 @@
 
 ### Fase 5: Pruebas Automatizadas y Evidencias Funcionales (US1, US2, US3, US4)
 - [x] **T-005-11** [US1, US2, US3] Pruebas unitarias y de integración en `tests/test_inscripciones.py` · Commit: `test(inscripciones): agrega pruebas de cupo duplicados y concurrencia` · Terminado cuando: suite de pruebas verifica cupo, duplicados, público y simulación concurrente con hilos.
-- [ ] **T-005-12** [US1, US2] Evidencia de prueba de concurrencia y simultaneidad para PF-07 · Commit: `docs(pruebas): registra verificacion manual de cupo bajo simultaneidad` · Terminado cuando: se documenta la prueba de estrés de cupo con evidencias.
-- [ ] **T-005-13** [US1..US5] Documentación de pruebas funcionales PF-05 a PF-08 en `docs/pruebas/` · Commit: `docs(pruebas): documenta pf-05 a pf-08 con evidencias` · Terminado cuando: los documentos PF-05 a PF-08 quedan completos con pasos y resultados.
+- [x] **T-005-12** [US1, US2] Evidencia de prueba de concurrencia y simultaneidad para PF-07 · Commit: `docs(pruebas): registra verificacion manual de cupo bajo simultaneidad` · Terminado cuando: se documenta la prueba de estrés de cupo con evidencias.
+- [x] **T-005-13** [US1..US5] Documentación de pruebas funcionales PF-05 a PF-08 en `docs/pruebas/` · Commit: `docs(pruebas): documenta pf-05 a pf-08 con evidencias` · Terminado cuando: los documentos PF-05 a PF-08 quedan completos con pasos y resultados.

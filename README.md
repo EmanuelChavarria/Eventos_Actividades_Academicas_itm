@@ -322,6 +322,7 @@ El proyecto se desarrolló bajo la metodología **Spec-Driven Development (SDD)*
 | **[#21](https://github.com/EmanuelChavarria/Eventos_Actividades_Academicas_itm/pull/21)** | `fix/mis-inscripciones-estado-cancelada` | Badges de estado en `/mis-inscripciones` y acciones descriptivas | Integrante A |
 | **[#22](https://github.com/EmanuelChavarria/Eventos_Actividades_Academicas_itm/pull/22)** | `test/E8b-evidencias-pf05-pf12` | Evidencias visuales completas de PF-05..PF-08 y PF-10..PF-12 | Integrantes B / A |
 | **[#23](https://github.com/EmanuelChavarria/Eventos_Actividades_Academicas_itm/pull/23)** | `docs/E9a-requisitos-diseno` | Requisitos, entrevista, diseño técnico y README secciones 1–5 | Integrante A |
+| **[#24](https://github.com/EmanuelChavarria/Eventos_Actividades_Academicas_itm/pull/24)** | `e9b-trazabilidad` | Reasignación y cierre consolidado de E9-B, trazabilidad y enlaces de evidencias | Integrante A |
 
 Para consultar la matriz completa de requisitos contra código y pruebas, ver [docs/trazabilidad.md](docs/trazabilidad.md).
 
