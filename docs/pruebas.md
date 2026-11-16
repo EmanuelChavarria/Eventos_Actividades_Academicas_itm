@@ -41,5 +41,5 @@ Este documento consolida la matriz y el estado de ejecución de las **12 pruebas
 ## 3. Resumen de ejecución y reproducibilidad
 
 Todas las pruebas cuentan con respaldo de doble verificación:
-1. **Pruebas automatizadas (pytest):** Suite completa de 77 pruebas ejecutables en entorno local con `pytest -q` y en contenedor Docker con `docker compose exec web pytest -q`.
+1. **Pruebas automatizadas (pytest):** Suite completa de 79 pruebas ejecutables en entorno local con `pytest -q` y en contenedor Docker con `docker compose exec web pytest -q`.
 2. **Validación interactiva en interfaz web y API:** Vistas Jinja2 con consumo asíncrono seguro vía `fetch` a `/api/v1` (`api.js`), verificadas sobre HTTPS en `https://localhost:8000` y `/docs`.

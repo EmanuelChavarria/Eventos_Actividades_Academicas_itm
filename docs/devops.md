@@ -102,14 +102,14 @@ flowchart TD
 
 ### 3.1 Job `calidad`
 1. **Ruff Linter:** `ruff check .` detecta errores de estilo, imports desordenados y potenciales bugs.
-2. **Ruff Formatter:** `ruff format --check .` asegura consistencia formal idéntica en los 165+ archivos de código.
+2. **Ruff Formatter:** `ruff format --check .` asegura consistencia formal idéntica en los 168 archivos de código.
 3. **Validador de Commits:** `scripts/check_commits.py` valida que todos los commits del Pull Request cumplan la convención Conventional Commits en español (`tipo(alcance): descripción`), con longitud de primera línea ≤ 72 caracteres y sin punto final.
 
 ### 3.2 Job `pruebas`
 1. **Migraciones:** Ejecuta `alembic upgrade head` sobre una base de datos limpia de CI.
 2. **Seed:** Ejecuta `python scripts/seed.py` para validar la idempotencia del poblamiento.
 3. **Contrato OpenAPI sin desvíos:** `python scripts/export_openapi.py --check` valida que el contrato versionado en `specs/contrato/openapi.json` refleje con exactitud matemática el esquema FastAPI actual.
-4. **Pruebas automatizadas:** `pytest -q` corre las 77 pruebas unitarias, de integración y de concurrencia.
+4. **Pruebas automatizadas:** `pytest -q` corre las 79 pruebas unitarias, de integración y de concurrencia.
 
 ### 3.3 Job `docker`
 1. Configura el entorno `.env` asegurando una `SECRET_KEY` aleatoria de más de 32 caracteres distinta a `.env.example`.
