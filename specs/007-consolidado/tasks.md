@@ -25,4 +25,4 @@
 
 ### Fase 5: Pruebas Automatizadas y Evidencias Funcionales (US1, US2, US3)
 - [x] **T-007-07** [US1, US3] Pruebas unitarias y de integración en `tests/test_reportes.py` · Commit: `test(reportes): agrega pruebas de acceso y coherencia de totales` · Terminado cuando: valida permiso 403, coherencia de sumas y cero inscritos.
-- [ ] **T-007-08** [US1..US3] Documentación de la prueba funcional PF-11 en `docs/pruebas/PF-11.md` con evidencias · Commit: `docs(pruebas): documenta pf-11 con verificacion de totales` · Terminado cuando: se documentan pasos y evidencias de PF-11.
+- [x] **T-007-08** [US1..US3] Documentación de la prueba funcional PF-11 en `docs/pruebas/PF-11.md` con evidencias · Commit: `docs(pruebas): documenta pf-11 con verificacion de totales` · Terminado cuando: se documentan pasos y evidencias de PF-11.
