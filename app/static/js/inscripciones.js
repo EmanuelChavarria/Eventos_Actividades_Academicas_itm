@@ -16,6 +16,42 @@ const tabla = document.getElementById("tabla-mis-inscripciones");
 const cuerpo = document.getElementById("cuerpo-mis-inscripciones");
 const alerta = document.getElementById("alerta-mis-inscripciones");
 
+const TOTAL_COLUMNAS = 5;
+
+function crearBadgeEstadoEvento(estadoEvento) {
+  return crearNodo("span", {
+    texto: estadoEvento,
+    clase: `insignia insignia-${estadoEvento}`,
+  });
+}
+
+function crearBadgeEstadoInscripcion(estado) {
+  if (estado === "activa") {
+    return crearNodo("span", {
+      texto: "Inscrito",
+      clase: "insignia insignia-publicado",
+    });
+  }
+  if (estado === "cancelada") {
+    return crearNodo("span", {
+      texto: "Cancelada",
+      clase: "insignia insignia-cancelado",
+    });
+  }
+  return crearNodo("span", {
+    texto: estado,
+    clase: "insignia",
+  });
+}
+
+function puedeCancelarInscripcion(inscripcion) {
+  if (inscripcion.estado !== "activa" || inscripcion.estado_evento !== "publicado") {
+    return false;
+  }
+  const inicioMs = new Date(inscripcion.fecha_inicio_evento).getTime();
+  return Number.isNaN(inicioMs) || inicioMs > Date.now();
+}
+
 async function cargarMisInscripciones({ limpiarAlerta = true } = {}) {
   if (!cuerpo) {
     return;
@@ -36,7 +72,7 @@ async function cargarMisInscripciones({ limpiarAlerta = true } = {}) {
       texto: "No se pudieron cargar tus inscripciones. Intenta de nuevo.",
       clase: "texto-error",
     });
-    celda.colSpan = 4;
+    celda.colSpan = TOTAL_COLUMNAS;
     cuerpo.firstElementChild.appendChild(celda);
     mostrarAlerta(alerta, extraerMensajeError(error), "error");
   }
@@ -65,7 +101,7 @@ function renderizarLista(inscripciones) {
     const celda = crearNodo("td", {
       texto: "No tienes inscripciones registradas.",
     });
-    celda.colSpan = 4;
+    celda.colSpan = TOTAL_COLUMNAS;
     fila.appendChild(celda);
     cuerpo.appendChild(fila);
     return;
@@ -75,33 +111,51 @@ function renderizarLista(inscripciones) {
     const fila = crearNodo("tr", {});
     fila.dataset.inscripcionId = String(inscripcion.id);
 
-    const esActiva = inscripcion.estado === "activa";
-
-    const celdas = [
-      { texto: inscripcion.titulo_evento },
-      {
+    fila.appendChild(
+      crearNodo("td", {
+        texto: inscripcion.titulo_evento,
+        clase: "col-titulo",
+      }),
+    );
+    fila.appendChild(
+      crearNodo("td", {
         texto: formatearFechaBogota(inscripcion.fecha_inicio_evento),
-      },
-      {
-        texto: inscripcion.estado_evento,
-      },
-    ];
+        clase: "col-fecha",
+      }),
+    );
 
-    for (const celdaInfo of celdas) {
-      fila.appendChild(crearNodo("td", celdaInfo));
-    }
+    const celdaEstadoEvento = crearNodo("td", {});
+    celdaEstadoEvento.appendChild(crearBadgeEstadoEvento(inscripcion.estado_evento));
+    fila.appendChild(celdaEstadoEvento);
 
-    const celdaAccion = crearNodo("td", {});
-    if (esActiva) {
+    const celdaEstadoInscripcion = crearNodo("td", {});
+    celdaEstadoInscripcion.appendChild(crearBadgeEstadoInscripcion(inscripcion.estado));
+    fila.appendChild(celdaEstadoInscripcion);
+
+    const celdaAccion = crearNodo("td", { clase: "col-acciones" });
+    if (puedeCancelarInscripcion(inscripcion)) {
       const btnCancelar = crearNodo("button", {
-        texto: "Cancelar",
+        texto: "Cancelar inscripción",
         clase: "btn-secundario btn-compacto",
       });
+      btnCancelar.type = "button";
       btnCancelar.dataset.inscripcionId = String(inscripcion.id);
       btnCancelar.onclick = () => cancelarInscripcion(inscripcion.id);
       celdaAccion.appendChild(btnCancelar);
+    } else if (inscripcion.estado === "cancelada") {
+      celdaAccion.appendChild(
+        crearNodo("span", {
+          texto: "Cancelada por el usuario",
+          clase: "texto-tenue",
+        }),
+      );
     } else {
-      celdaAccion.appendChild(crearNodo("span", { texto: "—" }));
+      celdaAccion.appendChild(
+        crearNodo("span", {
+          texto: "Sin acciones",
+          clase: "texto-tenue",
+        }),
+      );
     }
     fila.appendChild(celdaAccion);
 
@@ -127,7 +181,7 @@ async function cancelarInscripcion(inscripcionId) {
     await cargarMisInscripciones({ limpiarAlerta: false });
   } catch (error) {
     btn.disabled = false;
-    btn.textContent = "Cancelar";
+    btn.textContent = "Cancelar inscripción";
     mostrarAlerta(alerta, extraerMensajeError(error), "error");
   }
 }

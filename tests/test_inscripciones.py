@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import concurrent.futures
 from datetime import timedelta
+from pathlib import Path
 
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine, event
@@ -617,3 +618,32 @@ def test_concurrencia_cupo_atomico(
     finally:
         session.close()
         engine.dispose()
+
+
+def test_vista_mis_inscripciones_distingue_estado_evento_e_inscripcion(
+    client: TestClient,
+    usuario_participante: Usuario,
+) -> None:
+    """UI/UX E5: distingue Estado evento de Estado inscripción con badges y acciones claras."""
+    _login_participante(client, usuario_participante)
+    resp = client.get("/mis-inscripciones")
+    assert resp.status_code == 200
+    assert "<th>Estado evento</th>" in resp.text
+    assert "<th>Estado inscripci&oacute;n</th>" in resp.text
+    assert 'colspan="5"' in resp.text
+
+    contenido_js = Path("app/static/js/inscripciones.js").read_text(encoding="utf-8")
+    assert ".innerHTML" not in contenido_js
+    for texto_esperado in (
+        'texto: "Inscrito"',
+        'texto: "Cancelada"',
+        'texto: "Cancelar inscripción"',
+        'texto: "Cancelada por el usuario"',
+        'texto: "Sin acciones"',
+        "insignia-publicado",
+        "insignia-cancelado",
+    ):
+        assert texto_esperado in contenido_js
+
+    css = Path("app/static/css/styles.css").read_text(encoding="utf-8")
+    assert ".texto-tenue" in css
