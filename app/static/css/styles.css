@@ -410,3 +410,8 @@ body {
   gap: 0.45rem;
   align-items: center;
 }
+
+.texto-tenue {
+  color: var(--color-texto-suave);
+  font-size: 0.88rem;
+}
