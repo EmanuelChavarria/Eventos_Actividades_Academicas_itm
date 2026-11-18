@@ -43,7 +43,7 @@ def exportar_consolidado_csv(
     """Descarga el reporte consolidado filtrado en CSV protegiendo contra fórmulas peligrosas."""
     contenido = reporte_service.exportar_consolidado_csv(db, filtros, usuario)
     return Response(
-        content=contenido,
+        content=contenido.encode("utf-8"),
         media_type="text/csv; charset=utf-8",
-        headers={"Content-Disposition": 'attachment; filename="consolidado.csv"'},
+        headers={"Content-Disposition": 'attachment; filename="consolidado_eventos.csv"'},
     )
