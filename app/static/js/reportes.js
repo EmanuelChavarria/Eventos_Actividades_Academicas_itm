@@ -249,6 +249,9 @@ if (formFiltros) {
   formFiltros.addEventListener("change", () => {
     actualizarEnlaceCsv(construirParametrosFiltros());
   });
+  formFiltros.addEventListener("input", () => {
+    actualizarEnlaceCsv(construirParametrosFiltros());
+  });
 }
 
 if (btnLimpiar) {

@@ -9,7 +9,7 @@ from types import SimpleNamespace
 from sqlalchemy.orm import Session
 
 from app.core.errors import CodigosError, NoAutorizado
-from app.core.fechas import ProveedorAhora, ahora_utc, asegurar_utc
+from app.core.fechas import ProveedorAhora, a_bogota, ahora_utc, asegurar_utc
 from app.models.enums import Rol
 from app.models.usuario import Usuario
 from app.repositories import reporte_repo
@@ -121,46 +121,82 @@ def sanitizar_celda_csv(valor: object) -> str:
     return texto
 
 
+_ETIQUETAS_TIPO = {
+    "conferencia": "Conferencia",
+    "taller": "Taller",
+    "seminario": "Seminario",
+    "capacitacion": "Capacitación",
+}
+
+_ETIQUETAS_MODALIDAD = {
+    "presencial": "Presencial",
+    "virtual": "Virtual",
+    "hibrida": "Híbrida",
+}
+
+_ETIQUETAS_ESTADO = {
+    "borrador": "Borrador",
+    "publicado": "Publicado",
+    "cancelado": "Cancelado",
+    "finalizado": "Finalizado",
+}
+
+_ENCABEZADOS_CSV = [
+    "ID Evento",
+    "Título",
+    "Tipo",
+    "Modalidad",
+    "Estado",
+    "Fecha Inicio",
+    "Fecha Fin",
+    "Organizador",
+    "Cupo Máximo",
+    "Inscritos Activos",
+    "Disponibles",
+    "Ocupación (%)",
+    "Cancelaciones",
+    "Presentes",
+    "Ausentes",
+    "Sin Registrar",
+    "Asistencia (%)",
+]
+
+
+def _formatear_etiqueta(catalogo: dict[str, str], valor: str) -> str:
+    """Devuelve la etiqueta legible con tildes y capitalización apropiada."""
+    return catalogo.get(valor, valor.capitalize())
+
+
 def exportar_consolidado_csv(
     db: Session,
     filtros: ConsolidadoFiltros,
     usuario: Usuario,
     proveedor_ahora: ProveedorAhora = ahora_utc,
 ) -> str:
-    """Exporta las filas filtradas del consolidado en formato CSV neutralizado."""
+    """Exporta el consolidado filtrado en CSV UTF-8 con BOM y delimitador `;` para Excel."""
     consolidado = obtener_consolidado(db, filtros, usuario, proveedor_ahora=proveedor_ahora)
+    eventos_ordenados = sorted(consolidado.eventos, key=lambda item: item.evento_id)
+
     buffer = io.StringIO()
-    escritor = csv.writer(buffer, lineterminator="\n")
-    escritor.writerow(
-        [
-            "evento_id",
-            "titulo",
-            "tipo",
-            "modalidad",
-            "estado",
-            "fecha_inicio",
-            "fecha_fin",
-            "organizador_nombre",
-            "cupo_maximo",
-            "inscritos_activos",
-            "disponibles",
-            "ocupacion_pct",
-            "cancelaciones",
-            "presentes",
-            "ausentes",
-            "sin_registrar",
-            "asistencia_pct",
-        ]
+    escritor = csv.writer(
+        buffer,
+        delimiter=";",
+        quoting=csv.QUOTE_MINIMAL,
+        lineterminator="\n",
     )
-    for evento in consolidado.eventos:
+    escritor.writerow(_ENCABEZADOS_CSV)
+
+    for evento in eventos_ordenados:
+        fecha_inicio_local = a_bogota(evento.fecha_inicio).strftime("%Y-%m-%d %H:%M")
+        fecha_fin_local = a_bogota(evento.fecha_fin).strftime("%Y-%m-%d %H:%M")
         fila = [
             evento.evento_id,
             evento.titulo,
-            evento.tipo,
-            evento.modalidad,
-            evento.estado,
-            evento.fecha_inicio.isoformat(),
-            evento.fecha_fin.isoformat(),
+            _formatear_etiqueta(_ETIQUETAS_TIPO, evento.tipo),
+            _formatear_etiqueta(_ETIQUETAS_MODALIDAD, evento.modalidad),
+            _formatear_etiqueta(_ETIQUETAS_ESTADO, evento.estado),
+            fecha_inicio_local,
+            fecha_fin_local,
             evento.organizador_nombre,
             evento.cupo_maximo,
             evento.inscritos_activos,
@@ -173,4 +209,5 @@ def exportar_consolidado_csv(
             f"{evento.asistencia_pct:.2f}",
         ]
         escritor.writerow([sanitizar_celda_csv(celda) for celda in fila])
-    return buffer.getvalue()
+
+    return f"\ufeff{buffer.getvalue()}"
