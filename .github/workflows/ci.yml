@@ -107,7 +107,10 @@ jobs:
         run: |
           if [ -f app/main.py ]; then
             for i in $(seq 1 20); do
-              curl -fsk https://localhost:8000/health && exit 0
+              if curl -fsk https://localhost:8000/health; then
+                echo ""
+                exit 0
+              fi
               sleep 3
             done
             docker compose logs web
@@ -115,6 +118,8 @@ jobs:
           else
             echo "app/main.py aún no implementada (Fase 0); build verificado exitosamente."
           fi
+      - name: Ejecutar pruebas dentro del contenedor Docker
+        run: docker compose exec -T web pytest -q
       - name: Detener contenedores
         if: always()
         run: docker compose down -v

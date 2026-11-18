@@ -21,6 +21,7 @@ Este documento describe la infraestructura DevOps completa del proyecto, cubrien
 
 ### 2.1 Imagen de Docker (`Dockerfile`)
 - **Imagen base:** `python:3.12-slim` (minimalista, segura y libre de herramientas de compilación innecesarias en runtime).
+- **Dependencias de desarrollo/pruebas configurables:** mediante `ARG INSTALL_DEV=true` instala `requirements-dev.txt` por defecto para permitir ejecutar `docker compose exec web pytest -q`; para una imagen liviana solo de producción se compila con `--build-arg INSTALL_DEV=false`.
 - **Usuario seguro:** Se crea el grupo y usuario `appuser` con UID/GID 1000.
 - **Directorio de trabajo:** `/app`, con permisos asignados a `appuser`.
 - **Entrypoint:** `scripts/entrypoint.sh` ejecuta automáticamente `alembic upgrade head` para garantizar que la base de datos esté al día antes de iniciar Uvicorn.
@@ -116,6 +117,7 @@ flowchart TD
 2. Genera certificados autofirmados TLS para el runner con `openssl` y aplica permisos `chmod 755 certs` y `chmod 644 certs/*.pem`.
 3. Construye y levanta el servicio con `docker compose up -d --build`.
 4. Sondea en bucle el endpoint seguro `https://localhost:8000/health` hasta confirmar disponibilidad `200 OK`.
+5. Ejecuta `docker compose exec -T web pytest -q` dentro del contenedor en ejecución para verificar la suite completa en Docker.
 
 ---
 
