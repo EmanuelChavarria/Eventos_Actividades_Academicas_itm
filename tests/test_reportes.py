@@ -354,18 +354,32 @@ def test_api_consolidado_rechaza_fechas_sin_zona_o_rango_invertido(
 def test_api_consolidado_csv_headers_contenido_y_permisos(
     client: TestClient, db_session: Session, crear_usuario_factory
 ) -> None:
-    """E7 CSV: exige coordinación, descarga CSV válido y neutraliza fórmulas con filtros."""
+    """E7 CSV: exige coordinación, BOM UTF-8, delimitador `;`, fechas locales y orden por ID."""
     assert client.get("/api/v1/reportes/consolidado/csv").status_code == 401
 
-    org = crear_usuario_factory(rol=Rol.ORGANIZADOR, nombre="Org CSV")
+    org = crear_usuario_factory(rol=Rol.ORGANIZADOR, nombre="Marta Díaz")
     _login(client, org)
     assert client.get("/api/v1/reportes/consolidado/csv").status_code == 403
 
-    _crear_evento_escenario(
+    # Evento 1 finalizado (2026-06) y evento 2 futuro publicado para validar orden por evento_id
+    ev1 = _crear_evento_escenario(
         db_session,
         organizador_id=org.id,
-        titulo="=1+1 Inyeccion",
-        tipo="taller",
+        titulo="=1+1 Capacitación Histórica",
+        tipo="capacitacion",
+        modalidad="hibrida",
+        inicio=datetime(2026, 6, 20, 22, 1, 34, 50340, tzinfo=UTC),
+        fin=datetime(2026, 6, 21, 1, 1, 34, 50340, tzinfo=UTC),
+    )
+    ahora = ahora_utc()
+    ev2 = _crear_evento_escenario(
+        db_session,
+        organizador_id=org.id,
+        titulo="Evaluación e Inducción",
+        tipo="capacitacion",
+        modalidad="virtual",
+        inicio=ahora + timedelta(days=5),
+        fin=ahora + timedelta(days=5, hours=2),
     )
     _crear_evento_escenario(
         db_session,
@@ -376,15 +390,49 @@ def test_api_consolidado_csv_headers_contenido_y_permisos(
 
     coord = crear_usuario_factory(rol=Rol.COORDINACION, nombre="Coord Export")
     _login(client, coord)
-    resp = client.get("/api/v1/reportes/consolidado/csv", params={"tipo": "taller"})
+    resp = client.get("/api/v1/reportes/consolidado/csv", params={"tipo": "capacitacion"})
     assert resp.status_code == 200
     assert resp.headers["content-type"].startswith("text/csv")
-    assert 'filename="consolidado.csv"' in resp.headers.get("content-disposition", "")
+    assert 'filename="consolidado_eventos.csv"' in resp.headers.get("content-disposition", "")
 
-    filas = list(csv.DictReader(io.StringIO(resp.text)))
-    assert len(filas) == 1
-    assert filas[0]["titulo"] == "'=1+1 Inyeccion"
-    assert filas[0]["tipo"] == "taller"
+    # Firma UTF-8 BOM simple y sin doble BOM
+    assert resp.content.startswith(b"\xef\xbb\xbf")
+    assert not resp.content.startswith(b"\xef\xbb\xbf\xef\xbb\xbf")
+
+    texto_sin_bom = resp.content.decode("utf-8-sig")
+    lector = csv.DictReader(io.StringIO(texto_sin_bom), delimiter=";")
+    assert lector.fieldnames == [
+        "ID Evento",
+        "Título",
+        "Tipo",
+        "Modalidad",
+        "Estado",
+        "Fecha Inicio",
+        "Fecha Fin",
+        "Organizador",
+        "Cupo Máximo",
+        "Inscritos Activos",
+        "Disponibles",
+        "Ocupación (%)",
+        "Cancelaciones",
+        "Presentes",
+        "Ausentes",
+        "Sin Registrar",
+        "Asistencia (%)",
+    ]
+
+    filas = list(lector)
+    assert len(filas) == 2
+    assert [int(f["ID Evento"]) for f in filas] == [ev1.id, ev2.id]
+    assert filas[0]["Título"] == "'=1+1 Capacitación Histórica"
+    assert filas[0]["Tipo"] == "Capacitación"
+    assert filas[0]["Modalidad"] == "Híbrida"
+    assert filas[0]["Estado"] == "Finalizado"
+    assert filas[1]["Estado"] == "Publicado"
+    assert filas[0]["Organizador"] == "Marta Díaz"
+    # 2026-06-20 22:01 UTC -> 2026-06-20 17:01 America/Bogota (-05:00), sin microsegundos ni +00:00
+    assert filas[0]["Fecha Inicio"] == "2026-06-20 17:01"
+    assert filas[0]["Fecha Fin"] == "2026-06-20 20:01"
 
 
 def test_web_panel_consolidado_acceso_y_js_sin_innerhtml(
