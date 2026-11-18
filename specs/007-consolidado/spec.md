@@ -65,8 +65,9 @@ Como coordinación quiero descargar el reporte consolidado en formato CSV, asegu
 - **Por qué esta prioridad:** Permite análisis externos sin comprometer seguridad (RF-30).
 - **Prueba independiente:** Descargar `GET /api/v1/reportes/consolidado/csv` e inspeccionar el archivo generado.
 - **Escenarios de aceptación:**
-  1. **Dado** un reporte con datos que inician por `=`, `+`, `-` o `@`, **Cuando** se exporta a CSV, **Entonces** se neutralizan anteponiendo un apóstrofe `'` para prevenir ejecución de macros/fórmulas en hojas de cálculo.
-  2. **Dado** que el reporte incluye participantes, **Cuando** se genera el CSV, **Entonces** cualquier documento de identidad se encuentra enmascarado (`••••1234`).
+  1. **Dado** un reporte con datos que inician por `=`, `+`, `-`, `@` o tabuladores, **Cuando** se exporta a CSV, **Entonces** se neutralizan anteponiendo un apóstrofe `'` para prevenir ejecución de macros/fórmulas en hojas de cálculo.
+  2. **Dado** un reporte exportado para Microsoft Excel en español, **Cuando** se descarga `GET /api/v1/reportes/consolidado/csv`, **Entonces** responde con `Content-Disposition: attachment; filename="consolidado_eventos.csv"`, codificación UTF-8 con firma BOM (`utf-8-sig`), delimitador punto y coma (`;`), encabezados legibles en español, catálogos capitalizados (`Capacitación`, `Híbrida`, etc.), fechas en formato `YYYY-MM-DD HH:MM` en zona `America/Bogota` y filas ordenadas ascendentemente por `evento_id`.
+  3. **Dado** que el reporte incluye participantes, **Cuando** se genera el CSV, **Entonces** cualquier documento de identidad se encuentra enmascarado (`••••1234`).
 
 ---
 
