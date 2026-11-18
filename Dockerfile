@@ -9,8 +9,13 @@ RUN useradd --create-home --uid 1000 appuser && \
     mkdir -p /app/data /app/certs && \
     chown -R appuser:appuser /app/data /app/certs
 
-COPY requirements.txt* ./
-RUN if [ -f requirements.txt ]; then pip install --no-cache-dir -r requirements.txt; fi
+ARG INSTALL_DEV=true
+COPY requirements*.txt ./
+RUN if [ "${INSTALL_DEV}" = "true" ] && [ -f requirements-dev.txt ]; then \
+      pip install --no-cache-dir -r requirements-dev.txt; \
+    elif [ -f requirements.txt ]; then \
+      pip install --no-cache-dir -r requirements.txt; \
+    fi
 
 COPY --chown=appuser:appuser . .
 
